@@ -5,7 +5,7 @@ import subprocess  # noqa: S404
 import sys
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, Iterable, List, Tuple, Union
 
 from sphinx.application import Sphinx
 from sphinx.config import Config as SphinxConfig
@@ -64,6 +64,12 @@ def _get_changelog_draft_entries(
         raise LookupError('There are no unreleased changelog entries so far')
 
     return towncrier_output
+
+
+def iter_towncrier_files(fragments_dir: Path) -> Iterable:
+    for path in Path(fragments_dir).iterdir():
+        if path.is_file() and path.suffix == "rst":
+            yield path
 
 
 @lru_cache(maxsize=1, typed=True)
@@ -145,6 +151,11 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
         config = self.env.config
         autoversion_mode = config.towncrier_draft_autoversion_mode
         include_empty = config.towncrier_draft_include_empty
+
+        for path in iter_towncrier_files(
+            fragments_dir=Path(config.towncrier_draft_working_directory)
+        ):
+            self.env.note_dependency(str(path))
 
         try:
             draft_changes = _get_changelog_draft_entries(
