@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Build-time setuptools-scm generated version module
+/src/sphinxcontrib/towncrier/_scm_version.py
