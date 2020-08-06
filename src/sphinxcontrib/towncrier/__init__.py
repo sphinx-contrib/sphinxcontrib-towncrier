@@ -113,7 +113,7 @@ def _nodes_from_rst(state: statemachine.State, rst: str) -> List[nodes.Node]:
         state=state,
         content=statemachine.ViewList(
             statemachine.string2lines(rst),
-            source='towncrier-fragments',
+            source='[towncrier-fragments]',
         ),
         node=node,
     )
