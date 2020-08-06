@@ -105,14 +105,14 @@ def _get_draft_version_fallback(strategy: str, sphinx_config: Dict[str, Any]):
     return ' '.join(msg_chunks)
 
 
-def _nodes_from_rst(state: statemachine.State, rst: str) -> List[nodes.Node]:
+def _nodes_from_rst(state: statemachine.State, rst_source: str) -> List[nodes.Node]:
     """Turn an RST string into a list of nodes that can be used in the document."""
     node = nodes.Element()
     node.document = state.document
     nested_parse_with_titles(
         state=state,
         content=statemachine.ViewList(
-            statemachine.string2lines(rst),
+            statemachine.string2lines(rst_source),
             source='[towncrier-fragments]',
         ),
         node=node,
@@ -151,7 +151,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
         except LookupError:
             return []
 
-        return _nodes_from_rst(state=self.state, rst=draft_changes)
+        return _nodes_from_rst(state=self.state, rst_source=draft_changes)
 
 
 def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
