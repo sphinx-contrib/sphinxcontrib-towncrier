@@ -7,36 +7,34 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Union
 
+from docutils import statemachine
+from setuptools_scm import get_version
 from sphinx.application import Sphinx
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.nodes import nodes
 
-
-# isort: split
-
-from docutils import statemachine
-from setuptools_scm import get_version
-
+from ._scm_version import version as __version__
 
 PROJECT_ROOT_DIR = Path(__file__).parents[3].resolve()
 TOWNCRIER_DRAFT_CMD = (
-    sys.executable, '-m',  # invoke via runpy under the same interpreter
-    'towncrier',
-    '--draft',  # write to stdout, don't change anything on disk
+    sys.executable,
+    "-m",  # invoke via runpy under the same interpreter
+    "towncrier",
+    "--draft",  # write to stdout, don't change anything on disk
 )
 
 
 @lru_cache(typed=True)
 def _get_changelog_draft_entries(
-        target_version: str,
-        allow_empty: bool = False,
-        working_dir: str = None,
-        config_path: str = None,
+    target_version: str,
+    allow_empty: bool = False,
+    working_dir: str = None,
+    config_path: str = None,
 ) -> str:
-    """Retrieve the unreleased changelog entries from Towncrier."""
+    """Retrieve the unreleased changelog entries from towncrier."""
     extra_cli_args = (
-        '--version',
-        rf'\ {target_version}',  # version value to be used in the RST title
+        "--version",
+        rf"\ {target_version}",  # version value to be used in the RST title
         # NOTE: The escaped space sequence (`\ `) is necessary to address
         # NOTE: a corner case when the towncrier config has something like
         # NOTE: `v{version}` in the title format **and** the directive target
@@ -48,18 +46,18 @@ def _get_changelog_draft_entries(
         # NOTE: be something like `v1.0` as expected.
     )
     if config_path is not None:
-        # This isn't actually supported by a released version of Towncrier yet:
+        # This isn't actually supported by a released version of towncrier yet:
         # https://github.com/twisted/towncrier/pull/157#issuecomment-666549246
         # https://github.com/twisted/towncrier/issues/269
-        extra_cli_args += '--config', str(config_path)
+        extra_cli_args += "--config", str(config_path)
     towncrier_output = subprocess.check_output(  # noqa: S603
         TOWNCRIER_DRAFT_CMD + extra_cli_args,
         cwd=str(working_dir) if working_dir else None,
         universal_newlines=True,  # this arg has "text" alias since Python 3.7
     ).strip()
 
-    if not allow_empty and 'No significant changes' in towncrier_output:
-        raise LookupError('There are no unreleased changelog entries so far')
+    if not allow_empty and "No significant changes" in towncrier_output:
+        raise LookupError("There are no unreleased changelog entries so far")
 
     return towncrier_output
 
@@ -68,10 +66,9 @@ def _get_changelog_draft_entries(
 def _autodetect_scm_version():
     """Retrieve an SCM-based project version."""
     for scm_checkout_path in Path(__file__).parents:  # noqa: WPS500
-        is_scm_checkout = (
-            (scm_checkout_path / '.git').exists() or
-            (scm_checkout_path / '.hg').exists()
-        )
+        is_scm_checkout = (scm_checkout_path / ".git").exists() or (
+            scm_checkout_path / ".hg"
+        ).exists()
         if is_scm_checkout:
             return get_version(root=scm_checkout_path)
     else:
@@ -81,28 +78,24 @@ def _autodetect_scm_version():
 @lru_cache(maxsize=1, typed=True)
 def _get_draft_version_fallback(strategy: str, sphinx_config: Dict[str, Any]):
     """Generate a fallback version string for towncrier draft."""
-    known_strategies = {'scm-draft', 'scm', 'draft', 'sphinx-version', 'sphinx-release'}
+    known_strategies = {"scm-draft", "scm", "draft", "sphinx-version", "sphinx-release"}
     if strategy not in known_strategies:
         raise ValueError(
             'Expected "stragegy" to be '
-            f'one of {known_strategies!r} but got {strategy!r}',
+            f"one of {known_strategies!r} but got {strategy!r}",
         )
 
-    if 'sphinx' in strategy:
-        return (
-            sphinx_config.release
-            if 'release' in strategy
-            else sphinx_config.version
-        )
+    if "sphinx" in strategy:
+        return sphinx_config.release if "release" in strategy else sphinx_config.version
 
-    draft_msg = '[UNRELEASED DRAFT]'
+    draft_msg = "[UNRELEASED DRAFT]"
     msg_chunks = ()
-    if 'scm' in strategy:
+    if "scm" in strategy:
         msg_chunks += (_autodetect_scm_version(),)
-    if 'draft' in strategy:
+    if "draft" in strategy:
         msg_chunks += (draft_msg,)
 
-    return ' '.join(msg_chunks)
+    return " ".join(msg_chunks)
 
 
 class TowncrierDraftEntriesDirective(SphinxDirective):
@@ -115,8 +108,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
         target_version = self.content[:1][0] if self.content[:1] else None
         if self.content[1:]:  # inner content present
             raise self.error(
-                f'Error in "{self.name!s}" directive: '
-                'only one argument permitted.',
+                f'Error in "{self.name!s}" directive: ' "only one argument permitted.",
             )
 
         config = self.state.document.settings.env.config  # noqa: WPS219
@@ -125,8 +117,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
 
         try:
             draft_changes = _get_changelog_draft_entries(
-                target_version or
-                _get_draft_version_fallback(autoversion_mode, config),
+                target_version or _get_draft_version_fallback(autoversion_mode, config),
                 allow_empty=include_empty,
                 working_dir=config.towncrier_draft_working_directory,
                 config_path=config.towncrier_draft_config_path,
@@ -137,42 +128,40 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
             return []
 
         self.state_machine.insert_input(
-            statemachine.string2lines(draft_changes),
-            '[towncrier draft]',
+            statemachine.string2lines(draft_changes), "[towncrier draft]",
         )
         return []
 
 
 def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
     """Initialize the extension."""
-    rebuild_trigger = 'html'  # rebuild full html on settings change
+    rebuild_trigger = "html"  # rebuild full html on settings change
     app.add_config_value(
-        'towncrier_draft_config_path',
-        default=None,
+        "towncrier_draft_config_path", default=None, rebuild=rebuild_trigger,
+    )
+    app.add_config_value(
+        "towncrier_draft_autoversion_mode",
+        default="scm-draft",
         rebuild=rebuild_trigger,
     )
     app.add_config_value(
-        'towncrier_draft_autoversion_mode',
-        default='scm-draft',
-        rebuild=rebuild_trigger,
+        "towncrier_draft_include_empty", default=True, rebuild=rebuild_trigger,
     )
     app.add_config_value(
-        'towncrier_draft_include_empty',
-        default=True,
-        rebuild=rebuild_trigger,
-    )
-    app.add_config_value(
-        'towncrier_draft_working_directory',
-        default=None,
-        rebuild=rebuild_trigger,
+        "towncrier_draft_working_directory", default=None, rebuild=rebuild_trigger,
     )
     app.add_directive(
-        'towncrier-draft-entries',
-        TowncrierDraftEntriesDirective,
+        "towncrier-draft-entries", TowncrierDraftEntriesDirective,
     )
 
     return {
-        'parallel_read_safe': True,
-        'parallel_write_safe': True,
-        'version': get_version(root=PROJECT_ROOT_DIR),
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+        "version": get_version(root=PROJECT_ROOT_DIR),
     }
+
+
+__all__ = (
+    "__version__",
+    "TowncrierDraftEntriesDirective",
+)
