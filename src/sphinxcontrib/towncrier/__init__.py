@@ -15,7 +15,8 @@ from sphinx.util.nodes import nodes
 # isort: split
 
 from docutils import statemachine
-from setuptools_scm import get_version
+
+from ._version import __version__
 
 
 PROJECT_ROOT_DIR = Path(__file__).parents[3].resolve()
@@ -65,23 +66,9 @@ def _get_changelog_draft_entries(
 
 
 @lru_cache(maxsize=1, typed=True)
-def _autodetect_scm_version():
-    """Retrieve an SCM-based project version."""
-    for scm_checkout_path in Path(__file__).parents:  # noqa: WPS500
-        is_scm_checkout = (
-            (scm_checkout_path / '.git').exists() or
-            (scm_checkout_path / '.hg').exists()
-        )
-        if is_scm_checkout:
-            return get_version(root=scm_checkout_path)
-    else:
-        raise LookupError("Failed to locate the project's SCM repo")
-
-
-@lru_cache(maxsize=1, typed=True)
 def _get_draft_version_fallback(strategy: str, sphinx_config: Dict[str, Any]):
     """Generate a fallback version string for towncrier draft."""
-    known_strategies = {'scm-draft', 'scm', 'draft', 'sphinx-version', 'sphinx-release'}
+    known_strategies = {'draft', 'sphinx-version', 'sphinx-release'}
     if strategy not in known_strategies:
         raise ValueError(
             'Expected "stragegy" to be '
@@ -95,14 +82,7 @@ def _get_draft_version_fallback(strategy: str, sphinx_config: Dict[str, Any]):
             else sphinx_config.version
         )
 
-    draft_msg = '[UNRELEASED DRAFT]'
-    msg_chunks = ()
-    if 'scm' in strategy:
-        msg_chunks += (_autodetect_scm_version(),)
-    if 'draft' in strategy:
-        msg_chunks += (draft_msg,)
-
-    return ' '.join(msg_chunks)
+    return '[UNRELEASED DRAFT]'
 
 
 class TowncrierDraftEntriesDirective(SphinxDirective):
@@ -174,5 +154,5 @@ def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
     return {
         'parallel_read_safe': True,
         'parallel_write_safe': True,
-        'version': get_version(root=PROJECT_ROOT_DIR),
+        'version': __version__,
     }
