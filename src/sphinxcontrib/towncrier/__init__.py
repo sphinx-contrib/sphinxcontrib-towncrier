@@ -107,6 +107,24 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
 
     def run(self) -> List[nodes.Node]:
         """Generate a node tree in place of the directive."""
+        # NOTE: Keep `note_reread()` the first thing in the `run()` method.
+        # NOTE: This allows signalling sphinx to invalidate the doctree
+        # NOTE: cache of the document using this directive.
+        # NOTE: This could be more granular but needs more effort to teach
+        # NOTE: sphinx to depend on the appearance of the new files that
+        # NOTE: Towncrier understands. To implement this, one would need to
+        # NOTE: first persist on the mapping of the documents what use this
+        # NOTE: directive on the BuildEnvironment instance. And then, it's
+        # NOTE: needed to implement an EnvironmentCollector subcalss that
+        # NOTE: would merge different envs from parallel runs into one.
+        # NOTE: Finally, make use of env-get-outdated to call
+        # NOTE: BuildEnvironment.note_dependency() or better just return
+        # NOTE: those docnames recorded earlier.
+        # Refs:
+        # * https://github.com/sphinx-contrib/sphinxcontrib-towncrier/issues/1
+        # * https://github.com/sphinx-doc/sphinx/issues/8040
+        self.env.note_reread()  # rebuild the current RST doc unconditionally
+
         target_version = self.content[:1][0] if self.content[:1] else None
         if self.content[1:]:  # inner content present
             raise self.error(
