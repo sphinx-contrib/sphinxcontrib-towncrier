@@ -67,6 +67,7 @@ def _get_changelog_draft_entries(
 
 
 def iter_towncrier_files(fragments_dir: Path) -> Iterable[Path]:
+    """Emit RST-formatted Towncrier changelog fragment paths."""
     for path in Path(fragments_dir).iterdir():
         if path.is_file() and path.suffix == "rst":
             yield path
