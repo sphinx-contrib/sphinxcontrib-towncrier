@@ -66,7 +66,7 @@ def _get_changelog_draft_entries(
     return towncrier_output
 
 
-def iter_towncrier_files(fragments_dir: Path) -> Iterable:
+def iter_towncrier_files(fragments_dir: Path) -> Iterable[Path]:
     for path in Path(fragments_dir).iterdir():
         if path.is_file() and path.suffix == "rst":
             yield path
