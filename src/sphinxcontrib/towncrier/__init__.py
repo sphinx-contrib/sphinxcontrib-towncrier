@@ -85,8 +85,14 @@ def _get_draft_version_fallback(strategy: str, sphinx_config: Dict[str, Any]):
     return '[UNRELEASED DRAFT]'
 
 
-def _nodes_from_rst(state: statemachine.State, rst_source: str) -> List[nodes.Node]:
-    """Turn an RST string into a list of nodes that can be used in the document."""
+def _nodes_from_rst(
+    state: statemachine.State,
+    rst_source: str,
+) -> List[nodes.Node]:
+    """Turn an RST string into a list of nodes.
+
+    These nodes can be used in the document.
+    """
     node = nodes.Element()
     node.document = state.document
     nested_parse_with_titles(
