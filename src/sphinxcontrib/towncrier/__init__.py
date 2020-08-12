@@ -86,8 +86,8 @@ def _get_draft_version_fallback(strategy: str, sphinx_config: Dict[str, Any]):
 
 
 def _nodes_from_rst(
-    state: statemachine.State,
-    rst_source: str,
+        state: statemachine.State,
+        rst_source: str,
 ) -> List[nodes.Node]:
     """Turn an RST string into a list of nodes.
 
