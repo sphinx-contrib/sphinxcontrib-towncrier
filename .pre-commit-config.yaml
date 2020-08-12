@@ -1,0 +1,71 @@
+---
+repos:
+- repo: git://github.com/asottile/add-trailing-comma
+  rev: v0.7.1
+  hooks:
+  - id: add-trailing-comma
+
+- repo: git://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.1.6
+  hooks:
+  - id: remove-tabs
+
+- repo: git://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+  # Side-effects:
+  - id: trailing-whitespace
+  - id: check-merge-conflict
+  - id: double-quote-string-fixer
+  - id: end-of-file-fixer
+  - id: requirements-txt-fixer
+    exclude: >-
+      ^(docs/requirements|requirements-build)\.txt$
+  # Non-modifying checks:
+  - id: name-tests-test
+    files: >-
+      ^tests/[^_].*\.py$
+  - id: check-added-large-files
+  - id: check-byte-order-marker
+  - id: check-case-conflict
+  # disabled due to pre-commit/pre-commit-hooks#159
+  #- id: check-docstring-first
+  - id: check-json
+  - id: check-symlinks
+  - id: check-yaml
+    # args:
+    # - --unsafe
+  - id: detect-private-key
+
+  # Heavy checks:
+  - id: check-ast
+  - id: debug-statements
+
+- repo: git://github.com/Lucas-C/pre-commit-hooks-markup
+  rev: v1.0.0
+  hooks:
+  - id: rst-linter
+    files: >-
+      ^README\.rst$
+- repo: git://github.com/pycqa/pydocstyle.git
+  rev: 5.0.2
+  hooks:
+  - id: pydocstyle
+
+- repo: https://github.com/adrienverge/yamllint.git
+  rev: v1.24.2
+  hooks:
+  - id: yamllint
+    files: \.(yaml|yml)$
+    types: [file, yaml]
+    args:
+    - --strict
+
+- repo: local
+  hooks:
+  - id: pylint
+    language: system
+    name: PyLint
+    files: \.py$
+    entry: python -m pylint
+    args: []
