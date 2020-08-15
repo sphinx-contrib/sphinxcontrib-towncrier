@@ -1,0 +1,86 @@
+---
+name: 🚨linters
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linters:
+    name: >-
+      ${{ matrix.toxenv }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+        - 3.8
+        os:
+        - ubuntu-latest
+        toxenv:
+        - lint
+        - build-dists
+
+    env:
+      PY_COLORS: 1
+      TOX_PARALLEL_NO_SPINNER: 1
+      TOXENV: ${{ matrix.toxenv }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: >-
+        Calculate Python interpreter version hash value
+        for use in the cache key
+      id: calc_cache_key_py
+      run: |
+        from hashlib import sha512
+        from sys import version
+        hash = sha512(version.encode()).hexdigest()
+        print(f'::set-output name=py_hash_key::{hash}')
+      shell: python
+    - name: Set up pip cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: >-
+          ${{ runner.os }}-pip-${{
+          steps.calc_cache_key_py.outputs.py_hash_key }}-${{
+          hashFiles('setup.cfg') }}-${{
+          hashFiles('tox.ini') }}-${{
+          hashFiles('pyproject.toml') }}-${{
+          hashFiles('.pre-commit-config.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{steps.calc_cache_key_py.outputs.py_hash_key }}-
+          ${{ runner.os }}-pip-
+          ${{ runner.os }}-
+    - name: Set up pre-commit cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pre-commit
+        key: >-
+          ${{ runner.os }}-pre-commit-${{
+          env.PY_SHA256 }}-${{
+          hashFiles('setup.cfg') }}-${{
+          hashFiles('tox.ini') }}-${{
+          hashFiles('pyproject.toml') }}-${{
+          hashFiles('.pre-commit-config.yaml') }}
+    - name: Install tox
+      run: |
+        python -m pip install --upgrade tox
+    - name: Log installed dists
+      run: |
+        python -m pip freeze --all
+    - name: Initialize tox envs
+      run: |
+        python -m tox --parallel auto --parallel-live --notest
+    - name: Initialize pre-commit envs if needed
+      run: |
+        test -d .tox/lint && .tox/lint/bin/python -m pre_commit install-hooks || :
+    - name: Test with tox
+      run: |
+        python -m tox --parallel auto --parallel-live
+...
