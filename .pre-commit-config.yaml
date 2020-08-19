@@ -61,6 +61,16 @@ repos:
     args:
     - --strict
 
+- repo: https://gitlab.com/pycqa/flake8.git
+  rev: 3.8.3
+  hooks:
+  - id: flake8
+    language_version: python3
+    additional_dependencies:
+    - flake8-2020>=1.6.0
+    - flake8-docstrings
+    - flake8-pytest-style>=1.0.0
+
 - repo: local
   hooks:
   - id: pylint
