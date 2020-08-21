@@ -16,7 +16,7 @@ from sphinx.util.nodes import nested_parse_with_titles, nodes
 
 from docutils import statemachine
 
-from ._version import __version__
+from ._version import __version__  # noqa: WPS436
 
 
 PROJECT_ROOT_DIR = Path(__file__).parents[3].resolve()
