@@ -529,7 +529,10 @@ allow-wildcard-with-all=no
 analyse-fallback-blocks = yes
 
 # Deprecated modules which should not be used, separated by a comma.
-deprecated-modules=optparse,tkinter.tix
+deprecated-modules =
+  optparse,
+  tkinter.tix,
+  unittest,
 
 # Create a graph of external dependencies in the given file (report RP0402 must
 # not be disabled).
@@ -551,7 +554,8 @@ known-standard-library=
 known-third-party=enchant
 
 # Couples of modules and preferred modules, separated by a comma.
-preferred-modules=
+preferred-modules =
+  unittest:pytest,
 
 
 [DESIGN]
