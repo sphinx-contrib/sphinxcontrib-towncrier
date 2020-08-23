@@ -5,9 +5,10 @@ import subprocess  # noqa: S404
 import sys
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 from sphinx.application import Sphinx
+from sphinx.config import Config as SphinxConfig
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.nodes import nested_parse_with_titles, nodes
 
@@ -35,7 +36,7 @@ def _get_changelog_draft_entries(
         config_path: str = None,
 ) -> str:
     """Retrieve the unreleased changelog entries from Towncrier."""
-    extra_cli_args = (
+    extra_cli_args: Tuple[str, ...] = (
         '--version',
         rf'\ {target_version}',  # version value to be used in the RST title
         # NOTE: The escaped space sequence (`\ `) is necessary to address
@@ -66,7 +67,10 @@ def _get_changelog_draft_entries(
 
 
 @lru_cache(maxsize=1, typed=True)
-def _get_draft_version_fallback(strategy: str, sphinx_config: Dict[str, Any]):
+def _get_draft_version_fallback(
+        strategy: str,
+        sphinx_config: SphinxConfig,
+) -> str:
     """Generate a fallback version string for towncrier draft."""
     known_strategies = {'draft', 'sphinx-version', 'sphinx-release'}
     if strategy not in known_strategies:
