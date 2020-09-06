@@ -5,7 +5,7 @@ import subprocess  # noqa: S404
 import sys
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from sphinx.application import Sphinx
 from sphinx.config import Config as SphinxConfig
@@ -15,7 +15,19 @@ from sphinx.util.nodes import nested_parse_with_titles, nodes
 
 # isort: split
 
-from docutils import statemachine
+# pylint: disable=import-error,no-name-in-module
+from towncrier._settings import load_config_from_file  # noqa: WPS436
+
+
+try:
+    # pylint: disable=no-name-in-module
+    from towncrier.build import find_fragments  # noqa: WPS433
+except ImportError:
+    # pylint: disable=import-self
+    from towncrier import find_fragments  # noqa: WPS433, WPS440
+
+# Ref: https://github.com/PyCQA/pylint/issues/3817
+from docutils import statemachine  # pylint: disable=wrong-import-order
 
 from ._version import __version__  # noqa: WPS436
 
@@ -66,11 +78,41 @@ def _get_changelog_draft_entries(
     return towncrier_output
 
 
-def iter_towncrier_files(fragments_dir: Path) -> Iterable[Path]:
+# pylint: disable=fixme
+# FIXME: refactor `_lookup_towncrier_fragments` to drop noqas
+@lru_cache(maxsize=1, typed=True)  # noqa: WPS210
+def _lookup_towncrier_fragments(  # noqa: WPS210
+        working_dir: str = None,
+        config_path: str = None,
+) -> Set[Path]:
     """Emit RST-formatted Towncrier changelog fragment paths."""
-    for path in Path(fragments_dir).iterdir():
-        if path.is_file() and path.suffix == "rst":
-            yield path
+    project_path = Path.cwd() if working_dir is None else Path(working_dir)
+
+    final_config_path = project_path / 'pyproject.toml'
+    if config_path is not None:
+        final_config_path = project_path / config_path
+    elif (  # noqa: WPS337
+            not final_config_path.is_file() and
+            (project_path / 'towncrier.toml').is_file()
+    ):
+        final_config_path = project_path / 'towncrier.toml'
+
+    towncrier_config = load_config_from_file(str(final_config_path))
+    fragment_directory: Optional[str] = 'newsfragments'
+    try:
+        fragment_base_directory = project_path / towncrier_config['directory']
+    except KeyError:
+        fragment_base_directory = project_path / towncrier_config['directory']
+    else:
+        fragment_directory = None
+
+    _fragments, fragment_filenames = find_fragments(
+        base_directory=str(fragment_base_directory),
+        fragment_directory=fragment_directory,
+        definitions=towncrier_config['types'],
+        sections=towncrier_config['sections'],
+    )
+    return set(fragment_filenames)
 
 
 @lru_cache(maxsize=1, typed=True)
@@ -122,7 +164,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
 
     has_content = True  # default: False
 
-    def run(self) -> List[nodes.Node]:
+    def run(self) -> List[nodes.Node]:  # noqa: WPS210
         """Generate a node tree in place of the directive."""
         # NOTE: Keep `note_reread()` the first thing in the `run()` method.
         # NOTE: This allows signalling sphinx to invalidate the doctree
@@ -153,9 +195,12 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
         autoversion_mode = config.towncrier_draft_autoversion_mode
         include_empty = config.towncrier_draft_include_empty
 
-        for path in iter_towncrier_files(
-            fragments_dir=Path(config.towncrier_draft_working_directory)
-        ):
+        towncrier_fragment_paths = _lookup_towncrier_fragments(
+            working_dir=config.towncrier_draft_working_directory,
+            config_path=config.towncrier_draft_config_path,
+        )
+        for path in towncrier_fragment_paths:
+            # make sphinx discard doctree cache on file changes
             self.env.note_dependency(str(path))
 
         try:
