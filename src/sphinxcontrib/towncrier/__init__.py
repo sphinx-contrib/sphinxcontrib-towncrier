@@ -142,7 +142,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
                 'only one argument permitted.',
             )
 
-        config = self.state.document.settings.env.config  # noqa: WPS219
+        config = self.env.config
         autoversion_mode = config.towncrier_draft_autoversion_mode
         include_empty = config.towncrier_draft_include_empty
 
