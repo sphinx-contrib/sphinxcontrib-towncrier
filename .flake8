@@ -59,7 +59,8 @@ per-file-ignores =
   # tool-related comments;
   # WPS412 logic of an extension is in __init__.py file;
   # FIXME: WPS201 too many imports
-  src/sphinxcontrib/towncrier/__init__.py: E800, WPS201, WPS412
+  # FIXME: WPS402 too many `noqa`s
+  src/sphinxcontrib/towncrier/__init__.py: E800, WPS201, WPS402, WPS412
 
 # wemake-python-styleguide
 show-source = true
@@ -72,3 +73,10 @@ pytest-parametrize-names-type = tuple
 # PT007:
 pytest-parametrize-values-type = tuple
 pytest-parametrize-values-row-type = tuple
+
+# flake8-rst-docstrings
+rst-roles =
+    # Built-in Sphinx roles:
+    py:class,
+    py:meth,
+    std:event,
