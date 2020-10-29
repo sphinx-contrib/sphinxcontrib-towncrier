@@ -130,3 +130,6 @@ dmypy.json
 
 # Build-time setuptools-scm generated version module
 /src/sphinxcontrib/towncrier/_scm_version.py
+
+# Pytest related reports
+/.test-results/
