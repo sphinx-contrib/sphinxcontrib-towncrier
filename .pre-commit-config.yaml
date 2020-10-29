@@ -84,9 +84,15 @@ repos:
   hooks:
   - id: mypy
     # empty args needed in order to match mypy cli behavior
-    args: []
+    args:
+    # FIXME: get rid of missing imports ignore
+    - --namespace-packages
+    - --ignore-missing-imports
+    - src/sphinxcontrib/
+    - tests/
     additional_dependencies:
     - Sphinx>=3.1.2
+    pass_filenames: false
 
 - repo: local
   hooks:
