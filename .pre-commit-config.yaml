@@ -54,6 +54,7 @@ repos:
   - id: rst-linter
     files: >-
       ^README\.rst$
+
 - repo: git://github.com/pycqa/pydocstyle.git
   rev: 5.0.2
   hooks:
