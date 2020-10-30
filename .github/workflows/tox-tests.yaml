@@ -2,6 +2,7 @@
 name: 👷tests
 
 on:
+  create:
   push:
   pull_request:
   schedule:
@@ -9,6 +10,9 @@ on:
 
 jobs:
   tests:
+    if: >-  # https://twitter.com/webKnjaZ/status/1308803017001652225
+      github.event_name != 'create' ||
+      github.ref_type == 'tag'
     name: >-
       ${{ matrix.python-version }}
       /
@@ -76,4 +80,84 @@ jobs:
     - name: Test with tox
       run: |
         python -m tox --parallel auto --parallel-live
+
+  publish:
+    needs:
+    - tests
+    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+    runs-on: ubuntu-latest
+    env:
+      PY_COLORS: 1
+      TOX_PARALLEL_NO_SPINNER: 1
+      TOXENV: build-dists
+    steps:
+    - name: Check out src from Git
+      uses: actions/checkout@v2
+      with:
+        # Get shallow Git history (default) for tag creation events
+        # but have a complete clone for any other workflows.
+        # Both options fetch tags but since we're going to remove
+        # one from HEAD in non-create-tag workflows, we need full
+        # history for them.
+        fetch-depth: >-
+          ${{
+            (
+              github.event_name == 'create' &&
+              github.event.ref_type == 'tag'
+            ) &&
+            1 || 0
+          }}
+    - name: Drop Git tags from HEAD for non-tag-create events
+      if: >-
+        github.event_name != 'create' ||
+        github.event.ref_type != 'tag'
+      run: >-
+        git tag --points-at HEAD
+        |
+        xargs git tag --delete
+    - name: Instruct setuptools-scm not to add a local version part
+      if: >-
+        github.event_name == 'push' &&
+        github.ref == format(
+          'refs/heads/{0}', github.event.repository.default_branch
+        )
+      run: |
+        echo 'local_scheme = "no-local-version"' >> pyproject.toml
+        git update-index --assume-unchanged pyproject.toml
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install tox
+      run: |
+        python -m pip install --upgrade tox
+    - name: Initialize tox envs
+      run: |
+        python -m tox --parallel auto --parallel-live --notest
+    - name: Build dists with tox
+      run: |
+        python -m tox --parallel auto --parallel-live
+    - name: Publish distribution 📦 to Test PyPI
+      if: >-
+        (
+          github.event_name == 'push' &&
+          github.ref == format(
+            'refs/heads/{0}', github.event.repository.default_branch
+          )
+        ) ||
+        (
+          github.event_name == 'create' &&
+          github.event.ref_type == 'tag'
+        )
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.TEST_PYPI_PASSWORD }}
+        repository_url: https://test.pypi.org/legacy/
+    - name: Publish distribution 📦 to PyPI
+      if: >-  # "create" workflows run separately from "push" & "pull_request"
+        github.event_name == 'create' &&
+        github.event.ref_type == 'tag'
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PYPI_PASSWORD }}
 ...
