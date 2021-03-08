@@ -169,7 +169,9 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
 
     def run(self) -> List[nodes.Node]:  # noqa: WPS210
         """Generate a node tree in place of the directive."""
-        target_version = self.content[:1][0] if self.content[:1] else None
+        target_version = (  # noqa: WPS221
+            self.content[:1][0] if self.content[:1] else None
+        )
         if self.content[1:]:  # inner content present
             raise self.error(
                 f'Error in "{self.name!s}" directive: '

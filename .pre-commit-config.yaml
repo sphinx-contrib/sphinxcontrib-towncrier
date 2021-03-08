@@ -94,12 +94,3 @@ repos:
     additional_dependencies:
     - Sphinx>=3.1.2
     pass_filenames: false
-
-- repo: local
-  hooks:
-  - id: pylint
-    language: system
-    name: PyLint
-    files: \.py$
-    entry: python -m pylint
-    args: []
