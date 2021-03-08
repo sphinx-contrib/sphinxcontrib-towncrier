@@ -103,3 +103,5 @@ repos:
     files: \.py$
     entry: python -m pylint
     args: []
+    stages:
+    - manual
