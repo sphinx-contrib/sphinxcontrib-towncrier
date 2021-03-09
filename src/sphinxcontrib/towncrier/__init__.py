@@ -127,7 +127,7 @@ def _get_draft_version_fallback(
     known_strategies = {'draft', 'sphinx-version', 'sphinx-release'}
     if strategy not in known_strategies:
         raise ValueError(
-            'Expected "stragegy" to be '
+            'Expected "strategy" to be '
             f'one of {known_strategies!r} but got {strategy!r}',
         )
 
