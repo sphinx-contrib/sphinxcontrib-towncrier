@@ -110,3 +110,22 @@ repos:
     args: []
     stages:
     - manual
+
+- repo: local
+  hooks:
+  - id: immutable-setup-py
+    name: Verify that setup.py stays immutable
+    description: >-
+      This is a sanity check that makes sure that
+      the `setup.py` file isn't changed.
+    # Using Python here because using
+    # shell test does not seem to work in CIs:
+    entry: >-
+      sh -c 'git hash-object setup.py
+      |
+      python -c raise\ SystemExit\(input\(\)\ !=\ \"38cc2638672e1f6ca56e4d5ceaf16451dd702b67\"\)
+      '
+    pass_filenames: false
+    language: system
+    files: >-
+      ^setup\.py$
