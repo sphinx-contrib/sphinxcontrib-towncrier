@@ -236,13 +236,14 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
     document, it depends on some dynamically generated change fragments.
     After the first render, the doctree nodes are put in cache and are
     reused from there. There's a way to make Sphinx aware of the
-    directive dependencies by calling :py:meth:`~BuildEnvironment.\
-    note_dependency` but this will only work for fragments that have
+    directive dependencies by calling :py:meth:`BuildEnvironment.\
+    note_dependency <sphinx.environment.BuildEnvironment.\
+    note_dependency>` but this will only work for fragments that have
     existed at the time of that first directive invocation.
 
     In order to track newly appearing change fragment dependencies,
     we need to do so at the time of Sphinx identifying what documents
-    require rebuilding. There's :std:event:`env-get-outdated` that
+    require rebuilding. There's :event:`env-get-outdated` that
     allows to extend this list of planned rebuilds and we could use it
     by assigning a document-to-fragments map from within the directive
     and reading it in the event handler later (since env contents are
@@ -250,8 +251,8 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
     cleanups and parallel runs of Sphinx. In order to make it truly
     parallelism-compatible, we need to define how to merge our custom
     cache attribute collected within multiple Sphinx subprocesses into
-    one object and that's where :py:class:`~EnvironmentCollector` comes
-    into play.
+    one object and that's where :py:class:`~sphinx.environment.\
+    collectors.EnvironmentCollector` comes into play.
 
     Refs:
     * https://github.com/sphinx-doc/sphinx/issues/8040#issuecomment-671587308
@@ -266,7 +267,7 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
     ) -> None:
         """Clean up env metadata related to the removed document.
 
-        This is a handler for :std:event:`env-purge-doc`.
+        This is a handler for :event:`env-purge-doc`.
         """
         with suppress_exceptions(AttributeError, KeyError):
             env.towncrier_fragment_docs.remove(docname)  # type: ignore
@@ -280,7 +281,7 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
     ) -> None:
         """Merge doc-to-fragments from another proc into this env.
 
-        This is a handler for :std:event:`env-merge-info`.
+        This is a handler for :event:`env-merge-info`.
         """
         try:
             other_fragment_docs: Set[str] = (
@@ -311,7 +312,7 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
         )
 
     def process_doc(self, app: Sphinx, doctree: nodes.document) -> None:
-        """React to :std:event:`doctree-read` with no-op."""
+        """React to :event:`doctree-read` with no-op."""
 
     # pylint: disable=too-many-arguments
     def get_outdated_docs(  # noqa: WPS211
@@ -324,7 +325,7 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
     ) -> List[str]:
         """Mark docs with changed fragment deps for rebuild.
 
-        This is a handler for :std:event:`env-get-outdated`.
+        This is a handler for :event:`env-get-outdated`.
         """
         towncrier_fragment_paths = _lookup_towncrier_fragments(
             working_dir=env.config.towncrier_draft_working_directory,

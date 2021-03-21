@@ -85,4 +85,5 @@ rst-roles =
     # Built-in Sphinx roles:
     py:class,
     py:meth,
-    std:event,
+    # Sphinx's internal role:
+    event,
