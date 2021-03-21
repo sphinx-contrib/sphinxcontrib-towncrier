@@ -12,6 +12,7 @@ from sphinx.application import Sphinx
 from sphinx.config import Config as SphinxConfig
 from sphinx.environment import BuildEnvironment
 from sphinx.environment.collectors import EnvironmentCollector
+from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.nodes import nested_parse_with_titles, nodes
 
@@ -41,6 +42,9 @@ TOWNCRIER_DRAFT_CMD = (
     'towncrier',
     '--draft',  # write to stdout, don't change anything on disk
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(typed=True)
@@ -100,7 +104,15 @@ def _lookup_towncrier_fragments(  # noqa: WPS210
     ):
         final_config_path = project_path / 'towncrier.toml'
 
-    towncrier_config = load_config_from_file(str(final_config_path))
+    try:
+        towncrier_config = load_config_from_file(str(final_config_path))
+    except KeyError as key_err:
+        # NOTE: The error is missing key 'towncrier' or similar
+        logger.warning(
+            f'Missing key {key_err!s} in file {final_config_path!s}',
+        )
+        return set()
+
     fragment_directory: Optional[str] = 'newsfragments'
     try:
         fragment_base_directory = project_path / towncrier_config['directory']
