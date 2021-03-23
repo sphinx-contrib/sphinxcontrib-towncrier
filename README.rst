@@ -45,3 +45,14 @@ If you want to be in control, override it with an argument you like:
 Native RST substitutions in the argument work, just make sure to declare
 any non-default ones via ``rst_epilog`` or at the end of the document
 where the ``towncrier-draft-entries`` directive is being used.
+
+
+Does anybody actually use this?
+-------------------------------
+
+So far we know about two projects using ``sphinxcontrib-towncrier`` —
+ansible/pylibssh and pypa/pip. Also, this Sphinx extension is inspired
+by and somewhat based on the ideas used in pytest-dev/pytest and
+tox-dev/tox. We believe that these projects are full of wonderful tricks
+that you may want to explore regardless of whether you'll use our
+project.
