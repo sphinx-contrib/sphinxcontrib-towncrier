@@ -19,10 +19,6 @@ from sphinx.util.nodes import nested_parse_with_titles, nodes
 
 # isort: split
 
-# pylint: disable=import-error,no-name-in-module
-from towncrier._settings import load_config_from_file  # noqa: WPS436
-
-
 try:
     # pylint: disable=no-name-in-module
     from towncrier.build import find_fragments  # noqa: WPS433
@@ -33,6 +29,7 @@ except ImportError:
 # Ref: https://github.com/PyCQA/pylint/issues/3817
 from docutils import statemachine  # pylint: disable=wrong-import-order
 
+from ._towncrier import get_towncrier_config  # noqa: WPS436
 from ._version import __version__  # noqa: WPS436
 
 
@@ -105,7 +102,10 @@ def _lookup_towncrier_fragments(  # noqa: WPS210
         final_config_path = project_path / 'towncrier.toml'
 
     try:
-        towncrier_config = load_config_from_file(str(final_config_path))
+        towncrier_config = get_towncrier_config(
+            project_path,
+            final_config_path,
+        )
     except KeyError as key_err:
         # NOTE: The error is missing key 'towncrier' or similar
         logger.warning(
