@@ -1,5 +1,21 @@
+.. image:: https://img.shields.io/pypi/v/sphinxcontrib-towncrier.svg?logo=Python&logoColor=white
+   :target: https://pypi.org/project/sphinxcontrib-towncrier
+   :alt: sphinxcontrib-towncrier @ PyPI
+
+.. image:: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/actions/workflows/tox-tests.yaml/badge.svg?event=push
+   :target: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/actions/workflows/tox-tests.yaml
+   :alt: GitHub Actions CI/CD build status — Python package
+
+.. DO-NOT-REMOVE-docs-badges-END
+
+.. image:: https://img.shields.io/readthedocs/sphinxcontrib-towncrier/latest.svg?logo=Read%20The%20Docs&logoColor=white
+   :target: https://sphinxcontrib-towncrier.rtfd.io/en/latest/?badge=latest
+   :alt: Documentation Status @ RTD
+
 sphinxcontrib-towncrier
 =======================
+
+.. DO-NOT-REMOVE-docs-intro-START
 
 An RST directive for injecting a Towncrier-generated changelog draft
 containing fragments for the unreleased (next) project version.
