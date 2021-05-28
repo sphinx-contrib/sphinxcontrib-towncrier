@@ -3,5 +3,3 @@ myst-parser >= 0.13.5
 setuptools_scm >= 3.5.0
 Sphinx >= 3.5.1
 sphinxcontrib-apidoc >= 0.3.0
-#-e ..  # pull in sphinxcontrib-towncrier's deps
-.
