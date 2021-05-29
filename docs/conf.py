@@ -71,6 +71,9 @@ extensions = [
     # Third-party extensions:
     'myst_parser',  # extended markdown; https://pypi.org/project/myst-parser/
     'sphinxcontrib.apidoc',
+
+    # Tree-local extensions:
+    'sphinxcontrib.towncrier',  # provides `towncrier-draft-entries` directive
 ]
 
 # Add any paths that contain templates here, relative to this directory.
