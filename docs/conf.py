@@ -193,7 +193,5 @@ def setup(app: Sphinx) -> Mapping[str, str]:
     return {
         'parallel_read_safe': True,
         'parallel_write_safe': True,
-        'version': __import__(  # noqa: WPS421
-            'sphinxcontrib.towncrier',
-        ).towncrier.__version__,
+        'version': 'builtin',
     }
