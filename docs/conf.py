@@ -38,7 +38,7 @@ github_sponsors_url = f'{github_url}/sponsors'
 
 project = github_repo_name
 author = 'Sviatoslav Sydorenko'
-copyright = f'2021, {author}'
+copyright = f'2021, {author}'  # pylint: disable=redefined-builtin
 
 # The short X.Y version
 version = '.'.join(
