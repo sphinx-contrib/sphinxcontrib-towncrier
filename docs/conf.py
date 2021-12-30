@@ -99,6 +99,8 @@ exclude_patterns = [
 
 html_theme = 'furo'
 
+html_show_sphinx = True
+
 
 # -- Extension configuration -------------------------------------------------
 
