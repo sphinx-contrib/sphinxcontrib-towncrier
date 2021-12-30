@@ -83,6 +83,7 @@ pytest-parametrize-values-row-type = tuple
 # flake8-rst-docstrings
 rst-roles =
     # Built-in Sphinx roles:
+    class,
     py:class,
     py:meth,
     # Sphinx's internal role:
