@@ -22,12 +22,22 @@ jobs:
       github.event_name != 'create' ||
       github.event.ref_type == 'tag'
     name: >-
-      ${{ matrix.python-version }}
+      📝${{ matrix.towncrier-version }}
       /
-      ${{ matrix.os }}
+      🐍${{ matrix.python-version }}
+      /
+      💻${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        towncrier-version:
+        - 21.9.0rc1
+        - 21.3.0
+        - 19.9.0
+        - 18.6.0
+        - 17.8.0
+        - 16.12.0
+        - 15.1.0
         python-version:
         - 3.9
         - 3.8
@@ -83,11 +93,20 @@ jobs:
       run: |
         python -m pip freeze --all
     - name: Initialize tox envs
-      run: |
-        python -m tox --parallel auto --parallel-live --notest
+      run: >-
+        python
+        -m tox
+        --parallel auto
+        --parallel-live
+        --force-dep 'towncrier ~= ${{ matrix.towncrier-version }}'
+        --notest
     - name: Test with tox
-      run: |
-        python -m tox --parallel auto --parallel-live
+      run: >-
+        python
+        -m tox
+        --parallel auto
+        --parallel-live
+        --force-dep 'towncrier ~= ${{ matrix.towncrier-version }}'
 
   publish:
     needs:
