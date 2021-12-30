@@ -2,7 +2,6 @@
 requires = [
   # Essentials
   "setuptools>=40.6.0",
-  "wheel",
 
   # Plugins
   "setuptools_scm[toml] >= 3.5",  # version is required for "no-local-version" scheme + toml extra is needed for supporting config in this file
