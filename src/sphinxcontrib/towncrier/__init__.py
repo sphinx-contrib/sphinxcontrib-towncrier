@@ -37,6 +37,7 @@ PROJECT_ROOT_DIR = Path(__file__).parents[3].resolve()
 TOWNCRIER_DRAFT_CMD = (
     sys.executable, '-m',  # invoke via runpy under the same interpreter
     'towncrier',
+    'build',
     '--draft',  # write to stdout, don't change anything on disk
 )
 
