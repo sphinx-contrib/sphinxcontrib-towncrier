@@ -1,7 +1,7 @@
 ---
 name: 👷tests
 
-on:
+on:  # yamllint disable-line rule:truthy
   create:
   push:  # publishes to TestPyPI pushes to the main branch
     branches:  # any branch but not tag
@@ -108,7 +108,9 @@ jobs:
           hashFiles('pyproject.toml') }}-${{
           hashFiles('.pre-commit-config.yaml') }}
         restore-keys: |
-          ${{ runner.os }}-pip-${{ steps.calc_cache_key_py.outputs.py_hash_key }}-
+          ${{ runner.os }}-pip-${{
+            steps.calc_cache_key_py.outputs.py_hash_key
+          }}-
           ${{ runner.os }}-pip-
           ${{ runner.os }}-
     - name: Install tox
