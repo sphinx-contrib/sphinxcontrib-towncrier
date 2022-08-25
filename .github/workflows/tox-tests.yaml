@@ -16,6 +16,19 @@ on:
   schedule:
   - cron: 1 0 * * *  # Run daily at 0:01 UTC
 
+env:
+  FORCE_COLOR: 1  # Request colored output from CLI tools supporting it
+  MYPY_FORCE_COLOR: 1
+  PY_COLORS: 1
+  TOX_TESTENV_PASSENV: >-
+    FORCE_COLOR
+    MYPY_FORCE_COLOR
+    NO_COLOR
+    PY_COLORS
+    PYTEST_THEME
+    PYTEST_THEME_MODE
+  TOX_PARALLEL_NO_SPINNER: 1
+
 jobs:
   tests:
     if: >-  # https://twitter.com/webKnjaZ/status/1308803017001652225
