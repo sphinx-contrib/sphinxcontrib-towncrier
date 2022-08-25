@@ -59,8 +59,8 @@ jobs:
         os:
         - ubuntu-22.04
         - ubuntu-20.04
-        - macos-latest
-        - macos-11.0
+        - macos-12
+        - macos-11
         - windows-latest
 
     env:
