@@ -71,6 +71,9 @@ jobs:
         - macos-12
         - macos-11
         - windows-latest
+      exclude:
+      - os: ubuntu-22.04
+        python-version: 3.6  # EOL, only provided for older OSs
 
     env:
       PY_COLORS: 1
