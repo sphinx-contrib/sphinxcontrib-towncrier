@@ -18,7 +18,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.17.1
+  rev: 0.18.1
   hooks:
   - id: check-github-workflows
   # - id: check-jsonschema
@@ -89,7 +89,7 @@ repos:
     - --strict
 
 - repo: https://github.com/PyCQA/flake8
-  rev: 4.0.1  # Must be kept at v4 for as long as WPS doesn't support v5
+  rev: 5.0.4  # Must be kept at v4 for as long as WPS doesn't support v5
   hooks:
   - id: flake8
     language_version: python3
@@ -100,7 +100,7 @@ repos:
     - wemake-python-styleguide
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v0.782
+  rev: v0.971
   hooks:
   - id: mypy
     # empty args needed in order to match mypy cli behavior
