@@ -3,8 +3,18 @@
 from pathlib import Path
 from typing import Any, Dict
 
-# pylint: disable=import-error,no-name-in-module
-from towncrier._settings import load_config_from_file  # noqa: WPS436
+
+try:
+    # Towncrier < 22.8.0
+    # pylint: disable=import-error,no-name-in-module
+    from towncrier._settings import (  # noqa: WPS433, WPS436
+        load_config_from_file,
+    )
+except ImportError:
+    # pylint: disable=import-error,no-name-in-module
+    from towncrier._settings.load import (  # noqa: WPS433, WPS436, WPS440
+        load_config_from_file,
+    )
 
 
 def get_towncrier_config(
