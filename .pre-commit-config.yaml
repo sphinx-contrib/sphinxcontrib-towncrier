@@ -99,7 +99,7 @@ repos:
     - flake8-pytest-style>=1.0.0
     - wemake-python-styleguide
 
-- repo: https://github.com/pre-commit/mirrors-mypy
+- repo: https://github.com/pre-commit/mirrors-mypy.git
   rev: v0.782
   hooks:
   - id: mypy
