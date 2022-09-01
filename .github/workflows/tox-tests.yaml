@@ -145,7 +145,7 @@ jobs:
           GHA,
           ${{ runner.os }},
           ${{ matrix.python-version }},
-          towncrier v${{ matrix.towncrier-version }}
+          towncrier-v${{ matrix.towncrier-version }}
 
   check:  # This job does nothing and is only used for the branch protection
     if: always()
