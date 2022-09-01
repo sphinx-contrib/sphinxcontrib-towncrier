@@ -29,6 +29,7 @@ except ImportError:
 # Ref: https://github.com/PyCQA/pylint/issues/3817
 from docutils import statemachine  # pylint: disable=wrong-import-order
 
+from ._compat import shlex_join  # noqa: WPS436
 from ._towncrier import get_towncrier_config  # noqa: WPS436
 from ._version import __version__  # noqa: WPS436
 
@@ -71,11 +72,26 @@ def _get_changelog_draft_entries(
         # https://github.com/twisted/towncrier/pull/157#issuecomment-666549246
         # https://github.com/twisted/towncrier/issues/269
         extra_cli_args += '--config', str(config_path)
-    towncrier_output = subprocess.check_output(  # noqa: S603
-        TOWNCRIER_DRAFT_CMD + extra_cli_args,
-        cwd=str(working_dir) if working_dir else None,
-        universal_newlines=True,  # this arg has "text" alias since Python 3.7
-    ).strip()
+
+    try:
+        towncrier_output = subprocess.check_output(  # noqa: S603
+            TOWNCRIER_DRAFT_CMD + extra_cli_args,
+            cwd=str(working_dir) if working_dir else None,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,  # a "text" alias exists since Python 3.7
+        ).strip()
+
+    except subprocess.CalledProcessError as proc_exc:
+        cmd = shlex_join(proc_exc.cmd)
+        stdout = proc_exc.stdout or '[No output]'
+        stderr = proc_exc.stderr or '[No output]'
+        raise RuntimeError(
+            'Command exited unexpectedly.\n\n'
+            f'Command: {cmd}\n'
+            f'Return code: {proc_exc.returncode}\n\n'
+            f'Standard output:\n{stdout}\n\n'
+            f'Standard error:\n{stderr}',
+        ) from proc_exc
 
     if not allow_empty and 'No significant changes' in towncrier_output:
         raise LookupError('There are no unreleased changelog entries so far')
@@ -234,8 +250,8 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
                 working_dir=config.towncrier_draft_working_directory,
                 config_path=config.towncrier_draft_config_path,
             )
-        except subprocess.CalledProcessError as proc_exc:
-            raise self.error(proc_exc)
+        except RuntimeError as runtime_err:
+            raise self.error(runtime_err)
         except LookupError:
             return []
 
