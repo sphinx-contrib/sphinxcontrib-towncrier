@@ -143,11 +143,13 @@ jobs:
       with:
         files: .test-results/pytest/cov.xml
         flags: >-
-          GHA,${{
+          CI-GHA,OS-${{
             runner.os
-          }},${{
+          }},VM-${{
+            matrix.os
+          }},Py-${{
             steps.python-install.outputs.python-version
-          }},towncrier-v${{
+          }},Towncrier-v${{
             matrix.towncrier-version
           }}
 
