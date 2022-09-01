@@ -232,7 +232,7 @@ jobs:
           github.event_name == 'create' &&
           github.event.ref_type == 'tag'
         )
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.TEST_PYPI_PASSWORD }}
         repository_url: https://test.pypi.org/legacy/
