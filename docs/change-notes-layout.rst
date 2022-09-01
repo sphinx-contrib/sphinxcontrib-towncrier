@@ -43,7 +43,7 @@ This is an ``src``-layout project with a Python package located at
 ``src/{{ python_importable_name }}/`` but we won't touch this topic.
 There are several automation, configuration, documentation and metadata
 files in the project root that will be described later on this page.
-Finally, a :doc:`Sphinx <sphinx:contents>`-based site is located under
+Finally, a :doc:`Sphinx <sphinx:index>`-based site is located under
 the ``docs/``.
 
 The rest of this page will describe what to have in each of those files.
@@ -270,7 +270,7 @@ pointer to the ``changelog`` document in the list.
 
 ``requirements.in`` is a standard ``requirements.txt``-type file that
 only lists dependencies that are directly used by the :doc:`Sphinx
-static docs site generator <sphinx:contents>`. It may optionally contain
+static docs site generator <sphinx:index>`. It may optionally contain
 the minimum necessary versions of those.
 
 .. code-block:: text
