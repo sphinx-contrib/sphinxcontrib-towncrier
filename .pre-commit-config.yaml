@@ -103,14 +103,14 @@ repos:
   rev: v0.782
   hooks:
   - id: mypy
+    additional_dependencies:
+    - Sphinx >= 3.1.2
     args:
     # FIXME: get rid of missing imports ignore
     - --namespace-packages
     - --ignore-missing-imports
     - src/sphinxcontrib/
     - tests/
-    additional_dependencies:
-    - Sphinx>=3.1.2
     pass_filenames: false
 
 - repo: local
