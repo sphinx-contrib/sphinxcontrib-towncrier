@@ -103,7 +103,6 @@ repos:
   rev: v0.782
   hooks:
   - id: mypy
-    # empty args needed in order to match mypy cli behavior
     args:
     # FIXME: get rid of missing imports ignore
     - --namespace-packages
