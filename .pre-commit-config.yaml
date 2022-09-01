@@ -114,6 +114,7 @@ repos:
     - --namespace-packages
     - --ignore-missing-imports
     - --install-types
+    - --non-interactive
     - --txt-report=.tox/.tmp/.mypy/
     - src/sphinxcontrib/
     - tests/
