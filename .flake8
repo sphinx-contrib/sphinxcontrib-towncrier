@@ -45,6 +45,11 @@ extend-ignore =
   WPS318  # WPS317/WPS318 enforces weird indents
   WPS326  # doesn't allow implicit string concat
 
+# IMPORTANT: avoid using select option, always use select-ignore instead
+# Enable the following errors:
+extend-select =
+  B950,  # "line too long", longer than `max-line-length` + 10%
+
 # https://wemake-python-stylegui.de/en/latest/pages/usage/formatter.html
 format = wemake
 
