@@ -106,10 +106,14 @@ repos:
     additional_dependencies:
     - lxml  # requirement of `--txt-report`
     - Sphinx >= 3.1.2
+    - types-docutils
+    - types-setuptools  # `pkg_resources`
+    - types-typed-ast
     args:
     # FIXME: get rid of missing imports ignore
     - --namespace-packages
     - --ignore-missing-imports
+    - --install-types
     - --txt-report=.tox/.tmp/.mypy/
     - src/sphinxcontrib/
     - tests/
