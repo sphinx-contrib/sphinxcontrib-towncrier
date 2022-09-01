@@ -36,6 +36,8 @@ exclude =
 # IMPORTANT: avoid using ignore option, always use extend-ignore instead
 # Completely and unconditionally ignore the following errors:
 extend-ignore =
+  E501,  # "line too long", its function is replaced by `flake8-length`
+  W505,  # "doc line too long", its function is replaced by `flake8-length`
   I  # flake8-isort is drunk + we have isort integrated into pre-commit
   WPS300  # local folder imports are needed
   WPS305  # this extension is Python 3 only and so f-strings are allowed
@@ -49,7 +51,8 @@ format = wemake
 # Let's not overcomplicate the code:
 max-complexity = 10
 
-# Accessibility/large fonts and PEP8 friendly:
+# Accessibility/large fonts and PEP8 friendly.
+# This is being flexibly extended through the `flake8-length`:
 max-line-length = 79
 
 # Allow certain violations in certain files:
