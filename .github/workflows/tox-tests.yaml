@@ -137,6 +137,15 @@ jobs:
         --parallel auto
         --parallel-live
         --force-dep 'towncrier ~= ${{ matrix.towncrier-version }}'
+    - name: Send coverage data to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: .test-results/pytest/cov.xml
+        flags: >-
+          GHA,
+          ${{ runner.os }},
+          ${{ matrix.python-version }},
+          towncrier ~= ${{ matrix.towncrier-version }}
 
   check:  # This job does nothing and is only used for the branch protection
     if: always()

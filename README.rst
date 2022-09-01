@@ -6,6 +6,10 @@
    :target: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/actions/workflows/tox-tests.yaml
    :alt: GitHub Actions CI/CD build status — Python package
 
+.. image:: https://codecov.io/gh/sphinx-contrib/sphinxcontrib-towncrier/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/sphinx-contrib/sphinxcontrib-towncrier
+   :alt: sphinxcontrib-towncrier coverage charts @ Covecov.io
+
 .. DO-NOT-REMOVE-docs-badges-END
 
 .. image:: https://img.shields.io/readthedocs/sphinxcontrib-towncrier/latest.svg?logo=Read%20The%20Docs&logoColor=white
