@@ -3,10 +3,8 @@ import sys
 
 import pytest
 
-from sphinxcontrib.towncrier import (  # noqa: WPS450
-    _get_changelog_draft_entries,
-)
-from sphinxcontrib.towncrier._compat import shlex_join  # noqa: WPS436
+from sphinxcontrib.towncrier import _get_changelog_draft_entries
+from sphinxcontrib.towncrier._compat import shlex_join
 
 
 NO_OUTPUT_MARKER = r'\[No output\]'
