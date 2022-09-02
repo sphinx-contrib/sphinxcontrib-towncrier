@@ -30,6 +30,9 @@ except ImportError:
 from docutils import statemachine  # pylint: disable=wrong-import-order
 
 from ._compat import shlex_join  # noqa: WPS436
+from ._data_transformers import (  # noqa: WPS436
+    escape_project_version_rst_substitution,
+)
 from ._towncrier import get_towncrier_config  # noqa: WPS436
 from ._version import __version__  # noqa: WPS436
 
@@ -56,16 +59,8 @@ def _get_changelog_draft_entries(
     """Retrieve the unreleased changelog entries from Towncrier."""
     extra_cli_args: Tuple[str, ...] = (
         '--version',
-        rf'\ {target_version}',  # version value to be used in the RST title
-        # NOTE: The escaped space sequence (`\ `) is necessary to address
-        # NOTE: a corner case when the towncrier config has something like
-        # NOTE: `v{version}` in the title format **and** the directive target
-        # NOTE: argument starts with a substitution like `|release|`. And so
-        # NOTE: when combined, they'd produce `v|release|` causing RST to not
-        # NOTE: substitute the `|release|` part. But adding an escaped space
-        # NOTE: solves this: that escaped space renders as an empty string and
-        # NOTE: the substitution gets processed properly so the result would
-        # NOTE: be something like `v1.0` as expected.
+        # A version to be used in the RST title:
+        escape_project_version_rst_substitution(target_version),
     )
     if config_path is not None:
         # This isn't actually supported by a released version of Towncrier yet:

@@ -85,7 +85,7 @@ def test_towncrier_draft_generation_failure_msg(
     expected_error_message = (
         '^'  # noqa: WPS221
         'Command exited unexpectedly.\n\n'
-        rf"Command: {escaped_failing_cmd} --version '\\ {version_string}'\n"
+        rf"Command: {escaped_failing_cmd} --version '{version_string}'\n"
         f'Return code: {expected_return_code}\n\n'
         'Standard output:\n'
         f'{stdout_msg}\n\n'
