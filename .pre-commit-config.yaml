@@ -127,7 +127,9 @@ repos:
     name: PyLint
     files: \.py$
     entry: python -m pylint
-    args: []
+    args:
+    - --rcfile
+    - .pylintrc
     stages:
     - manual
 
