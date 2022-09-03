@@ -39,6 +39,7 @@ extend-ignore =
   E501,  # "line too long", its function is replaced by `flake8-length`
   W505,  # "doc line too long", its function is replaced by `flake8-length`
   I  # flake8-isort is drunk + we have isort integrated into pre-commit
+  S101,  # MyPy requires `asserts`, plus they're not bad if cooked well
   WPS300  # local folder imports are needed
   WPS305  # this extension is Python 3 only and so f-strings are allowed
   WPS317

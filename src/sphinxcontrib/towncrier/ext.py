@@ -131,7 +131,8 @@ def _lookup_towncrier_fragments(  # noqa: WPS210
     try:
         fragment_base_directory = project_path / towncrier_config['directory']
     except KeyError:
-        fragment_base_directory = project_path / towncrier_config['directory']
+        assert fragment_directory is not None
+        fragment_base_directory = project_path / fragment_directory
     else:
         fragment_directory = None
 
