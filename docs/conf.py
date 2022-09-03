@@ -73,7 +73,7 @@ extensions = [
     'sphinxcontrib.apidoc',
 
     # Tree-local extensions:
-    'sphinxcontrib.towncrier',  # provides `towncrier-draft-entries` directive
+    'sphinxcontrib.towncrier.ext',  # provides `.. towncrier-draft-entries::`
 ]
 
 # Add any paths that contain templates here, relative to this directory.

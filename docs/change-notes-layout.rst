@@ -189,7 +189,7 @@ with ``towncrier_draft_``.
         'sphinx.ext.intersphinx',
 
         # Third-party extensions:
-        'sphinxcontrib.towncrier',  # provides `towncrier-draft-entries` directive
+        'sphinxcontrib.towncrier.ext',  # provides `.. towncrier-draft-entries::`
     ]
 
     exclude_patterns = [

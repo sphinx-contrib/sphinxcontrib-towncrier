@@ -3,8 +3,8 @@ import sys
 
 import pytest
 
-from sphinxcontrib.towncrier import _get_changelog_draft_entries
 from sphinxcontrib.towncrier._compat import shlex_join
+from sphinxcontrib.towncrier.ext import _get_changelog_draft_entries
 
 
 NO_OUTPUT_MARKER = r'\[No output\]'
@@ -71,7 +71,7 @@ def test_towncrier_draft_generation_failure_msg(
     version_string = 'test version'
 
     monkeypatch.setattr(
-        'sphinxcontrib.towncrier.TOWNCRIER_DRAFT_CMD',
+        'sphinxcontrib.towncrier.ext.TOWNCRIER_DRAFT_CMD',
         failing_cmd,  # So that the invoked command would return a failure
     )
 

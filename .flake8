@@ -63,12 +63,12 @@ max-line-length = 79
 # Allow certain violations in certain files:
 per-file-ignores =
 
-  # E800 reports a lot of false-positives for legit
-  # tool-related comments;
-  # WPS412 logic of an extension is in __init__.py file;
+  # WPS412 logic of an extension is in __init__.py file
+  # F401   imported but unused
+  src/sphinxcontrib/towncrier/__init__.py: F401, WPS412
   # FIXME: WPS201 too many imports
   # FIXME: WPS402 too many `noqa`s
-  src/sphinxcontrib/towncrier/__init__.py: E800, WPS201, WPS402, WPS412
+  src/sphinxcontrib/towncrier/ext.py: WPS201, WPS402
 
   # There are multiple `assert`s (S101)
   # and subprocesses (import – S404; call – S603) in tests;
@@ -94,6 +94,7 @@ pytest-parametrize-values-row-type = tuple
 rst-roles =
     # Built-in Sphinx roles:
     class,
+    file,
     py:class,
     py:meth,
     # Sphinx's internal role:

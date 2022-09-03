@@ -34,7 +34,7 @@ How to use this?
 
 .. code-block:: python
 
-    extensions = ['sphinxcontrib.towncrier']
+    extensions = ['sphinxcontrib.towncrier.ext']
 
     # Options: draft/sphinx-version/sphinx-release
     towncrier_draft_autoversion_mode = 'draft'
