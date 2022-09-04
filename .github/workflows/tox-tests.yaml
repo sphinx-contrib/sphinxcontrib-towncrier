@@ -285,7 +285,7 @@ jobs:
     - name: Publish distribution 📦 to PyPI
       if: >-
         needs.pre-setup.outputs.release-requested == 'true'
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_PASSWORD }}
 ...
