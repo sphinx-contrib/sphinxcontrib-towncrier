@@ -68,6 +68,12 @@ jobs:
       run:
         shell: python
     outputs:
+      dist-version: >-
+        ${{
+            steps.request-check.outputs.release-requested == 'true'
+            && github.event.inputs.release-version
+            || steps.scm-version.outputs.dist-version
+        }}
       is-untagged-devel: >-
         ${{ steps.untagged-check.outputs.is-untagged-devel || false }}
       release-requested: >-
