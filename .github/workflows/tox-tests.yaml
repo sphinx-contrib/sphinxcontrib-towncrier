@@ -68,16 +68,281 @@ jobs:
       run:
         shell: python
     outputs:
+      is-untagged-devel: >-
+        ${{ steps.untagged-check.outputs.is-untagged-devel || false }}
       release-requested: >-
         ${{
             steps.request-check.outputs.release-requested || false
         }}
+      cache-key-files: >-
+        ${{ steps.calc-cache-key-files.outputs.files-hash-key }}
+      git-tag: ${{ steps.git-tag.outputs.tag }}
+      sdist-artifact-name: ${{ steps.artifact-name.outputs.sdist }}
+      wheel-artifact-name: ${{ steps.artifact-name.outputs.wheel }}
     steps:
+    - name: Switch to using Python 3.10 by default
+      uses: actions/setup-python@v2
+      with:
+        python-version: >-
+          3.10
+    - name: >-
+        Mark the build as untagged '${{
+            github.event.repository.default_branch
+        }}' branch build
+      id: untagged-check
+      if: >-
+        github.event_name == 'push' &&
+        github.ref == format(
+          'refs/heads/{0}', github.event.repository.default_branch
+        )
+      run: >-
+        print('::set-output name=is-untagged-devel::true')
     - name: Mark the build as "release request"
       id: request-check
       if: github.event_name == 'workflow_dispatch'
       run: >-
         print('::set-output name=release-requested::true')
+    - name: Check out src from Git
+      if: >-
+        steps.request-check.outputs.release-requested != 'true'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.inputs.release-commitish }}
+    - name: >-
+        Calculate Python interpreter version hash value
+        for use in the cache key
+      if: >-
+        steps.request-check.outputs.release-requested != 'true'
+      id: calc-cache-key-py
+      run: |
+        from hashlib import sha512
+        from sys import version
+        hash = sha512(version.encode()).hexdigest()
+        print(f'::set-output name=py-hash-key::{hash}')
+    - name: >-
+        Calculate dependency files' combined hash value
+        for use in the cache key
+      if: >-
+        steps.request-check.outputs.release-requested != 'true'
+      id: calc-cache-key-files
+      run: |
+        print(
+          "::set-output name=files-hash-key::${{
+              hashFiles(
+                'setup.cfg', 'setup.py', 'tox.ini', 'pyproject.toml',
+                '.pre-commit-config.yaml', 'pytest.ini'
+              )
+          }}",
+        )
+    - name: Get pip cache dir
+      id: pip-cache-dir
+      if: >-
+        steps.request-check.outputs.release-requested != 'true'
+      run: >-
+        echo "::set-output name=dir::$(python -m pip cache dir)"
+      shell: bash
+    - name: Set up pip cache
+      if: >-
+        steps.request-check.outputs.release-requested != 'true'
+      uses: actions/cache@v2.1.7
+      with:
+        path: ${{ steps.pip-cache-dir.outputs.dir }}
+        key: >-
+          ${{ runner.os }}-pip-${{
+          steps.calc-cache-key-py.outputs.py-hash-key }}-${{
+          steps.calc-cache-key-files.outputs.files-hash-key }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{
+              steps.calc-cache-key-py.outputs.py-hash-key
+          }}-
+          ${{ runner.os }}-pip-
+          ${{ runner.os }}-
+    - name: Drop Git tags from HEAD for non-release requests
+      if: >-
+        steps.request-check.outputs.release-requested != 'true'
+      run: >-
+        git tag --points-at HEAD
+        |
+        xargs git tag --delete
+      shell: bash
+    - name: Set up versioning prerequisites
+      if: >-
+        steps.request-check.outputs.release-requested != 'true'
+      run: >-
+        python -m
+        pip install
+        --user
+        setuptools-scm
+      shell: bash
+    - name: Set the current dist version from Git
+      if: steps.request-check.outputs.release-requested != 'true'
+      id: scm-version
+      run: |
+        import setuptools_scm
+        ver = setuptools_scm.get_version(
+          ${{
+              steps.untagged-check.outputs.is-untagged-devel == 'true'
+              && 'local_scheme="no-local-version"' || ''
+          }}
+        )
+        print('::set-output name=dist-version::{ver}'.format(ver=ver))
+    - name: Set the target Git tag
+      id: git-tag
+      run: >-
+        print('::set-output name=tag::v${{
+            steps.request-check.outputs.release-requested == 'true'
+            && github.event.inputs.release-version
+            || steps.scm-version.outputs.dist-version
+        }}')
+    - name: Set the expected dist artifact names
+      id: artifact-name
+      run: |
+        print('::set-output name=sdist::sphinxcontrib-towncrier-${{
+            steps.request-check.outputs.release-requested == 'true'
+            && github.event.inputs.release-version
+            || steps.scm-version.outputs.dist-version
+        }}.tar.gz')
+        print('::set-output name=wheel::sphinxcontrib-towncrier-${{
+            steps.request-check.outputs.release-requested == 'true'
+            && github.event.inputs.release-version
+            || steps.scm-version.outputs.dist-version
+        }}-py3-none-any.whl')
+
+  build:
+    name: >-
+      👷 dists ${{ needs.pre-setup.outputs.git-tag }}
+      [mode: ${{
+        fromJSON(needs.pre-setup.outputs.is-untagged-devel)
+        && 'nightly' || ''
+      }}${{
+        fromJSON(needs.pre-setup.outputs.release-requested)
+        && 'release' || ''
+      }}${{
+        (
+          !fromJSON(needs.pre-setup.outputs.is-untagged-devel)
+          && !fromJSON(needs.pre-setup.outputs.release-requested)
+        ) && 'test' || ''
+      }}]
+    needs:
+    - pre-setup
+
+    runs-on: ubuntu-latest
+
+    env:
+      PY_COLORS: 1
+      TOX_PARALLEL_NO_SPINNER: 1
+      TOXENV: build-dists
+
+    steps:
+    - name: Switch to using Python v3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: >-
+          3.10
+    - name: >-
+        Calculate Python interpreter version hash value
+        for use in the cache key
+      id: calc-cache-key-py
+      run: |
+        from hashlib import sha512
+        from sys import version
+
+        hash = sha512(version.encode()).hexdigest()
+        print(f'::set-output name=py-hash-key::{hash}')
+      shell: python
+    - name: Get pip cache dir
+      id: pip-cache-dir
+      run: >-
+        echo "::set-output name=dir::$(python -m pip cache dir)"
+    - name: Set up pip cache
+      uses: actions/cache@v2.1.5
+      with:
+        path: ${{ steps.pip-cache-dir.outputs.dir }}
+        key: >-
+          ${{ runner.os }}-pip-${{
+          steps.calc-cache-key-py.outputs.py-hash-key }}-${{
+          needs.pre-setup.outputs.cache-key-files }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{
+              steps.calc-cache-key-py.outputs.py-hash-key
+          }}-
+          ${{ runner.os }}-pip-
+    - name: Install tox
+      run: >-
+        python -m
+        pip install
+        --user
+        tox
+
+    - name: Grab the source from Git
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: >-
+          ${{
+              steps.request-check.outputs.release-requested == 'true'
+              && 1 || 0
+          }}
+        ref: ${{ github.event.inputs.release-commitish }}
+
+    - name: Pre-populate the tox env
+      run: >-
+        python -m
+        tox
+        --parallel auto
+        --parallel-live
+        --skip-missing-interpreters false
+        --notest
+
+    - name: Setup git user as [bot]
+      if: >-
+        fromJSON(needs.pre-setup.outputs.is-untagged-devel)
+        || fromJSON(needs.pre-setup.outputs.release-requested)
+      uses: fregante/setup-git-user@v1.0.1
+    - name: >-
+        Tag the release in the local Git repo
+        as ${{ needs.pre-setup.outputs.git-tag }}
+        for setuptools-scm to set the desired version
+      if: >-
+        fromJSON(needs.pre-setup.outputs.is-untagged-devel)
+        || fromJSON(needs.pre-setup.outputs.release-requested)
+      run: >-
+        git tag
+        -m '${{ needs.pre-setup.outputs.git-tag }}'
+        '${{ needs.pre-setup.outputs.git-tag }}'
+        --
+        ${{ github.event.inputs.release-commitish }}
+
+    - name: Build dists
+      run: >-
+        python -m
+        tox
+        --parallel auto
+        --parallel-live
+        --skip-missing-interpreters false
+        --skip-pkg-install
+    - name: Verify that the artifacts with expected names got created
+      run: >-
+        ls -1
+        'dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}'
+        'dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}'
+    - name: Store the distribution packages
+      uses: actions/upload-artifact@v2
+      with:
+        name: python-package-distributions
+        # NOTE: Exact expected file names are specified here
+        # NOTE: as a safety measure — if anything weird ends
+        # NOTE: up being in this dir or not all dists will be
+        # NOTE: produced, this will fail the workflow.
+        path: |
+          dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}
+          dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}
+        retention-days: >-
+          ${{
+              (
+                needs.pre-setup.outputs.release-requested == 'true'
+              ) && 90 || 30
+          }}
 
   tests:
     name: >-
@@ -88,7 +353,8 @@ jobs:
       💻${{ matrix.os }}
 
     needs:
-    - pre-setup
+    - build
+    - pre-setup  # transitive, for accessing settings
 
     runs-on: ${{ matrix.os }}
     strategy:
@@ -218,73 +484,31 @@ jobs:
 
   publish:
     needs:
+    - build
     - check
     - pre-setup  # transitive, for accessing settings
-    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+    name: Publish 🐍📦 ${{ needs.pre-setup.outputs.git-tag }} to PyPI and TestPyPI
     runs-on: ubuntu-latest
     env:
       PY_COLORS: 1
       TOX_PARALLEL_NO_SPINNER: 1
       TOXENV: build-dists
     steps:
-    - name: Check out src from Git
-      uses: actions/checkout@v2
+    - name: Download all the dists
+      uses: actions/download-artifact@v2
       with:
-        # Get shallow Git history (default) for tag creation events
-        # but have a complete clone for any other workflows.
-        # Both options fetch tags but since we're going to remove
-        # one from HEAD in non-create-tag workflows, we need full
-        # history for them.
-        fetch-depth: >-
-          ${{
-            needs.pre-setup.outputs.release-requested == 'true'
-            && 1 || 0
-          }}
-    - name: Drop Git tags from HEAD for non-release-requests
-      if: >-
-        needs.pre-setup.outputs.release-requested != 'true'
-      run: >-
-        git tag --points-at HEAD
-        |
-        xargs git tag --delete
-    - name: Instruct setuptools-scm not to add a local version part
-      if: >-
-        github.event_name == 'push' &&
-        github.ref == format(
-          'refs/heads/{0}', github.event.repository.default_branch
-        )
-      run: |
-        echo 'local_scheme = "no-local-version"' >> pyproject.toml
-        git update-index --assume-unchanged pyproject.toml
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
-    - name: Install tox
-      run: |
-        python -m pip install --upgrade tox
-    - name: Initialize tox envs
-      run: |
-        python -m tox --parallel auto --parallel-live --notest
-    - name: Build dists with tox
-      run: |
-        python -m tox --parallel auto --parallel-live
+        name: python-package-distributions
+        path: dist/
     - name: Publish distribution 📦 to Test PyPI
       if: >-
-        (
-          github.event_name == 'push' &&
-          github.ref == format(
-            'refs/heads/{0}', github.event.repository.default_branch
-          )
-        ) ||
-        needs.pre-setup.outputs.release-requested == 'true'
+        needs.pre-setup.outputs.is-untagged-devel ||
+        needs.pre-setup.outputs.release-requested
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.TEST_PYPI_PASSWORD }}
         repository_url: https://test.pypi.org/legacy/
     - name: Publish distribution 📦 to PyPI
-      if: >-
-        needs.pre-setup.outputs.release-requested == 'true'
+      if: needs.pre-setup.outputs.release-requested
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_PASSWORD }}
