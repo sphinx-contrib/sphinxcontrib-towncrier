@@ -515,7 +515,7 @@ jobs:
     environment:
       name: pypi
       url: >-
-        https://pypi.org/project/cheroot/${{
+        https://pypi.org/project/sphinxcontrib-towncrier/${{
           needs.pre-setup.outputs.dist-version
         }}
 
@@ -544,7 +544,7 @@ jobs:
     environment:
       name: testpypi
       url: >-
-        https://test.pypi.org/project/cheroot/${{
+        https://test.pypi.org/project/sphinxcontrib-towncrier/${{
           needs.pre-setup.outputs.dist-version
         }}
 
