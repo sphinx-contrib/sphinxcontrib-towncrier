@@ -168,11 +168,11 @@ def _get_draft_version_fallback(
     return '[UNRELEASED DRAFT]'
 
 
-def _nodes_from_rst(
+def _nodes_from_document_markup_source(
         state: statemachine.State,
-        rst_source: str,
+        markup_source: str,
 ) -> List[nodes.Node]:
-    """Turn an RST string into a list of nodes.
+    """Turn an RST or Markdown string into a list of nodes.
 
     These nodes can be used in the document.
     """
@@ -181,7 +181,7 @@ def _nodes_from_rst(
     nested_parse_with_titles(
         state=state,
         content=statemachine.ViewList(
-            statemachine.string2lines(rst_source),
+            statemachine.string2lines(markup_source),
             source='[towncrier-fragments]',
         ),
         node=node,
@@ -253,7 +253,10 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
         except LookupError:
             return []
 
-        return _nodes_from_rst(state=self.state, rst_source=draft_changes)
+        return _nodes_from_document_markup_source(
+            state=self.state,
+            markup_source=draft_changes,
+        )
 
 
 class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
