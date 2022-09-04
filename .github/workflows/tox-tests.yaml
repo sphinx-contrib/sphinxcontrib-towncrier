@@ -2,19 +2,41 @@
 name: 👷tests
 
 on:  # yamllint disable-line rule:truthy
-  create:
   push:  # publishes to TestPyPI pushes to the main branch
-    branches:  # any branch but not tag
-    - >-
-      **
-    - >-  # NOTE: "branches-ignore" cannot be used with "branches"
-      !dependabot/**
-    tags-ignore:
-    - >-
-      **
+    branches-ignore:
+    - dependabot/**
   pull_request:
   schedule:
   - cron: 1 0 * * *  # Run daily at 0:01 UTC
+  workflow_dispatch:
+    inputs:
+      release-version:
+        # github.event_name == 'workflow_dispatch'
+        # && github.event.inputs.release-version
+        description: >-
+          Target PEP440-compliant version to release.
+          Please, don't prepend `v`.
+        type: string
+        required: true
+      release-commitish:
+        # github.event_name == 'workflow_dispatch'
+        # && github.event.inputs.release-commitish
+        default: ''
+        description: >-
+          The commit to be released to PyPI and tagged
+          in Git as `release-version`. Normally, you
+          should keep this empty.
+        type: string
+        required: false
+      YOLO:
+        default: false
+        description: >-
+          Flag whether test results should block the
+          release (true/false). Only use this under
+          extraordinary circumstances to ignore the
+          test failures and cut the release regardless.
+        type: boolean
+        required: false
 
 concurrency:
   group: >-
@@ -39,16 +61,35 @@ env:
   TOX_PARALLEL_NO_SPINNER: 1
 
 jobs:
+  pre-setup:
+    name: ⚙️ Pre-set global build settings
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: python
+    outputs:
+      release-requested: >-
+        ${{
+            steps.request-check.outputs.release-requested || false
+        }}
+    steps:
+    - name: Mark the build as "release request"
+      id: request-check
+      if: github.event_name == 'workflow_dispatch'
+      run: >-
+        print('::set-output name=release-requested::true')
+
   tests:
-    if: >-  # https://twitter.com/webKnjaZ/status/1308803017001652225
-      github.event_name != 'create' ||
-      github.event.ref_type == 'tag'
     name: >-
       📝${{ matrix.towncrier-version }}
       /
       🐍${{ matrix.python-version }}
       /
       💻${{ matrix.os }}
+
+    needs:
+    - pre-setup
+
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -77,6 +118,14 @@ jobs:
           python-version: 3.6  # EOL, only provided for older OSs
         - python-version: 3.6
           towncrier-version: 22.8.0  # Dropped support for Python 3.6
+
+    continue-on-error: >-
+      ${{
+          (
+            needs.pre-setup.outputs.release-requested == 'true' &&
+            !github.event.inputs.YOLO
+          ) && true || false
+      }}
 
     env:
       PY_COLORS: 1
@@ -170,6 +219,7 @@ jobs:
   publish:
     needs:
     - check
+    - pre-setup  # transitive, for accessing settings
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
     runs-on: ubuntu-latest
     env:
@@ -187,16 +237,12 @@ jobs:
         # history for them.
         fetch-depth: >-
           ${{
-            (
-              github.event_name == 'create' &&
-              github.event.ref_type == 'tag'
-            ) &&
-            1 || 0
+            needs.pre-setup.outputs.release-requested == 'true'
+            && 1 || 0
           }}
-    - name: Drop Git tags from HEAD for non-tag-create events
+    - name: Drop Git tags from HEAD for non-release-requests
       if: >-
-        github.event_name != 'create' ||
-        github.event.ref_type != 'tag'
+        needs.pre-setup.outputs.release-requested != 'true'
       run: >-
         git tag --points-at HEAD
         |
@@ -231,18 +277,14 @@ jobs:
             'refs/heads/{0}', github.event.repository.default_branch
           )
         ) ||
-        (
-          github.event_name == 'create' &&
-          github.event.ref_type == 'tag'
-        )
+        needs.pre-setup.outputs.release-requested == 'true'
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.TEST_PYPI_PASSWORD }}
         repository_url: https://test.pypi.org/legacy/
     - name: Publish distribution 📦 to PyPI
-      if: >-  # "create" workflows run separately from "push" & "pull_request"
-        github.event_name == 'create' &&
-        github.event.ref_type == 'tag'
+      if: >-
+        needs.pre-setup.outputs.release-requested == 'true'
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.PYPI_PASSWORD }}

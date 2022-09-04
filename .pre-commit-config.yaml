@@ -20,7 +20,17 @@ repos:
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
   rev: 0.17.1
   hooks:
-  - id: check-github-workflows
+  # - id: check-github-workflows
+  - id: check-jsonschema
+    alias: check-github-workflows-local
+    name: Check GitHub Workflows patched schema
+    args:
+    - --schemafile
+    - .github/.json-schemas/github-workflow.json
+    files: ^\.github/workflows/[^/]+$
+    types:
+    - yaml
+  # yamllint disable rule:comments-indentation
   # - id: check-jsonschema
   #   name: Check GitHub Workflows set timeout-minutes
   #   args:
@@ -30,6 +40,7 @@ repos:
   #   types:
   #   - yaml
   # - id: check-readthedocs
+  # yamllint enable rule:comments-indentation
 
 - repo: https://github.com/pre-commit/pre-commit-hooks.git
   rev: v4.3.0
@@ -78,6 +89,8 @@ repos:
   rev: v2.2.1
   hooks:
   - id: codespell
+    exclude: >-
+      ^\.github/\.json-schemas/.*\.json$
 
 - repo: https://github.com/adrienverge/yamllint.git
   rev: v1.27.1
