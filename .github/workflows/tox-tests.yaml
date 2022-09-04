@@ -203,7 +203,7 @@ jobs:
             && github.event.inputs.release-version
             || steps.scm-version.outputs.dist-version
         }}.tar.gz')
-        print('::set-output name=wheel::sphinxcontrib-towncrier-${{
+        print('::set-output name=wheel::sphinxcontrib_towncrier-${{
             steps.request-check.outputs.release-requested == 'true'
             && github.event.inputs.release-version
             || steps.scm-version.outputs.dist-version
