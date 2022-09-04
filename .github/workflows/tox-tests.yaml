@@ -399,7 +399,17 @@ jobs:
       TOXENV: python
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Grab the source from Git
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.release-commitish }}
+
+    - name: Download all the dists
+      uses: actions/download-artifact@v2
+      with:
+        name: python-package-distributions
+        path: dist/
+
     - name: Set up Python ${{ matrix.python-version }}
       id: python-install
       uses: actions/setup-python@v4
@@ -444,6 +454,8 @@ jobs:
         -m tox
         --parallel auto
         --parallel-live
+        --skip-missing-interpreters false
+        --installpkg 'dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}'
         --force-dep 'towncrier ~= ${{ matrix.towncrier-version }}'
         --notest
     - name: Test with tox
@@ -452,6 +464,8 @@ jobs:
         -m tox
         --parallel auto
         --parallel-live
+        --skip-missing-interpreters false
+        --installpkg 'dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}'
         --force-dep 'towncrier ~= ${{ matrix.towncrier-version }}'
     - name: Send coverage data to Codecov
       uses: codecov/codecov-action@v3
