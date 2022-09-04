@@ -286,7 +286,7 @@ jobs:
       with:
         fetch-depth: >-
           ${{
-              steps.request-check.outputs.release-requested == 'true'
+              fromJSON(needs.pre-setup.outputs.release-requested)
               && 1 || 0
           }}
         ref: ${{ github.event.inputs.release-commitish }}
@@ -346,7 +346,7 @@ jobs:
         retention-days: >-
           ${{
               (
-                needs.pre-setup.outputs.release-requested == 'true'
+                fromJSON(needs.pre-setup.outputs.release-requested)
               ) && 90 || 30
           }}
 
@@ -394,7 +394,7 @@ jobs:
     continue-on-error: >-
       ${{
           (
-            needs.pre-setup.outputs.release-requested == 'true' &&
+            fromJSON(needs.pre-setup.outputs.release-requested) &&
             !github.event.inputs.YOLO
           ) && true || false
       }}
@@ -521,14 +521,15 @@ jobs:
         path: dist/
     - name: Publish distribution 📦 to Test PyPI
       if: >-
-        needs.pre-setup.outputs.is-untagged-devel ||
-        needs.pre-setup.outputs.release-requested
+        fromJSON(needs.pre-setup.outputs.is-untagged-devel)
+        || fromJSON(needs.pre-setup.outputs.release-requested)
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.TEST_PYPI_PASSWORD }}
         repository_url: https://test.pypi.org/legacy/
     - name: Publish distribution 📦 to PyPI
-      if: needs.pre-setup.outputs.release-requested
+      if: >-
+        fromJSON(needs.pre-setup.outputs.release-requested)
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_PASSWORD }}
