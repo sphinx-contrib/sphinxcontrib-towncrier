@@ -11,6 +11,7 @@ include = [
     # "py://nitpick/resources/python/isort",  # Requires config to be in `setup.cfg` so not for us
     # "py://nitpick/resources/python/mypy",  # Requires CLI args but we have that in `mypy.ini`
     # "py://nitpick/resources/python/pylint",  # Makes several bad suggestions
+    "py://nitpick/resources/python/radon",
 
     "py://nitpick/resources/shell/bashate",
     "py://nitpick/resources/shell/shellcheck",
