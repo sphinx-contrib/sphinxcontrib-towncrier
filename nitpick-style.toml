@@ -15,3 +15,14 @@ include = [
     "py://nitpick/resources/shell/bashate",
     "py://nitpick/resources/shell/shellcheck",
 ]
+
+[".flake8".flake8]
+max-line-length = 79
+
+# FIXME: Uncomment once https://github.com/pre-commit/identify/pull/323
+# FIXME: is released.
+# [".isort.cfg".settings]
+# line_length = 79
+
+[".pylintrc".FORMAT]
+max-line-length = 79
