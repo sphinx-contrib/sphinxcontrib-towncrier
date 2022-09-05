@@ -11,6 +11,6 @@ include = [
     # "py://nitpick/resources/python/mypy",  # Requires CLI args but we have that in `mypy.ini`
     # "py://nitpick/resources/python/pylint",  # Makes several bad suggestions
 
-    # "py://nitpick/resources/shell/bashate",
-    # "py://nitpick/resources/shell/shellcheck",
+    "py://nitpick/resources/shell/bashate",
+    "py://nitpick/resources/shell/shellcheck",
 ]
