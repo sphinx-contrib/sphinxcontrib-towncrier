@@ -5,7 +5,8 @@ include = [
     "py://nitpick/resources/any/pre-commit-hooks",
 
     # "py://nitpick/resources/python/flake8",
-    # "py://nitpick/resources/python/pre-commit-hooks",
+    "https://github.com/andreoliwa/nitpick/blob/8a1d2bd0/src/nitpick/resources/python/hooks.toml",  # NOTE: Needed for as long as Python 3.6 remains supported
+    # "py://nitpick/resources/python/pre-commit-hooks",  # FIXME: Uncomment as soon as Python 3.6 support is dropped
     "py://nitpick/resources/python/isort",
     # "py://nitpick/resources/python/mypy",
     # "py://nitpick/resources/python/pylint",
