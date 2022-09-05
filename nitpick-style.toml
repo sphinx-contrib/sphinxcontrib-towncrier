@@ -1,0 +1,15 @@
+[nitpick.styles]
+include = [
+    "py://nitpick/resources/any/editorconfig",
+    "py://nitpick/resources/any/git-legal",
+    "py://nitpick/resources/any/pre-commit-hooks",
+
+    # "py://nitpick/resources/python/flake8",
+    # "py://nitpick/resources/python/pre-commit-hooks",
+    "py://nitpick/resources/python/isort",
+    # "py://nitpick/resources/python/mypy",
+    # "py://nitpick/resources/python/pylint",
+
+    # "py://nitpick/resources/shell/bashate",
+    # "py://nitpick/resources/shell/shellcheck",
+]
