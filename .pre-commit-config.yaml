@@ -25,7 +25,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.17.1
+  rev: 0.18.2
   hooks:
   # - id: check-github-workflows
   - id: check-jsonschema
@@ -117,7 +117,7 @@ repos:
       ^\.github/\.json-schemas/.*\.json$
 
 - repo: https://github.com/adrienverge/yamllint.git
-  rev: v1.27.1
+  rev: v1.28.0
   hooks:
   - id: yamllint
     files: \.(yaml|yml)$
@@ -139,7 +139,7 @@ repos:
   - id: shellcheck
 
 - repo: https://github.com/PyCQA/flake8
-  rev: 4.0.1  # Must be kept at v4 for as long as WPS doesn't support v5
+  rev: 5.0.4  # Must be kept at v4 for as long as WPS doesn't support v5
   hooks:
   - id: flake8
     language_version: python3
