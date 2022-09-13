@@ -1,3 +1,4 @@
+# pylint: disable=cyclic-import
 """Unit tests of the extension bits."""
 import sys
 
