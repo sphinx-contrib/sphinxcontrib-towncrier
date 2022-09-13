@@ -139,7 +139,7 @@ repos:
   - id: shellcheck
 
 - repo: https://github.com/PyCQA/flake8
-  rev: 4.0.1  # Must be kept at v4 for as long as WPS doesn't support v5
+  rev: 4.0.1  # enforce-version: 4.0.1
   hooks:
   - id: flake8
     language_version: python3
