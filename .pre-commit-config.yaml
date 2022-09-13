@@ -25,15 +25,9 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.17.1
+  rev: ad4d5a1f86486bf7abf93d1c334673e673888c5f  # possible 0.18.3
   hooks:
-  # - id: check-github-workflows
-  - id: check-jsonschema
-    alias: check-github-workflows-local
-    name: Check GitHub Workflows patched schema
-    args:
-    - --schemafile
-    - .github/.json-schemas/github-workflow.json
+  - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
     types:
     - yaml
