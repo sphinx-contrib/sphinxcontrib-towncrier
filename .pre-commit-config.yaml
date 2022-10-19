@@ -6,12 +6,12 @@ ci:
 
 repos:
 - repo: https://github.com/asottile/add-trailing-comma.git
-  rev: v2.2.3
+  rev: v2.3.0
   hooks:
   - id: add-trailing-comma
 
 - repo: https://github.com/asottile/pyupgrade.git
-  rev: v2.37.3
+  rev: v3.1.0
   hooks:
   - id: pyupgrade
     args:
@@ -30,7 +30,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: ad4d5a1f86486bf7abf93d1c334673e673888c5f  # possible 0.18.3
+  rev: 0.18.3
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -109,14 +109,14 @@ repos:
   - id: pydocstyle
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.1
+  rev: v2.2.2
   hooks:
   - id: codespell
     exclude: >-
       ^\.github/\.json-schemas/.*\.json$
 
 - repo: https://github.com/adrienverge/yamllint.git
-  rev: v1.27.1
+  rev: v1.28.0
   hooks:
   - id: yamllint
     files: \.(yaml|yml)$
@@ -125,7 +125,7 @@ repos:
     - --strict
 
 - repo: https://github.com/openstack/bashate.git
-  rev: 2.1.0
+  rev: 2.1.1
   hooks:
   - id: bashate
     args:
@@ -164,7 +164,7 @@ repos:
     language_version: python3
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v0.971
+  rev: v0.982
   hooks:
   - id: mypy
     additional_dependencies:
