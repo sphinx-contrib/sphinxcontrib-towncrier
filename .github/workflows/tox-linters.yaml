@@ -38,9 +38,18 @@ jobs:
       id: calc_cache_key_py
       run: |
         from hashlib import sha512
+        from os import environ
+        from pathlib import Path
         from sys import version
+
+        FILE_APPEND_MODE = 'a'
+
         hash = sha512(version.encode()).hexdigest()
-        print(f'::set-output name=py_hash_key::{hash}')
+
+        with Path(environ['GITHUB_OUTPUT']).open(
+                mode=FILE_APPEND_MODE,
+        ) as outputs_file:
+            print(f'py_hash_key={hash}', file=outputs_file)
       shell: python
     - name: Set up pip cache
       uses: actions/cache@v3
