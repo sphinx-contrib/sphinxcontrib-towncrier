@@ -43,7 +43,7 @@ jobs:
         print(f'::set-output name=py_hash_key::{hash}')
       shell: python
     - name: Set up pip cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: >-
@@ -60,7 +60,7 @@ jobs:
           ${{ runner.os }}-pip-
           ${{ runner.os }}-
     - name: Set up pre-commit cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.cache/pre-commit
         key: >-
