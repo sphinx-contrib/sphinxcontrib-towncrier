@@ -593,7 +593,9 @@ jobs:
       run: >-
         git tag
         -m '${{ needs.pre-setup.outputs.git-tag }}'
-        -m 'Published at ${{ needs.publish-pypi.environment.url }}'
+        -m 'Published at https://pypi.org/project/sphinxcontrib-towncrier/${{
+          needs.pre-setup.outputs.dist-version
+        }}'
         -m 'This release has been produced by the following workflow run: ${{
           github.server_url
         }}/${{
@@ -641,12 +643,15 @@ jobs:
           dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}
           dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}
         artifactContentType: raw  # Because whl and tgz are of different types
-        body: |
+        body: >
           # Release ${{ needs.pre-setup.outputs.git-tag }}
 
-          This release is published to ${{
-            needs.publish-pypi.environment.url
+
+          This release is published to
+          https://pypi.org/project/sphinxcontrib-towncrier/${{
+            needs.pre-setup.outputs.dist-version
           }}.
+
 
           This release has been produced by the following workflow run: ${{
             github.server_url
