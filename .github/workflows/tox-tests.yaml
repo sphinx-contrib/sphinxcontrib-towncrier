@@ -50,8 +50,8 @@ concurrency:
 
 env:
   FORCE_COLOR: 1  # Request colored output from CLI tools supporting it
-  MYPY_FORCE_COLOR: 1
-  PY_COLORS: 1
+  MYPY_FORCE_COLOR: 1  # MyPy's color enforcement
+  PY_COLORS: 1  # Recognized by the `py` package, dependency of `pytest`
   TOX_TESTENV_PASSENV: >-
     FORCE_COLOR
     MYPY_FORCE_COLOR
