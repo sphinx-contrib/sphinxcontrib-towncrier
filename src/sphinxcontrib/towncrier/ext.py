@@ -219,24 +219,25 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
             self.env.note_dependency(str(path))
 
         try:
-            self.env.towncrier_fragment_paths |= (  # type: ignore
+            # pylint: disable-next=line-too-long
+            self.env.towncrier_fragment_paths |= (  # type: ignore[attr-defined]
                 towncrier_fragment_paths
             )
         except AttributeError:
             # If the attribute hasn't existed, initialize it instead of
             # updating
-            self.env.towncrier_fragment_paths = (  # type: ignore
+            self.env.towncrier_fragment_paths = (  # type: ignore[attr-defined]
                 towncrier_fragment_paths
             )
 
         try:
-            self.env.towncrier_fragment_docs |= {  # type: ignore
+            self.env.towncrier_fragment_docs |= {  # type: ignore[attr-defined]
                 self.env.docname,
             }
         except AttributeError:
             # If the attribute hasn't existed, initialize it instead of
             # updating
-            self.env.towncrier_fragment_docs = {  # type: ignore
+            self.env.towncrier_fragment_docs = {  # type: ignore[attr-defined]
                 self.env.docname,
             }
 
@@ -300,7 +301,9 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
         This is a handler for :event:`env-purge-doc`.
         """
         with suppress_exceptions(AttributeError, KeyError):
-            env.towncrier_fragment_docs.remove(docname)  # type: ignore
+            env.towncrier_fragment_docs.remove(  # type: ignore[attr-defined]
+                docname,
+            )
 
     def merge_other(
             self,
@@ -315,7 +318,7 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
         """
         try:
             other_fragment_docs: Set[str] = (
-                other.towncrier_fragment_docs  # type: ignore
+                other.towncrier_fragment_docs  # type: ignore[attr-defined]
             )
         except AttributeError:
             # If the other process env doesn't have documents using
@@ -326,19 +329,19 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
             # If the other process env doesn't have documents using
             # `TowncrierDraftEntriesDirective`, initialize the structure
             # at least
-            env.towncrier_fragment_docs = set()  # type: ignore
+            env.towncrier_fragment_docs = set()  # type: ignore[attr-defined]
 
         if not hasattr(env, 'towncrier_fragment_paths'):  # noqa: WPS421
-            env.towncrier_fragment_paths = set()  # type: ignore
+            env.towncrier_fragment_paths = set()  # type: ignore[attr-defined]
 
         # Since Sphinx does not pull the same document into multiple
         # processes, we don't care about the same dict key appearing
         # in different envs with different sets of the deps
-        env.towncrier_fragment_docs.update(  # type: ignore
+        env.towncrier_fragment_docs.update(  # type: ignore[attr-defined]
             other_fragment_docs,
         )
-        env.towncrier_fragment_paths.update(  # type: ignore
-            other.towncrier_fragment_paths,  # type: ignore
+        env.towncrier_fragment_paths.update(  # type: ignore[attr-defined]
+            other.towncrier_fragment_paths,  # type: ignore[attr-defined]
         )
 
     def process_doc(self, app: Sphinx, doctree: nodes.document) -> None:
@@ -366,11 +369,14 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
         with suppress_exceptions(AttributeError):
             fragments_changed = bool(
                 towncrier_fragment_paths
-                ^ env.towncrier_fragment_paths,  # type: ignore
+                ^ env.towncrier_fragment_paths,  # type: ignore[attr-defined]
             )
 
         return (
-            list(env.towncrier_fragment_docs - changed)  # type: ignore
+            list(
+                env.towncrier_fragment_docs  # type: ignore[attr-defined]
+                - changed,
+            )
             if fragments_changed
             else []
         )
