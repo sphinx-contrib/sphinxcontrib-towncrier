@@ -11,7 +11,7 @@ repos:
   - id: add-trailing-comma
 
 - repo: https://github.com/asottile/pyupgrade.git
-  rev: v3.1.0
+  rev: v3.2.0
   hooks:
   - id: pyupgrade
     args:
@@ -30,7 +30,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.18.3
+  rev: 0.18.4
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
