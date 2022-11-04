@@ -593,6 +593,14 @@ jobs:
       run: >-
         git tag
         -m '${{ needs.pre-setup.outputs.git-tag }}'
+        -m 'Published at ${{ jobs.publish-pypi.environment.url }}'
+        -m 'This release has been produced by the following workflow run: ${{
+          github.server_url
+        }}/${{
+          github.repository
+        }}/actions/runs/${{
+          github.run_id
+        }}'
         '${{ needs.pre-setup.outputs.git-tag }}'
         --
         ${{ github.event.inputs.release-commitish }}
