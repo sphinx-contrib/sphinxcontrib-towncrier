@@ -21,9 +21,9 @@ beautifulsoup4==4.9.3 \
     --hash=sha256:84729e322ad1d5b4d25f805bfa05b902dd96450f43842c4e99067d5e1369eb25 \
     --hash=sha256:fff47e031e34ec82bf17e00da8f592fe7de69aeea38be00523c04623c04fb666
     # via furo
-certifi==2020.12.5 \
-    --hash=sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c \
-    --hash=sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830
+certifi==2022.12.7 \
+    --hash=sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3 \
+    --hash=sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18
     # via requests
 chardet==4.0.0 \
     --hash=sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa \
@@ -38,7 +38,7 @@ docutils==0.16 \
 furo==2021.4.11b34 \
     --hash=sha256:3d88e2855949cecf5f562e8a28cab1a6d3355d82f3cf5796eddf9ec234e97519 \
     --hash=sha256:576a1dc1bcbe337d7c53cbc75b886802778a5964fd2e3324433d706066e9aea8
-    # via -r docs/requirements.in
+    # via -r requirements.in
 idna==2.10 \
     --hash=sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6 \
     --hash=sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0
@@ -102,7 +102,7 @@ mdit-py-plugins==0.2.8 \
 myst-parser==0.14.0 \
     --hash=sha256:8d7db76e2f33cd1dc1fe0c76af9f09e5cf19ce2c2e85074bc82f272c0f7c08ce \
     --hash=sha256:fc262959a74cdc799d7fa9b30c320c17187485b9a1e8c39e988fc12f3adff63c
-    # via -r docs/requirements.in
+    # via -r requirements.in
 packaging==20.9 \
     --hash=sha256:5b327ac1320dc863dca72f4514ecc086f31186744b84a230374cc1fd776feae5 \
     --hash=sha256:67714da7f7bc052e064859c05c595155bd1ee9f69f76557e21f051443c20947a
@@ -161,7 +161,7 @@ requests==2.25.1 \
 setuptools-scm==6.0.1 \
     --hash=sha256:c3bd5f701c8def44a5c0bfe8d407bef3f80342217ef3492b951f3777bd2d915c \
     --hash=sha256:d1925a69cb07e9b29416a275b9fadb009a23c148ace905b2fb220649a6c18e92
-    # via -r docs/requirements.in
+    # via -r requirements.in
 snowballstemmer==2.1.0 \
     --hash=sha256:b51b447bea85f9968c13b650126a888aabd4cb4463fca868ec596826325dedc2 \
     --hash=sha256:e997baa4f2e9139951b6f4c631bad912dfd3c792467e2f03d7239464af90e914
@@ -174,14 +174,14 @@ sphinx==3.5.4 \
     --hash=sha256:19010b7b9fa0dc7756a6e105b2aacd3a80f798af3c25c273be64d7beeb482cb1 \
     --hash=sha256:2320d4e994a191f4b4be27da514e46b3d6b420f2ff895d064f52415d342461e8
     # via
-    #   -r docs/requirements.in
+    #   -r requirements.in
     #   furo
     #   myst-parser
     #   sphinxcontrib-apidoc
 sphinxcontrib-apidoc==0.3.0 \
     --hash=sha256:6671a46b2c6c5b0dca3d8a147849d159065e50443df79614f921b42fbd15cb09 \
     --hash=sha256:729bf592cf7b7dd57c4c05794f732dc026127275d785c2a5494521fdde773fb9
-    # via -r docs/requirements.in
+    # via -r requirements.in
 sphinxcontrib-applehelp==1.0.2 \
     --hash=sha256:806111e5e962be97c29ec4c1e7fe277bfd19e9652fb1a4392105b43e01af885a \
     --hash=sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58
