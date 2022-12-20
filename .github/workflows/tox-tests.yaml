@@ -34,9 +34,9 @@ on:  # yamllint disable-line rule:truthy
         default: false
         description: >-
           Flag whether test results should block the
-          release (true/false). Only use this under
-          extraordinary circumstances to ignore the
-          test failures and cut the release regardless.
+          release. Only use this under extraordinary
+          circumstances to ignore the test failures
+          and cut the release regardless.
         type: boolean
         required: false
 
