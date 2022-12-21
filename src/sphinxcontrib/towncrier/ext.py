@@ -137,10 +137,10 @@ def _lookup_towncrier_fragments(  # noqa: WPS210
         fragment_directory = None
 
     _fragments, fragment_filenames = find_fragments(
-        base_directory=str(fragment_base_directory),
-        fragment_directory=fragment_directory,
-        definitions=towncrier_config['types'],
-        sections=towncrier_config['sections'],
+        str(fragment_base_directory),
+        towncrier_config['sections'],
+        fragment_directory,
+        towncrier_config['types'],
     )
     return set(fragment_filenames)
 
