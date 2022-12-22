@@ -1,3 +1,7 @@
+.. image:: https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-team.svg
+   :target: https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md
+   :alt: SWUbanner
+
 .. image:: https://img.shields.io/pypi/v/sphinxcontrib-towncrier.svg?logo=Python&logoColor=white
    :target: https://pypi.org/project/sphinxcontrib-towncrier
    :alt: sphinxcontrib-towncrier @ PyPI
