@@ -1,11 +1,10 @@
 [build-system]
 requires = [
   # Essentials
-  "setuptools>=40.6.0",
+  "setuptools >= 64",
 
   # Plugins
-  "setuptools_scm[toml] >= 3.5",  # version is required for "no-local-version" scheme + toml extra is needed for supporting config in this file
-  "setuptools_scm_git_archive >= 1.1",
+  "setuptools_scm[toml] >= 8",  # version is required for "no-local-version" scheme + toml extra is needed for supporting config in this file
 ]
 build-backend = "setuptools.build_meta"
 
