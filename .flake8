@@ -96,6 +96,9 @@ per-file-ignores =
 # wemake-python-styleguide
 show-source = true
 
+# Count the number of occurrences of each error/warning code and print a report:
+statistics = true
+
 # flake8-pytest-style
 # PT001:
 pytest-fixture-no-parentheses = true
