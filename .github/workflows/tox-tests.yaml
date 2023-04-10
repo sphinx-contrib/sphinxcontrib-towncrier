@@ -625,6 +625,9 @@ jobs:
       fromJSON(needs.pre-setup.outputs.release-requested)
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted pub
+
     environment:
       name: pypi
       url: >-
@@ -641,8 +644,6 @@ jobs:
     - name: >-
         Publish 🐍📦 ${{ needs.pre-setup.outputs.git-tag }} to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
 
   publish-testpypi:
     name: Publish 🐍📦 ${{ needs.pre-setup.outputs.git-tag }} to TestPyPI
@@ -653,6 +654,9 @@ jobs:
       fromJSON(needs.pre-setup.outputs.is-untagged-devel)
       || fromJSON(needs.pre-setup.outputs.release-requested)
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted pub
 
     environment:
       name: testpypi
@@ -671,7 +675,6 @@ jobs:
         Publish 🐍📦 ${{ needs.pre-setup.outputs.git-tag }} to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
         repository_url: https://test.pypi.org/legacy/
 
   post-release-repo-update:
