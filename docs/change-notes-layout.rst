@@ -425,8 +425,8 @@ README. Scroll up and see how it's being embedded into
        :target: https://pypi.org/project/your-project
        :alt: your-project @ PyPI
 
-    .. image:: https://github.com/your-org/your-project/actions/workflows/tox-tests.yaml/badge.svg?event=push
-       :target: https://github.com/your-org/your-project/actions/workflows/tox-tests.yaml
+    .. image:: https://github.com/your-org/your-project/actions/workflows/ci-cd.yml/badge.svg?event=push
+       :target: https://github.com/your-org/your-project/actions/workflows/ci-cd.yml
        :alt: GitHub Actions CI/CD build status
 
     .. DO-NOT-REMOVE-docs-badges-END

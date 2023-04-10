@@ -6,8 +6,8 @@
    :target: https://pypi.org/project/sphinxcontrib-towncrier
    :alt: sphinxcontrib-towncrier @ PyPI
 
-.. image:: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/actions/workflows/tox-tests.yaml/badge.svg?event=push
-   :target: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/actions/workflows/tox-tests.yaml
+.. image:: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/actions/workflows/ci-cd.yml/badge.svg?event=push
+   :target: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/actions/workflows/ci-cd.yml
    :alt: GitHub Actions CI/CD build status — Python package
 
 .. image:: https://codecov.io/gh/sphinx-contrib/sphinxcontrib-towncrier/branch/master/graph/badge.svg
