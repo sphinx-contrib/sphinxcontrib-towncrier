@@ -36,20 +36,31 @@ exclude =
 # IMPORTANT: avoid using ignore option, always use extend-ignore instead
 # Completely and unconditionally ignore the following errors:
 extend-ignore =
-  E501,  # "line too long", its function is replaced by `flake8-length`
-  W505,  # "doc line too long", its function is replaced by `flake8-length`
-  I  # flake8-isort is drunk + we have isort integrated into pre-commit
-  S101,  # MyPy requires `asserts`, plus they're not bad if cooked well
-  WPS300  # local folder imports are needed
-  WPS305  # this extension is Python 3 only and so f-strings are allowed
-  WPS317
-  WPS318  # WPS317/WPS318 enforces weird indents
-  WPS326  # doesn't allow implicit string concat
+  # Legitimate cases, no need to "fix" these violations:
+  # E501: "line too long", its function is replaced by `flake8-length`
+  E501,
+  # W505: "doc line too long", its function is replaced by `flake8-length`
+  W505,
+  # I: flake8-isort is drunk + we have isort integrated into pre-commit
+  I,
+  # S101: MyPy requires `asserts`, plus they're not bad if cooked well
+  S101,
+  # WPS300: local folder imports are needed
+  WPS300,
+  # WPS305: "Found f string" -- nothing bad about this
+  WPS305,
+  # WPS317 enforces weird indents
+  WPS317,
+  # WPS318 enforces weird indents too
+  WPS318,
+  # WPS326: "Found implicit string concatenation" -- nothing bad about this
+  WPS326,
 
 # IMPORTANT: avoid using select option, always use select-ignore instead
 # Enable the following errors:
 extend-select =
-  B950,  # "line too long", longer than `max-line-length` + 10%
+  # B950: "line too long", longer than `max-line-length` + 10%
+  B950,
 
 # https://wemake-python-stylegui.de/en/latest/pages/usage/formatter.html
 format = wemake
