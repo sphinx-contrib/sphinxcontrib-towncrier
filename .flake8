@@ -93,9 +93,6 @@ per-file-ignores =
   # have <= members in tests (WPS202):
   tests/**.py: S101, S404, S603, WPS202, WPS436, WPS442, WPS450
 
-# wemake-python-styleguide
-show-source = true
-
 # Count the number of occurrences of each error/warning code and print a report:
 statistics = true
 
@@ -119,3 +116,6 @@ rst-roles =
   py:meth,
   # Sphinx's internal role:
   event,
+
+# wemake-python-styleguide
+show-source = true
