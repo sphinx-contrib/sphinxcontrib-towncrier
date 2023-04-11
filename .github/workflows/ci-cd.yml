@@ -433,6 +433,9 @@ jobs:
               ) && 90 || 30
           }}
 
+  lint:
+    uses: ./.github/workflows/reusable-linters.yml
+
   tests:
     name: >-
       📝${{ matrix.towncrier-version }}
@@ -606,6 +609,7 @@ jobs:
     if: always()
 
     needs:
+    - lint
     - tests
 
     runs-on: ubuntu-latest
