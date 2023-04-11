@@ -55,8 +55,8 @@ logger = logging.getLogger(__name__)
 def _get_changelog_draft_entries(
         target_version: str,
         allow_empty: bool = False,
-        working_dir: str = None,
-        config_path: str = None,
+        working_dir: Optional[str] = None,
+        config_path: Optional[str] = None,
 ) -> str:
     """Retrieve the unreleased changelog entries from Towncrier."""
     extra_cli_args: Tuple[str, ...] = (
@@ -100,8 +100,8 @@ def _get_changelog_draft_entries(
 # FIXME: refactor `_lookup_towncrier_fragments` to drop noqas
 @lru_cache(maxsize=1, typed=True)  # noqa: WPS210
 def _lookup_towncrier_fragments(  # noqa: WPS210
-        working_dir: str = None,
-        config_path: str = None,
+        working_dir: Optional[str] = None,
+        config_path: Optional[str] = None,
 ) -> Set[Path]:
     """Emit RST-formatted Towncrier changelog fragment paths."""
     project_path = Path.cwd() if working_dir is None else Path(working_dir)
