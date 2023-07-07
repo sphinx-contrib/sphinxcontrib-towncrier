@@ -395,8 +395,8 @@ jobs:
 
     - name: Setup git user as [bot]
       if: >-
-        fromJSON(needs.pre-setup.outputs.is-untagged-devel)
-        || fromJSON(needs.pre-setup.outputs.release-requested)
+        fromJSON(needs.pre-setup.outputs.release-requested)
+        || fromJSON(needs.pre-setup.outputs.is-untagged-devel)
       uses: fregante/setup-git-user@v2
     - name: >-
         Tag the release in the local Git repo
