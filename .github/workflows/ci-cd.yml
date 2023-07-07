@@ -504,6 +504,8 @@ jobs:
           towncrier-version: 19.2.0  # Does not support Python 3.12
         - python-version: ~3.12.0-0
           towncrier-version: 19.9.0  # Does not support Python 3.12
+        - python-version: ~3.12.0-0
+          towncrier-version: 21.3.0  # Does not support Python 3.12
 
     continue-on-error: >-
       ${{
