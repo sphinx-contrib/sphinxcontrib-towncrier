@@ -388,7 +388,7 @@ jobs:
       if: >-
         fromJSON(needs.pre-setup.outputs.is-untagged-devel)
         || fromJSON(needs.pre-setup.outputs.release-requested)
-      uses: fregante/setup-git-user@v1.1.0
+      uses: fregante/setup-git-user@v2
     - name: >-
         Tag the release in the local Git repo
         as ${{ needs.pre-setup.outputs.git-tag }}
@@ -720,7 +720,7 @@ jobs:
         ref: ${{ github.event.inputs.release-committish }}
     - name: Setup git user as [bot]
       if: steps.existing-remote-tag-check.outputs.already-exists == 'true'
-      uses: fregante/setup-git-user@v1.1.0
+      uses: fregante/setup-git-user@v2
     - name: >-
         Tag the release in the local Git repo
         as ${{ needs.pre-setup.outputs.git-tag }}
