@@ -631,7 +631,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write  # IMPORTANT: this permission is mandatory for trusted pub
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     environment:
       name: pypi
@@ -661,7 +661,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write  # IMPORTANT: this permission is mandatory for trusted pub
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     environment:
       name: testpypi
