@@ -471,6 +471,7 @@ jobs:
     strategy:
       matrix:
         towncrier-version:
+        - 23.6.0
         - 22.12.0rc1
         - 22.8.0
         - 21.9.0rc1
