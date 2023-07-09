@@ -7,12 +7,12 @@ ci:
 
 repos:
 - repo: https://github.com/asottile/add-trailing-comma.git
-  rev: v2.4.0
+  rev: v3.0.0
   hooks:
   - id: add-trailing-comma
 
 - repo: https://github.com/asottile/pyupgrade.git
-  rev: v3.3.1
+  rev: v3.8.0
   hooks:
   - id: pyupgrade
     args:
@@ -31,7 +31,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.22.0
+  rev: 0.23.2
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -50,7 +50,7 @@ repos:
   # yamllint enable rule:comments-indentation
 
 - repo: https://github.com/andreoliwa/nitpick.git
-  rev: v0.33.1
+  rev: v0.33.2
   hooks:
   - id: nitpick-check
     args:
@@ -110,14 +110,14 @@ repos:
   - id: pydocstyle
 
 - repo: https://github.com/codespell-project/codespell.git
-  rev: v2.2.4
+  rev: v2.2.5
   hooks:
   - id: codespell
     exclude: >-
       ^\.github/\.json-schemas/.*\.json$
 
 - repo: https://github.com/adrienverge/yamllint.git
-  rev: v1.30.0
+  rev: v1.32.0
   hooks:
   - id: yamllint
     files: \.(yaml|yml)$
@@ -134,7 +134,7 @@ repos:
     - E006
 
 - repo: https://github.com/shellcheck-py/shellcheck-py.git
-  rev: v0.9.0.2
+  rev: v0.9.0.5
   hooks:
   - id: shellcheck
 
@@ -165,7 +165,7 @@ repos:
     language_version: python3
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v1.1.1
+  rev: v1.4.1
   hooks:
   - id: mypy
     additional_dependencies:
