@@ -4,7 +4,7 @@ import sys
 import pytest
 
 from sphinxcontrib.towncrier._compat import shlex_join
-from sphinxcontrib.towncrier.ext import _get_changelog_draft_entries
+from sphinxcontrib.towncrier.ext import _get_changelog_draft_entries, _find_config_file
 
 
 NO_OUTPUT_MARKER = r'\[No output\]'
@@ -96,3 +96,17 @@ def test_towncrier_draft_generation_failure_msg(
 
     with pytest.raises(RuntimeError, match=expected_error_message):
         _get_changelog_draft_entries_unwrapped(version_string)
+
+
+def test_find_config_files_empty(tmp_path):
+    assert _find_config_file(tmp_path).name == 'pyproject.toml'
+
+
+def test_find_config_files_pyproject(tmp_path):
+    tmp_path.joinpath('pyproject.toml').write_text('', encoding='utf-8')
+    assert _find_config_file(tmp_path).name == 'pyproject.toml'
+
+
+def test_find_config_files_towncrier(tmp_path):
+    tmp_path.joinpath('towncrier.toml').write_text('', encoding='utf-8')
+    assert _find_config_file(tmp_path).name == 'towncrier.toml'
