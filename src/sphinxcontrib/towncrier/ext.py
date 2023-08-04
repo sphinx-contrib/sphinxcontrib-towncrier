@@ -97,7 +97,8 @@ def _get_changelog_draft_entries(
 
 
 def _resolve_spec_config(
-        base: Path, spec_name: Optional[str] = None) -> Optional[Path]:
+        base: Path, spec_name: Optional[str] = None,
+) -> Optional[Path]:
     return base / spec_name if spec_name is not None else None
 
 
