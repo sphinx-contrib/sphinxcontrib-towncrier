@@ -96,12 +96,15 @@ def _get_changelog_draft_entries(
     return towncrier_output
 
 
+def _resolve_spec_config(
+        base: Path, spec_name: Optional[str] = None) -> Optional[Path]:
+    return base / spec_name if spec_name is not None else None
+
+
 # pylint: disable=fixme
 # FIXME: consider consolidating this logic upstream in towncrier
-def _find_config_file(base: Path, spec_name: Optional[str] = None) -> Path:
+def _find_config_file(base: Path) -> Path:
     """Find the best config file."""
-    if spec_name is not None:
-        return base / spec_name
     candidate_names = 'towncrier.toml', 'pyproject.toml'
     candidates = list(map(base.joinpath, candidate_names))
     extant = filter(Path.is_file, candidates)
@@ -118,7 +121,10 @@ def _lookup_towncrier_fragments(  # noqa: WPS210
     """Emit RST-formatted Towncrier changelog fragment paths."""
     project_path = Path.cwd() if working_dir is None else Path(working_dir)
 
-    final_config_path = _find_config_file(project_path, config_path)
+    final_config_path = (
+        _resolve_spec_config(project_path, config_path)
+        or _find_config_file(project_path)
+    )
 
     try:
         towncrier_config = get_towncrier_config(
