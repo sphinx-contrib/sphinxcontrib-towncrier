@@ -100,13 +100,10 @@ def _get_changelog_draft_entries(
 # FIXME: consider consolidating this logic upstream in towncrier
 def _find_config_file(base: Path, spec_name: Optional[str] = None) -> Path:
     """Find the best config file."""
-    found = base / 'pyproject.toml'
     if spec_name is not None:
-        found = base / spec_name
-    elif (  # noqa: WPS337
-            not found.is_file() and
-            (base / 'towncrier.toml').is_file()
-    ):
+        return base / spec_name
+    found = base / 'pyproject.toml'
+    if not found.is_file() and (base / 'towncrier.toml').is_file():
         found = base / 'towncrier.toml'
     return found
 
