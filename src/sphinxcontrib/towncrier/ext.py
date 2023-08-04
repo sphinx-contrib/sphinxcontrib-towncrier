@@ -102,10 +102,10 @@ def _find_config_file(base: Path, spec_name: Optional[str] = None) -> Path:
     """Find the best config file."""
     if spec_name is not None:
         return base / spec_name
-    candidate_names = 'pyproject.toml', 'towncrier.toml'
+    candidate_names = 'towncrier.toml', 'pyproject.toml'
     candidates = list(map(base.joinpath, candidate_names))
     extant = filter(Path.is_file, candidates)
-    return next(extant, candidates[0])
+    return next(extant, candidates[-1])
 
 
 # pylint: disable=fixme
