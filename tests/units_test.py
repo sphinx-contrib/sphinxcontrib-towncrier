@@ -4,7 +4,9 @@ import sys
 import pytest
 
 from sphinxcontrib.towncrier._compat import shlex_join
-from sphinxcontrib.towncrier.ext import _get_changelog_draft_entries, _find_config_file
+from sphinxcontrib.towncrier.ext import (
+    _find_config_file, _get_changelog_draft_entries,
+)
 
 
 NO_OUTPUT_MARKER = r'\[No output\]'
