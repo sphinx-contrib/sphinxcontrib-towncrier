@@ -10,6 +10,8 @@ from sphinxcontrib.towncrier.ext import (
 
 
 NO_OUTPUT_MARKER = r'\[No output\]'
+PYPROJECT_TOML_FILENAME = 'pyproject.toml'
+TOWNCRIER_TOML_FILENAME = 'towncrier.toml'
 
 
 _get_changelog_draft_entries_unwrapped = (
@@ -104,17 +106,23 @@ def test_towncrier_draft_generation_failure_msg(
     ('config_file_names_on_disk', 'expected_config_file_name'),
     (
         pytest.param(
-            set(), 'pyproject.toml', id='pyproject.toml-when-no-configs',
+            set(),
+            PYPROJECT_TOML_FILENAME,
+            id='pyproject.toml-when-no-configs',
         ),
         pytest.param(
-            {'pyproject.toml'}, 'pyproject.toml', id='pyproject.toml-only',
+            {PYPROJECT_TOML_FILENAME},
+            'pyproject.toml',
+            id='pyproject.toml-only',
         ),
         pytest.param(
-            {'towncrier.toml'}, 'towncrier.toml', id='towncrier.toml-only',
+            {TOWNCRIER_TOML_FILENAME},
+            TOWNCRIER_TOML_FILENAME,
+            id='towncrier.toml-only',
         ),
         pytest.param(
-            {'pyproject.toml', 'towncrier.toml'},
-            'towncrier.toml',
+            {PYPROJECT_TOML_FILENAME, TOWNCRIER_TOML_FILENAME},
+            TOWNCRIER_TOML_FILENAME,
             id='towncrier.toml-over-pyproject.toml',
         ),
     ),
