@@ -19,14 +19,6 @@ from sphinx.util.nodes import nested_parse_with_titles, nodes
 
 # isort: split
 
-try:
-    # pylint: disable=no-name-in-module
-    from towncrier.build import find_fragments  # noqa: WPS433
-except ImportError:
-    # pylint: disable=import-self,no-name-in-module
-    from towncrier import (  # type: ignore[attr-defined] # noqa: WPS433,WPS440
-        find_fragments,
-    )
 
 # Ref: https://github.com/PyCQA/pylint/issues/3817
 from docutils import statemachine  # pylint: disable=wrong-import-order
@@ -35,7 +27,7 @@ from ._compat import shlex_join  # noqa: WPS436
 from ._data_transformers import (  # noqa: WPS436
     escape_project_version_rst_substitution,
 )
-from ._towncrier import get_towncrier_config  # noqa: WPS436
+from ._fragment_discovery import lookup_towncrier_fragments  # noqa: WPS436
 from ._version import __version__  # noqa: WPS436
 
 
@@ -94,55 +86,6 @@ def _get_changelog_draft_entries(
         raise LookupError('There are no unreleased changelog entries so far')
 
     return towncrier_output
-
-
-# pylint: disable=fixme
-# FIXME: refactor `_lookup_towncrier_fragments` to drop noqas
-@lru_cache(maxsize=1, typed=True)  # noqa: WPS210
-def _lookup_towncrier_fragments(  # noqa: WPS210
-        working_dir: Optional[str] = None,
-        config_path: Optional[str] = None,
-) -> Set[Path]:
-    """Emit RST-formatted Towncrier changelog fragment paths."""
-    project_path = Path.cwd() if working_dir is None else Path(working_dir)
-
-    final_config_path = project_path / 'pyproject.toml'
-    if config_path is not None:
-        final_config_path = project_path / config_path
-    elif (  # noqa: WPS337
-            not final_config_path.is_file() and
-            (project_path / 'towncrier.toml').is_file()
-    ):
-        final_config_path = project_path / 'towncrier.toml'
-
-    try:
-        towncrier_config = get_towncrier_config(
-            project_path,
-            final_config_path,
-        )
-    except KeyError as key_err:
-        # NOTE: The error is missing key 'towncrier' or similar
-        logger.warning(
-            f'Missing key {key_err!s} in file {final_config_path!s}',
-        )
-        return set()
-
-    fragment_directory: Optional[str] = 'newsfragments'
-    try:
-        fragment_base_directory = project_path / towncrier_config['directory']
-    except KeyError:
-        assert fragment_directory is not None
-        fragment_base_directory = project_path / fragment_directory
-    else:
-        fragment_directory = None
-
-    _fragments, fragment_filenames = find_fragments(
-        str(fragment_base_directory),
-        towncrier_config['sections'],
-        fragment_directory,
-        towncrier_config['types'],
-    )
-    return set(fragment_filenames)
 
 
 @lru_cache(maxsize=1, typed=True)
@@ -210,7 +153,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
         autoversion_mode = config.towncrier_draft_autoversion_mode
         include_empty = config.towncrier_draft_include_empty
 
-        towncrier_fragment_paths = _lookup_towncrier_fragments(
+        towncrier_fragment_paths = lookup_towncrier_fragments(
             working_dir=config.towncrier_draft_working_directory,
             config_path=config.towncrier_draft_config_path,
         )
@@ -360,7 +303,7 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
 
         This is a handler for :event:`env-get-outdated`.
         """
-        towncrier_fragment_paths = _lookup_towncrier_fragments(
+        towncrier_fragment_paths = lookup_towncrier_fragments(
             working_dir=env.config.towncrier_draft_working_directory,
             config_path=env.config.towncrier_draft_config_path,
         )
