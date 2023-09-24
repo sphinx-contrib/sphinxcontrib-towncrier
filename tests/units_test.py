@@ -100,15 +100,34 @@ def test_towncrier_draft_generation_failure_msg(
         _get_changelog_draft_entries_unwrapped(version_string)
 
 
-def test_find_config_files_empty(tmp_path):
-    assert _find_config_file(tmp_path).name == 'pyproject.toml'
+@pytest.mark.parametrize(
+    ('config_file_names_on_disk', 'expected_config_file_name'),
+    (
+        pytest.param(
+            set(), 'pyproject.toml', id='pyproject.toml-when-no-configs',
+        ),
+        pytest.param(
+            {'pyproject.toml'}, 'pyproject.toml', id='pyproject.toml-only',
+        ),
+        pytest.param(
+            {'towncrier.toml'}, 'towncrier.toml', id='towncrier.toml-only',
+        ),
+        pytest.param(
+            {'pyproject.toml', 'towncrier.toml'},
+            'towncrier.toml',
+            id='towncrier.toml-over-pyproject.toml',
+        ),
+    ),
+)
+def test_find_config_files(
+        config_file_names_on_disk,
+        expected_config_file_name,
+        tmp_path,
+) -> None:
+    """Verify that the correct Towncrier config is always preferred."""
+    for config_file_name_on_disk in config_file_names_on_disk:
+        tmp_path.joinpath(config_file_name_on_disk).write_text(
+            '', encoding='utf-8',
+        )
 
-
-def test_find_config_files_pyproject(tmp_path):
-    tmp_path.joinpath('pyproject.toml').write_text('', encoding='utf-8')
-    assert _find_config_file(tmp_path).name == 'pyproject.toml'
-
-
-def test_find_config_files_towncrier(tmp_path):
-    tmp_path.joinpath('towncrier.toml').write_text('', encoding='utf-8')
-    assert _find_config_file(tmp_path).name == 'towncrier.toml'
+    assert _find_config_file(tmp_path).name == expected_config_file_name
