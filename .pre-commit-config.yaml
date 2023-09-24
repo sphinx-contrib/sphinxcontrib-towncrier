@@ -168,6 +168,64 @@ repos:
   rev: v1.4.1
   hooks:
   - id: mypy
+    alias: mypy-py312
+    name: MyPy, for Python 3.12
+    additional_dependencies:
+    - lxml  # requirement of `--txt-report`
+    - Sphinx >= 3.1.2
+    - types-docutils
+    - types-pytz
+    - types-typed-ast
+    args:
+    # FIXME: get rid of missing imports ignore
+    - --namespace-packages
+    - --ignore-missing-imports
+    - --install-types
+    - --non-interactive
+    - --python-version=3.12
+    - --txt-report=.tox/.tmp/.mypy/python-3.12
+    - src/sphinxcontrib/
+    - tests/
+    pass_filenames: false
+  - id: mypy
+    alias: mypy-py310
+    name: MyPy, for Python 3.10
+    additional_dependencies:
+    - lxml  # requirement of `--txt-report`
+    - Sphinx >= 3.1.2
+    - types-docutils
+    - types-typed-ast
+    args:
+    # FIXME: get rid of missing imports ignore
+    - --namespace-packages
+    - --ignore-missing-imports
+    - --install-types
+    - --non-interactive
+    - --python-version=3.10
+    - --txt-report=.tox/.tmp/.mypy/python-3.10
+    - src/sphinxcontrib/
+    - tests/
+    pass_filenames: false
+  - id: mypy
+    alias: mypy-py38
+    name: MyPy, for Python 3.8
+    additional_dependencies:
+    - lxml  # requirement of `--txt-report`
+    - Sphinx >= 3.1.2
+    - types-docutils
+    - types-typed-ast
+    args:
+    # FIXME: get rid of missing imports ignore
+    - --namespace-packages
+    - --ignore-missing-imports
+    - --install-types
+    - --non-interactive
+    - --python-version=3.8
+    - --txt-report=.tox/.tmp/.mypy/python-3.8
+    - src/sphinxcontrib/
+    - tests/
+    pass_filenames: false
+  - id: mypy
     alias: mypy-36
     name: MyPy against Python 3.6
     additional_dependencies:
