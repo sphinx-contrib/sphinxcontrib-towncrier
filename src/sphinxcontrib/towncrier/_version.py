@@ -4,13 +4,8 @@ try:
     # pylint: disable=unused-import
     from ._scm_version import version as __version__  # noqa: WPS433, WPS436
 except ImportError:
-    try:  # noqa: WPS505
-        from importlib.metadata import (  # Python 3.8+  # noqa: WPS433
-            version as _get_version,
-        )
-    except ImportError:
-        from importlib_metadata import (  # noqa: WPS433, WPS440
-            version as _get_version,
-        )
+    from ._compat import importlib_metadata_get_version  # noqa: WPS433, WPS436
 
-    __version__ = _get_version('sphinxcontrib-towncrier')  # noqa: WPS440
+    __version__ = importlib_metadata_get_version(  # noqa: WPS440
+        'sphinxcontrib-towncrier',
+    )
