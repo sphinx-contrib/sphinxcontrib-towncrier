@@ -168,9 +168,11 @@ repos:
   rev: v1.4.1
   hooks:
   - id: mypy
+    alias: mypy-36
+    name: MyPy against Python 3.6
     additional_dependencies:
     - lxml  # requirement of `--txt-report`
-    - Sphinx >= 3.1.2
+    - Sphinx >= 3.1.2, < 6
     - types-docutils
     - types-typed-ast
     args:
@@ -179,7 +181,8 @@ repos:
     - --ignore-missing-imports
     - --install-types
     - --non-interactive
-    - --txt-report=.tox/.tmp/.mypy/
+    - --python-version=3.6
+    - --txt-report=.tox/.tmp/.mypy/python-3.6
     - src/sphinxcontrib/
     - tests/
     pass_filenames: false
