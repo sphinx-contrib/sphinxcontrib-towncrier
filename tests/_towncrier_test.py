@@ -5,16 +5,15 @@ import os
 
 import pytest
 
-from towncrier._settings.load import ConfigError
-
 from sphinxcontrib.towncrier._towncrier import get_towncrier_config
+from ._compat import TowncrierConfigError
 
 
 def test_towncrier_config_section_missing(tmp_path):
     """Test config file without Towncrier section raises an error."""
     expected_error_msg = r'^No \[tool\.towncrier\] section\.$'
 
-    with pytest.raises(ConfigError, match=expected_error_msg):
+    with pytest.raises(TowncrierConfigError, match=expected_error_msg):
         get_towncrier_config(tmp_path, os.devnull)
 
 
