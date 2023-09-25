@@ -26,7 +26,11 @@ def test_towncrier_config_section_missing(tmp_path):
         'towncrier.toml',
     ),
 )
-def test_towncrier_config_file_missing(config_file_name, monkeypatch, tmp_path):
+def test_towncrier_config_file_missing(
+        config_file_name,
+        monkeypatch,
+        tmp_path,
+):
     """Test missing Towncrier config file raises an error."""
     tmp_working_dir_path = tmp_path / 'working-directory'
     tmp_working_dir_path.mkdir()
