@@ -277,6 +277,23 @@ repos:
     language: system
     files: >-
       ^setup\.py$
+  - id: immutable-tests-init-py
+    name: Verify that tests/__init__.py stays immutable
+    description: >-
+      This is a sanity check that makes sure that
+      the `tests/__init__.py` file isn't changed.
+    # Using Python here because using
+    # shell test does not seem to work in CIs:
+    entry: >-
+      sh -c 'git hash-object tests/__init__.py
+      |
+      python -c raise\
+      SystemExit\(input\(\)\ !=\ \"674d7b907efe86dafcd2b8ddc5655fc55ddf5395\"\)
+      '
+    pass_filenames: false
+    language: system
+    files: >-
+      ^tests/__init__\.py$
 
 - repo: local
   hooks:
