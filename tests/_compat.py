@@ -1,8 +1,10 @@
+# pylint: disable=no-name-in-module
 """Compatibility shims for Python and Towncrier matrix."""
 
 
 try:
     # Towncrier >= 22.8.0rc1
+    # pylint: disable-next=unused-import
     from towncrier._settings.load import (  # noqa: WPS433
         ConfigError as TowncrierConfigError,
     )
