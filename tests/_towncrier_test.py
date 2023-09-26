@@ -3,6 +3,7 @@
 
 import os
 from pathlib import Path
+from typing import Union
 
 import pytest
 
@@ -22,13 +23,12 @@ def test_towncrier_config_section_missing(tmp_path: Path) -> None:
     'config_file_name',
     (
         None,
-        pytest.param('', id='<empty-string>'),
-        'pyproject.toml',
-        'towncrier.toml',
+        Path('pyproject.toml'),
+        Path('towncrier.toml'),
     ),
 )
 def test_towncrier_config_file_missing(
-        config_file_name: str,
+        config_file_name: Union[Path, None],
         monkeypatch: pytest.MonkeyPatch,
         tmp_path: Path,
 ) -> None:
@@ -42,4 +42,4 @@ def test_towncrier_config_file_missing(
     )
 
     with pytest.raises(FileNotFoundError, match=expected_error_msg):
-        get_towncrier_config(tmp_path, Path(config_file_name))
+        get_towncrier_config(tmp_path, config_file_name)

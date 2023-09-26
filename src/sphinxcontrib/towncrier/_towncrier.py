@@ -2,7 +2,7 @@
 
 from contextlib import suppress as _suppress_exception
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 
 with _suppress_exception(ImportError):
@@ -26,7 +26,7 @@ except ImportError:
 
 def get_towncrier_config(
         project_path: Path,
-        final_config_path: Path,
+        final_config_path: Union[Path, None],
 ) -> Dict[str, Any]:  # FIXME: add a better type  # pylint: disable=fixme
     """Return the towncrier config dictionary."""
     try:
@@ -37,7 +37,7 @@ def get_towncrier_config(
     except TypeError:
         # Towncrier < 19.9.0
 
-        if not final_config_path.exists():
+        if final_config_path is None or not final_config_path.exists():
             # Towncrier < 19.9.0
             raise FileNotFoundError(
                 f"[Errno 2] No such file or directory: '{final_config_path}'",
