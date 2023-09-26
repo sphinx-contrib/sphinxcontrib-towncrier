@@ -305,7 +305,7 @@ repos:
     - tests/
     pass_filenames: false
   - id: mypy
-    alias: mypy-36
+    alias: mypy-py36
     name: MyPy, for Python 3.6
     additional_dependencies:
     - lxml  # requirement of `--txt-report`
