@@ -1,0 +1,4 @@
+`sphinxcontrib.towncrier` is a Sphinx extension. It does not expose own public
+API. However, this PEP 561 marker file exists to let the type checkers know
+that this project has type annotations declared. In particular, this is useful
+for type-checking our own tests since they make corresponding imports.
