@@ -21,7 +21,7 @@ from sphinxcontrib.towncrier._data_transformers import (
         'correct substitution in the middle',
     ),
 )
-def test_escape_version(test_input, escaped_input):
+def test_escape_version(test_input: str, escaped_input: str) -> None:
     """Test that the version is escaped before RST substitutions.
 
     RST substitution as the first item should be escaped. Otherwise,
