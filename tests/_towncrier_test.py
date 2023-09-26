@@ -2,6 +2,7 @@
 
 
 import os
+from pathlib import Path
 
 import pytest
 
@@ -14,7 +15,7 @@ def test_towncrier_config_section_missing(tmp_path):
     expected_error_msg = r'^No \[tool\.towncrier\] section\.$'
 
     with pytest.raises(TowncrierConfigError, match=expected_error_msg):
-        get_towncrier_config(tmp_path, os.devnull)
+        get_towncrier_config(tmp_path, Path(os.devnull))
 
 
 @pytest.mark.parametrize(
@@ -41,4 +42,4 @@ def test_towncrier_config_file_missing(
     )
 
     with pytest.raises(FileNotFoundError, match=expected_error_msg):
-        get_towncrier_config(tmp_path, config_file_name)
+        get_towncrier_config(tmp_path, Path(config_file_name))
