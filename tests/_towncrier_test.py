@@ -1,7 +1,6 @@
 """Towncrier config reader tests."""
 
 
-import os
 from pathlib import Path
 from typing import Union
 
@@ -11,12 +10,21 @@ from sphinxcontrib.towncrier._towncrier import get_towncrier_config
 from ._compat import TowncrierConfigError
 
 
-def test_towncrier_config_section_missing(tmp_path: Path) -> None:
+def test_towncrier_config_section_missing(
+        monkeypatch: pytest.MonkeyPatch,
+        tmp_path: Path,
+) -> None:
     """Test config file without Towncrier section raises an error."""
+    tmp_working_dir_path = tmp_path / 'working-directory'
+    tmp_working_dir_path.mkdir()
+    empty_config_file = Path('arbitrary-config.toml')
+    (tmp_working_dir_path / empty_config_file).touch()
+    monkeypatch.chdir(tmp_working_dir_path)
+
     expected_error_msg = r'^No \[tool\.towncrier\] section\.$'
 
     with pytest.raises(TowncrierConfigError, match=expected_error_msg):
-        get_towncrier_config(tmp_path, Path(os.devnull))
+        get_towncrier_config(tmp_path, empty_config_file)
 
 
 @pytest.mark.parametrize(
