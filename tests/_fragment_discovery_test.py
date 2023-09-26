@@ -1,4 +1,9 @@
 """Unit tests of the fragment discovery logic."""
+
+
+from pathlib import Path
+from typing import Set
+
 import pytest
 
 from sphinxcontrib.towncrier._fragment_discovery import _find_config_file
@@ -34,9 +39,9 @@ TOWNCRIER_TOML_FILENAME = 'towncrier.toml'
     ),
 )
 def test_find_config_file(
-        config_file_names_on_disk,
-        expected_config_file_name,
-        tmp_path,
+        config_file_names_on_disk: Set[str],
+        expected_config_file_name: str,
+        tmp_path: Path,
 ) -> None:
     """Verify that the correct Towncrier config is always preferred."""
     for config_file_name_on_disk in config_file_names_on_disk:
