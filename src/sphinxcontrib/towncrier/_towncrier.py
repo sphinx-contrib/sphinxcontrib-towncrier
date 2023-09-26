@@ -36,13 +36,14 @@ def get_towncrier_config(
         )
     except TypeError:
         # Towncrier < 19.9.0
-        config = load_config_from_file(str(final_config_path))
 
-        if config is None:
+        if not final_config_path.exists():
             # Towncrier < 19.9.0
             raise FileNotFoundError(
                 f"[Errno 2] No such file or directory: '{final_config_path}'",
             ) from None
+
+        return load_config_from_file(str(final_config_path))
 
     if isinstance(config, dict):
         # Towncrier < 22.12.0rc1
