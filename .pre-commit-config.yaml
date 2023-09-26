@@ -6,6 +6,72 @@ ci:
   - nitpick-check  # can't run on pre-commit.ci while using gh://
 
 repos:
+- repo: local
+  hooks:
+  - id: immutable-setup-py
+    name: Verify that setup.py stays immutable
+    description: >-
+      This is a sanity check that makes sure that
+      the `setup.py` file isn't changed.
+    # Using Python here because using
+    # shell test does not seem to work in CIs:
+    entry: >-
+      sh -c 'git hash-object setup.py
+      |
+      python -c raise\
+      SystemExit\(input\(\)\ !=\ \"38cc2638672e1f6ca56e4d5ceaf16451dd702b67\"\)
+      '
+    pass_filenames: false
+    language: system
+    files: >-
+      ^setup\.py$
+  - id: immutable-tests-init-py
+    name: Verify that tests/__init__.py stays immutable
+    description: >-
+      This is a sanity check that makes sure that
+      the `tests/__init__.py` file isn't changed.
+    # Using Python here because using
+    # shell test does not seem to work in CIs:
+    entry: >-
+      sh -c 'git hash-object tests/__init__.py
+      |
+      python -c raise\
+      SystemExit\(input\(\)\ !=\ \"674d7b907efe86dafcd2b8ddc5655fc55ddf5395\"\)
+      '
+    pass_filenames: false
+    language: system
+    files: >-
+      ^tests/__init__\.py$
+  - id: enforced-flake8-version
+    name: Verify that enforced flake8 version stays unchanged
+    description: >-
+      This is a sanity check and fixer that makes sure that
+      the `flake8` version in this file remains matching the
+      corresponding request in the `# enforce-version` comment.
+    # Using Python here because using
+    # shell test does not always work in CIs:
+    entry: >-
+      python -c 'import pathlib, re, sys;
+      pre_commit_config = pathlib.Path(sys.argv[1]);
+      cfg_txt = pre_commit_config.read_text();
+      new_cfg_txt = re.sub(
+      r"(?P<spaces>\s+)rev:\s(?:\d+\.\d+\.\d+)\s{0,2}"
+      r"#\senforce-version:\s(?P<enforced_version>\d+\.\d+\.\d+)"
+      r"[ \t\f\v]*",
+      r"\g<spaces>rev: \g<enforced_version>  "
+      r"# enforce-version: \g<enforced_version>",
+      cfg_txt,
+      );
+      cfg_txt != new_cfg_txt and
+      pre_commit_config.write_text(new_cfg_txt)
+      '
+    pass_filenames: true
+    language: system
+    files: >-
+      ^\.pre-commit-config\.ya?ml$
+    types:
+    - yaml
+
 - repo: https://github.com/asottile/add-trailing-comma.git
   rev: v3.0.0
   hooks:
@@ -164,6 +230,19 @@ repos:
     - wemake-python-styleguide ~= 0.16.1
     language_version: python3
 
+- repo: local
+  hooks:
+  - id: pylint
+    language: system
+    name: PyLint
+    files: \.py$
+    entry: python -m pylint
+    args:
+    - --rcfile
+    - .pylintrc
+    stages:
+    - manual
+
 - repo: https://github.com/pre-commit/mirrors-mypy.git
   rev: v1.4.1
   hooks:
@@ -245,84 +324,4 @@ repos:
     - tests/
     pass_filenames: false
 
-- repo: local
-  hooks:
-  - id: pylint
-    language: system
-    name: PyLint
-    files: \.py$
-    entry: python -m pylint
-    args:
-    - --rcfile
-    - .pylintrc
-    stages:
-    - manual
-
-- repo: local
-  hooks:
-  - id: immutable-setup-py
-    name: Verify that setup.py stays immutable
-    description: >-
-      This is a sanity check that makes sure that
-      the `setup.py` file isn't changed.
-    # Using Python here because using
-    # shell test does not seem to work in CIs:
-    entry: >-
-      sh -c 'git hash-object setup.py
-      |
-      python -c raise\
-      SystemExit\(input\(\)\ !=\ \"38cc2638672e1f6ca56e4d5ceaf16451dd702b67\"\)
-      '
-    pass_filenames: false
-    language: system
-    files: >-
-      ^setup\.py$
-  - id: immutable-tests-init-py
-    name: Verify that tests/__init__.py stays immutable
-    description: >-
-      This is a sanity check that makes sure that
-      the `tests/__init__.py` file isn't changed.
-    # Using Python here because using
-    # shell test does not seem to work in CIs:
-    entry: >-
-      sh -c 'git hash-object tests/__init__.py
-      |
-      python -c raise\
-      SystemExit\(input\(\)\ !=\ \"674d7b907efe86dafcd2b8ddc5655fc55ddf5395\"\)
-      '
-    pass_filenames: false
-    language: system
-    files: >-
-      ^tests/__init__\.py$
-
-- repo: local
-  hooks:
-  - id: enforced-flake8-version
-    name: Verify that enforced flake8 version stays unchanged
-    description: >-
-      This is a sanity check and fixer that makes sure that
-      the `flake8` version in this file remains matching the
-      corresponding request in the `# enforce-version` comment.
-    # Using Python here because using
-    # shell test does not always work in CIs:
-    entry: >-
-      python -c 'import pathlib, re, sys;
-      pre_commit_config = pathlib.Path(sys.argv[1]);
-      cfg_txt = pre_commit_config.read_text();
-      new_cfg_txt = re.sub(
-      r"(?P<spaces>\s+)rev:\s(?:\d+\.\d+\.\d+)\s{0,2}"
-      r"#\senforce-version:\s(?P<enforced_version>\d+\.\d+\.\d+)"
-      r"[ \t\f\v]*",
-      r"\g<spaces>rev: \g<enforced_version>  "
-      r"# enforce-version: \g<enforced_version>",
-      cfg_txt,
-      );
-      cfg_txt != new_cfg_txt and
-      pre_commit_config.write_text(new_cfg_txt)
-      '
-    pass_filenames: true
-    language: system
-    files: >-
-      ^\.pre-commit-config\.ya?ml$
-    types:
-    - yaml
+...
