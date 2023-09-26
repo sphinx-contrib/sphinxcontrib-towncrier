@@ -10,7 +10,7 @@ from sphinxcontrib.towncrier._towncrier import get_towncrier_config
 from ._compat import TowncrierConfigError
 
 
-def test_towncrier_config_section_missing(tmp_path):
+def test_towncrier_config_section_missing(tmp_path: Path) -> None:
     """Test config file without Towncrier section raises an error."""
     expected_error_msg = r'^No \[tool\.towncrier\] section\.$'
 
@@ -28,10 +28,10 @@ def test_towncrier_config_section_missing(tmp_path):
     ),
 )
 def test_towncrier_config_file_missing(
-        config_file_name,
-        monkeypatch,
-        tmp_path,
-):
+        config_file_name: str,
+        monkeypatch: pytest.MonkeyPatch,
+        tmp_path: Path,
+) -> None:
     """Test missing Towncrier config file raises an error."""
     tmp_working_dir_path = tmp_path / 'working-directory'
     tmp_working_dir_path.mkdir()
