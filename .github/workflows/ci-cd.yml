@@ -4,7 +4,7 @@ name: 👷tests
 
 on:  # yamllint disable-line rule:truthy
   merge_group:
-  push:  # publishes to TestPyPI pushes to the main branch
+  push:
     branches-ignore:
     - dependabot/**
     - pre-commit-ci-update-config
