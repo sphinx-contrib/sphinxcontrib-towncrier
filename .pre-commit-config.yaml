@@ -73,12 +73,12 @@ repos:
     - yaml
 
 - repo: https://github.com/asottile/add-trailing-comma.git
-  rev: v3.0.0
+  rev: v3.1.0
   hooks:
   - id: add-trailing-comma
 
 - repo: https://github.com/asottile/pyupgrade.git
-  rev: v3.8.0
+  rev: v3.14.0
   hooks:
   - id: pyupgrade
     args:
@@ -92,12 +92,12 @@ repos:
     - --honor-noqa
 
 - repo: https://github.com/Lucas-C/pre-commit-hooks.git
-  rev: v1.5.1
+  rev: v1.5.4
   hooks:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.23.2
+  rev: 0.27.0
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -116,7 +116,7 @@ repos:
   # yamllint enable rule:comments-indentation
 
 - repo: https://github.com/andreoliwa/nitpick.git
-  rev: v0.33.2
+  rev: v0.34.0
   hooks:
   - id: nitpick-check
     args:
@@ -176,7 +176,7 @@ repos:
   - id: pydocstyle
 
 - repo: https://github.com/codespell-project/codespell.git
-  rev: v2.2.5
+  rev: v2.2.6
   hooks:
   - id: codespell
     exclude: >-
@@ -200,12 +200,12 @@ repos:
     - E006
 
 - repo: https://github.com/shellcheck-py/shellcheck-py.git
-  rev: v0.9.0.5
+  rev: v0.9.0.6
   hooks:
   - id: shellcheck
 
 - repo: https://github.com/PyCQA/flake8.git
-  rev: 6.0.0
+  rev: 6.1.0
   hooks:
   - id: flake8
     alias: flake8-no-wps
@@ -244,7 +244,7 @@ repos:
     - manual
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v1.4.1
+  rev: v1.5.1
   hooks:
   - id: mypy
     alias: mypy-py312
