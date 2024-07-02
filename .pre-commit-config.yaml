@@ -78,26 +78,26 @@ repos:
   - id: add-trailing-comma
 
 - repo: https://github.com/asottile/pyupgrade.git
-  rev: v3.14.0
+  rev: v3.16.0
   hooks:
   - id: pyupgrade
     args:
     - --py36-plus
 
 - repo: https://github.com/PyCQA/isort.git
-  rev: 5.12.0
+  rev: 5.13.2
   hooks:
   - id: isort
     args:
     - --honor-noqa
 
 - repo: https://github.com/Lucas-C/pre-commit-hooks.git
-  rev: v1.5.4
+  rev: v1.5.5
   hooks:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.27.0
+  rev: 0.28.6
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -116,7 +116,7 @@ repos:
   # yamllint enable rule:comments-indentation
 
 - repo: https://github.com/andreoliwa/nitpick.git
-  rev: v0.34.0
+  rev: v0.35.0
   hooks:
   - id: nitpick-check
     args:
@@ -133,7 +133,7 @@ repos:
   - id: rst-backticks
 
 - repo: https://github.com/pre-commit/pre-commit-hooks.git
-  rev: v4.4.0
+  rev: v4.6.0
   hooks:
   # Side-effects:
   - id: trailing-whitespace
@@ -176,14 +176,14 @@ repos:
   - id: pydocstyle
 
 - repo: https://github.com/codespell-project/codespell.git
-  rev: v2.2.6
+  rev: v2.3.0
   hooks:
   - id: codespell
     exclude: >-
       ^\.github/\.json-schemas/.*\.json$
 
 - repo: https://github.com/adrienverge/yamllint.git
-  rev: v1.32.0
+  rev: v1.35.1
   hooks:
   - id: yamllint
     files: \.(yaml|yml)$
@@ -200,12 +200,12 @@ repos:
     - E006
 
 - repo: https://github.com/shellcheck-py/shellcheck-py.git
-  rev: v0.9.0.6
+  rev: v0.10.0.1
   hooks:
   - id: shellcheck
 
 - repo: https://github.com/PyCQA/flake8.git
-  rev: 6.1.0
+  rev: 7.1.0
   hooks:
   - id: flake8
     alias: flake8-no-wps
@@ -218,7 +218,7 @@ repos:
 
 - repo: https://github.com/PyCQA/flake8.git
   # NOTE: This is kept at v4 for until WPS starts supporting flake v5.
-  rev: 4.0.1  # enforce-version: 4.0.1
+  rev: 7.1.0  # enforce-version: 4.0.1
   hooks:
   - id: flake8
     alias: flake8-only-wps
@@ -244,7 +244,7 @@ repos:
     - manual
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v1.5.1
+  rev: v1.10.1
   hooks:
   - id: mypy
     alias: mypy-py312
