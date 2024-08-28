@@ -121,6 +121,7 @@ repos:
   - id: nitpick-check
     args:
     - -v
+    pass_filenames: false
     stages: []
 
 - repo: https://github.com/pre-commit/pygrep-hooks.git
