@@ -14,7 +14,7 @@ else:
     from shlex import quote as _shlex_quote  # noqa: WPS433
 
     # pylint: disable-next=line-too-long
-    from importlib_metadata import (  # type: ignore[no-redef, unused-ignore]  # noqa: LN002, WPS433, WPS440  # `unused-ignore` is only needed under Python 3.6
+    from importlib_metadata import (  # type: ignore[no-redef, unused-ignore]  # noqa: B950, LN002, WPS433, WPS440  # `unused-ignore` is only needed under Python 3.6
         version as importlib_metadata_get_version,
     )
 
