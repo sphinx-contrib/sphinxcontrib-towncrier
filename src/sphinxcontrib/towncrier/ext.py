@@ -22,6 +22,7 @@ from sphinx.util.nodes import nested_parse_with_titles, nodes
 
 # Ref: https://github.com/PyCQA/pylint/issues/3817
 from docutils import statemachine  # pylint: disable=wrong-import-order
+from docutils.parsers.rst.states import RSTState
 
 from ._compat import shlex_join  # noqa: WPS436
 from ._data_transformers import (  # noqa: WPS436
@@ -112,7 +113,7 @@ def _get_draft_version_fallback(
 
 
 def _nodes_from_document_markup_source(
-        state: statemachine.State,
+        state: RSTState,
         markup_source: str,
 ) -> List[nodes.Node]:
     """Turn an RST or Markdown string into a list of nodes.
