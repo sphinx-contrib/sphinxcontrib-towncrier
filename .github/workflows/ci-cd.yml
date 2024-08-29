@@ -11,7 +11,7 @@ on:  # yamllint disable-line rule:truthy
     - pre-commit-ci-update-config  # pre-commit.ci always creates a PR
   pull_request:
   schedule:
-  - cron: 1 0 * * *  # Run daily at 0:01 UTC
+  - cron: 3 5 * * *  # Run daily at 5:03 UTC
   workflow_dispatch:
     inputs:
       release-version:
