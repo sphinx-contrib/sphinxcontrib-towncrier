@@ -4,11 +4,11 @@ name: 👷tests
 
 on:  # yamllint disable-line rule:truthy
   merge_group:
-  push:
+  push:  # publishes to TestPyPI pushes to the main branch
     branches-ignore:
-    - dependabot/**
+    - dependabot/**  # Dependabot always creates PRs
     - gh-readonly-queue/**  # Temporary merge queue-related GH-made branches
-    - pre-commit-ci-update-config
+    - pre-commit-ci-update-config  # pre-commit.ci always creates a PR
   pull_request:
   schedule:
   - cron: 1 0 * * *  # Run daily at 0:01 UTC
@@ -64,7 +64,7 @@ env:
   PYTHONLEGACYWINDOWSSTDIO: 1  # Python 3.6 hack
   PYTHONUTF8: 1
   TOX_PARALLEL_NO_SPINNER: 1  # Disable tox's parallel run spinner animation
-  TOX_TESTENV_PASSENV: >-
+  TOX_TESTENV_PASSENV: >-  # Make tox-wrapped tools see color requests
     FORCE_COLOR
     MYPY_FORCE_COLOR
     NO_COLOR
