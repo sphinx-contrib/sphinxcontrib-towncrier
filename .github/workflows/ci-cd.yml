@@ -20,8 +20,8 @@ on:  # yamllint disable-line rule:truthy
         description: >-
           Target PEP440-compliant version to release.
           Please, don't prepend `v`.
-        type: string
         required: true
+        type: string
       release-committish:
         # github.event_name == 'workflow_dispatch'
         # && github.event.inputs.release-committish
@@ -31,7 +31,6 @@ on:  # yamllint disable-line rule:truthy
           in Git as `release-version`. Normally, you
           should keep this empty.
         type: string
-        required: false
       YOLO:
         default: false
         description: >-
@@ -41,7 +40,6 @@ on:  # yamllint disable-line rule:truthy
           extraordinary circumstances to ignore the test
           failures and cut the release regardless.
         type: boolean
-        required: false
 
 concurrency:
   group: >-
@@ -753,18 +751,22 @@ jobs:
         fi
 
     - name: Fetch the src snapshot
-      if: steps.existing-remote-tag-check.outputs.already-exists == 'true'
+      if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
       uses: actions/checkout@v3
       with:
         fetch-depth: 1
         ref: ${{ github.event.inputs.release-committish }}
     - name: Setup git user as [bot]
-      if: steps.existing-remote-tag-check.outputs.already-exists == 'true'
-      uses: fregante/setup-git-user@v2
+      if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
+      # Refs:
+      # * https://github.community/t/github-actions-bot-email-address/17204/6
+      # * https://github.com/actions/checkout/issues/13#issuecomment-724415212
+      uses: fregante/setup-git-user@v2.0.1
+
     - name: >-
         Tag the release in the local Git repo
         as ${{ needs.pre-setup.outputs.git-tag }}
-      if: steps.existing-remote-tag-check.outputs.already-exists == 'true'
+      if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
       run: >-
         git tag
         -m '${{ needs.pre-setup.outputs.git-tag }}'
@@ -781,10 +783,11 @@ jobs:
         '${{ needs.pre-setup.outputs.git-tag }}'
         --
         ${{ github.event.inputs.release-committish }}
+
     - name: >-
         Push ${{ needs.pre-setup.outputs.git-tag }} tag corresponding
         to the just published release back to GitHub
-      if: steps.existing-remote-tag-check.outputs.already-exists == 'true'
+      if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
       run: >-
         git push --atomic origin '${{ needs.pre-setup.outputs.git-tag }}'
 
