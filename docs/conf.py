@@ -186,7 +186,7 @@ nitpick_ignore = [
 def setup(app: Sphinx) -> Mapping[str, str]:
     """Set up extra Sphinx extension integrations."""
     # NOTE: Sphinx doesn't seem to expose its :event: role at the moment.
-    # NOTE: This hack re-declares the event type locally.
+    # NOTE: This hack redeclares the event type locally.
     # Ref: https://github.com/sphinx-doc/sphinx/issues/8987
     app.add_object_type('event', 'event')
 

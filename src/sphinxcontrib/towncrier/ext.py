@@ -22,8 +22,9 @@ from sphinx.util.nodes import nested_parse_with_titles, nodes
 
 # Ref: https://github.com/PyCQA/pylint/issues/3817
 from docutils import statemachine  # pylint: disable=wrong-import-order
+from docutils.parsers.rst.states import RSTState
 
-from ._compat import shlex_join  # noqa: WPS436
+from ._compat import Literal, shlex_join  # noqa: WPS436
 from ._data_transformers import (  # noqa: WPS436
     escape_project_version_rst_substitution,
 )
@@ -112,7 +113,7 @@ def _get_draft_version_fallback(
 
 
 def _nodes_from_document_markup_source(
-        state: statemachine.State,
+        state: RSTState,
         markup_source: str,
 ) -> List[nodes.Node]:
     """Turn an RST or Markdown string into a list of nodes.
@@ -123,7 +124,7 @@ def _nodes_from_document_markup_source(
     node.document = state.document
     nested_parse_with_titles(
         state=state,
-        content=statemachine.ViewList(
+        content=statemachine.StringList(
             statemachine.string2lines(markup_source),
             source='[towncrier-fragments]',
         ),
@@ -193,7 +194,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
                 config_path=config.towncrier_draft_config_path,
             )
         except RuntimeError as runtime_err:
-            raise self.error(runtime_err)
+            raise self.error(str(runtime_err)) from runtime_err
         except LookupError:
             return []
 
@@ -327,7 +328,9 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
 
 def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
     """Initialize the extension."""
-    rebuild_trigger = 'html'  # rebuild full html on settings change
+    rebuild_trigger: Literal[  # rebuild full html on settings change
+        'html',
+    ] = 'html'
     app.add_config_value(
         'towncrier_draft_config_path',
         default=None,

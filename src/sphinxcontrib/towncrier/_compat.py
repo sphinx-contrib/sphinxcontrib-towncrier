@@ -14,7 +14,7 @@ else:
     from shlex import quote as _shlex_quote  # noqa: WPS433
 
     # pylint: disable-next=line-too-long
-    from importlib_metadata import (  # type: ignore[no-redef, unused-ignore]  # noqa: LN002, WPS433, WPS440  # `unused-ignore` is only needed under Python 3.6
+    from importlib_metadata import (  # type: ignore[no-redef, unused-ignore]  # noqa: B950, LN002, WPS433, WPS440  # `unused-ignore` is only needed under Python 3.6
         version as importlib_metadata_get_version,
     )
 
@@ -23,4 +23,13 @@ else:
         return ' '.join(_shlex_quote(arg) for arg in split_command)
 
 
-__all__ = ('importlib_metadata_get_version', 'shlex_join')  # noqa: WPS410
+if sys.version_info[:2] < (3, 8):
+    from typing_extensions import Literal  # noqa: WPS433
+else:
+    from typing import Literal  # noqa: WPS433, WPS440
+
+__all__ = (  # noqa: WPS410
+    'importlib_metadata_get_version',
+    'Literal',
+    'shlex_join',
+)
