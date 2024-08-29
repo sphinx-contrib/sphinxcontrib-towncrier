@@ -123,6 +123,9 @@ jobs:
         shell: python
 
     outputs:
+      # NOTE: These aren't env vars because the `${{ env }}` context is
+      # NOTE: inaccessible when passing inputs to reusable workflows.
+      dists-artifact-name: python-package-distributions
       dist-version: >-
         ${{
             steps.request-check.outputs.release-requested == 'true'
@@ -482,7 +485,8 @@ jobs:
     - name: Store the distribution packages
       uses: actions/upload-artifact@v3
       with:
-        name: python-package-distributions
+        name: >-
+          ${{ needs.pre-setup.outputs.dists-artifact-name }}
         # NOTE: Exact expected file names are specified here
         # NOTE: as a safety measure — if anything weird ends
         # NOTE: up being in this dir or not all dists will be
@@ -578,7 +582,8 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v3
       with:
-        name: python-package-distributions
+        name: >-
+          ${{ needs.pre-setup.outputs.dists-artifact-name }}
         path: dist/
 
     - name: Set up Python ${{ matrix.python-version }}
@@ -727,7 +732,8 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v3
       with:
-        name: python-package-distributions
+        name: >-
+          ${{ needs.pre-setup.outputs.dists-artifact-name }}
         path: dist/
     - name: >-
         Publish 🐍📦 ${{ needs.pre-setup.outputs.git-tag }} to PyPI
@@ -757,7 +763,8 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v3
       with:
-        name: python-package-distributions
+        name: >-
+          ${{ needs.pre-setup.outputs.dists-artifact-name }}
         path: dist/
     - name: >-
         Publish 🐍📦 ${{ needs.pre-setup.outputs.git-tag }} to TestPyPI
@@ -854,7 +861,8 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v3
       with:
-        name: python-package-distributions
+        name: >-
+          ${{ needs.pre-setup.outputs.dists-artifact-name }}
         path: dist/
 
     - name: Sign the dists with Sigstore
