@@ -2,7 +2,7 @@
 
 name: 👷tests
 
-on:  # yamllint disable-line rule:truthy
+on:
   merge_group:
   push:  # publishes to TestPyPI pushes to the main branch
     branches-ignore:
