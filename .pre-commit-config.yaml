@@ -246,8 +246,6 @@ repos:
     - types-pytz
     - types-setuptools
     args:
-    - --install-types
-    - --non-interactive
     - --python-version=3.12
     - --txt-report=.tox/.tmp/.mypy/python-3.12
     pass_filenames: false
@@ -264,8 +262,6 @@ repos:
     - types-pytz
     - types-setuptools
     args:
-    - --install-types
-    - --non-interactive
     - --python-version=3.10
     - --txt-report=.tox/.tmp/.mypy/python-3.10
     pass_filenames: false
@@ -282,8 +278,6 @@ repos:
     - types-pytz
     - types-setuptools
     args:
-    - --install-types
-    - --non-interactive
     - --python-version=3.8
     - --txt-report=.tox/.tmp/.mypy/python-3.8
     pass_filenames: false
@@ -307,8 +301,6 @@ repos:
     - types-typed-ast
     - typing-extensions  # Literal
     args:
-    - --install-types
-    - --non-interactive
     - --python-version=3.6
     - --txt-report=.tox/.tmp/.mypy/python-3.6
     pass_filenames: false
