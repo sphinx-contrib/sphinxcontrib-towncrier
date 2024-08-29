@@ -24,7 +24,7 @@ from sphinx.util.nodes import nested_parse_with_titles, nodes
 from docutils import statemachine  # pylint: disable=wrong-import-order
 from docutils.parsers.rst.states import RSTState
 
-from ._compat import shlex_join  # noqa: WPS436
+from ._compat import Literal, shlex_join  # noqa: WPS436
 from ._data_transformers import (  # noqa: WPS436
     escape_project_version_rst_substitution,
 )
@@ -124,7 +124,7 @@ def _nodes_from_document_markup_source(
     node.document = state.document
     nested_parse_with_titles(
         state=state,
-        content=statemachine.ViewList(
+        content=statemachine.StringList(
             statemachine.string2lines(markup_source),
             source='[towncrier-fragments]',
         ),
@@ -328,7 +328,9 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
 
 def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
     """Initialize the extension."""
-    rebuild_trigger = 'html'  # rebuild full html on settings change
+    rebuild_trigger: Literal[  # rebuild full html on settings change
+        'html',
+    ] = 'html'
     app.add_config_value(
         'towncrier_draft_config_path',
         default=None,

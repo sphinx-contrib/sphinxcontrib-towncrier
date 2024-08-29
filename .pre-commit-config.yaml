@@ -313,6 +313,7 @@ repos:
     - types-pytz
     - types-setuptools
     - types-typed-ast
+    - typing-extensions  # Literal
     args:
     - --namespace-packages
     - --install-types

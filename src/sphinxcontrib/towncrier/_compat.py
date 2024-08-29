@@ -23,4 +23,13 @@ else:
         return ' '.join(_shlex_quote(arg) for arg in split_command)
 
 
-__all__ = ('importlib_metadata_get_version', 'shlex_join')  # noqa: WPS410
+if sys.version_info[:2] < (3, 8):
+    from typing_extensions import Literal  # noqa: WPS433
+else:
+    from typing import Literal  # noqa: WPS433, WPS440
+
+__all__ = (  # noqa: WPS410
+    'importlib_metadata_get_version',
+    'Literal',
+    'shlex_join',
+)
