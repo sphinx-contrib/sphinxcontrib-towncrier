@@ -13,7 +13,7 @@ try:
     from towncrier.build import find_fragments  # noqa: WPS433
 except ImportError:
     # pylint: disable=import-self,no-name-in-module
-    from towncrier import (  # type: ignore[attr-defined] # noqa: WPS433,WPS440
+    from towncrier import (  # noqa: WPS433, WPS440
         find_fragments,
     )
 
