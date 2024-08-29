@@ -24,11 +24,23 @@ jobs:
         toxenv:
         - lint
         - build-dists
+        skipped-pre-commit-check:
+        - ''
+        exclude:
+        - toxenv: lint
+          python-version: 3.8  # WPS does not work under Python 3.8
+          skipped-pre-commit-check: ''
+        include:
+        - toxenv: lint
+          os: ubuntu-latest
+          python-version: 3.8  # WPS does not work under Python 3.8
+          skipped-pre-commit-check: flake8
 
     env:
       PY_COLORS: 1
       TOX_PARALLEL_NO_SPINNER: 1
       TOXENV: ${{ matrix.toxenv }}
+      SKIP: ${{ matrix.skipped-pre-commit-check }}
 
     steps:
     - uses: actions/checkout@v3
