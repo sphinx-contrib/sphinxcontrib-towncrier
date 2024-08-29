@@ -194,7 +194,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
                 config_path=config.towncrier_draft_config_path,
             )
         except RuntimeError as runtime_err:
-            raise self.error(runtime_err)
+            raise self.error(str(runtime_err)) from runtime_err
         except LookupError:
             return []
 
