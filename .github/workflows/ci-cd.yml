@@ -10,6 +10,11 @@ on:  # yamllint disable-line rule:truthy
     - gh-readonly-queue/**  # Temporary merge queue-related GH-made branches
     - pre-commit-ci-update-config  # pre-commit.ci always creates a PR
   pull_request:
+    types:
+    - opened  # default
+    - synchronize  # default
+    - reopened  # default
+    - ready_for_review  # used in PRs created from the release workflow
   schedule:
   - cron: 3 5 * * *  # Run daily at 5:03 UTC
   workflow_dispatch:
