@@ -115,10 +115,13 @@ run-name: >-
 jobs:
   pre-setup:
     name: ⚙️ Pre-set global build settings
+
     runs-on: ubuntu-latest
+
     defaults:
       run:
         shell: python
+
     outputs:
       dist-version: >-
         ${{
@@ -145,6 +148,7 @@ jobs:
       git-tag: ${{ steps.git-tag.outputs.tag }}
       sdist-artifact-name: ${{ steps.artifact-name.outputs.sdist }}
       wheel-artifact-name: ${{ steps.artifact-name.outputs.wheel }}
+
     steps:
     - name: Switch to using Python v3.11 by default
       uses: actions/setup-python@v4
@@ -417,6 +421,7 @@ jobs:
               steps.calc-cache-key-py.outputs.py-hash-key
           }}-
           ${{ runner.os }}-pip-
+
     - name: Install tox
       run: >-
         python -m
