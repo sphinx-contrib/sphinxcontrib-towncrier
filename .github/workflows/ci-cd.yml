@@ -479,6 +479,7 @@ jobs:
         --parallel-live
         --skip-missing-interpreters false
         --skip-pkg-install
+        --quiet
     - name: Verify that the artifacts with expected names got created
       run: >-
         ls -1
@@ -671,6 +672,7 @@ jobs:
         --skip-missing-interpreters false
         --installpkg 'dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}'
         --force-dep 'towncrier ~= ${{ matrix.towncrier-version }}'
+        --quiet
     - name: Send coverage data to Codecov
       uses: codecov/codecov-action@v3
       with:
