@@ -1,5 +1,9 @@
 ---
-name: 🚨linters
+
+name: >-
+  ❌
+  [DO NOT CLICK]
+  Reusable 🚨linters
 
 on:
   workflow_call:
