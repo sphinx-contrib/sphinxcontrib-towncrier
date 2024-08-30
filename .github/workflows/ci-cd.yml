@@ -817,7 +817,7 @@ jobs:
       # Refs:
       # * https://github.community/t/github-actions-bot-email-address/17204/6
       # * https://github.com/actions/checkout/issues/13#issuecomment-724415212
-      uses: fregante/setup-git-user@v2.0.1
+      uses: fregante/setup-git-user@v2
 
     - name: >-
         Tag the release in the local Git repo
