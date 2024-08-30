@@ -681,6 +681,8 @@ jobs:
         --force-dep 'towncrier ~= ${{ matrix.towncrier-version }}'
         --quiet
     - name: Send coverage data to Codecov
+      if: >-
+        !cancelled()
       uses: codecov/codecov-action@v4
       with:
         files: .test-results/pytest/cov.xml
