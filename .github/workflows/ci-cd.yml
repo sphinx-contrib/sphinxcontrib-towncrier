@@ -548,13 +548,13 @@ jobs:
         - 3.7
         - 3.6
         os:
-        - ubuntu-22.04
+        - ubuntu-24.04
         - ubuntu-20.04
         - macos-14
         - macos-13
         - windows-latest
         exclude:
-        - os: ubuntu-22.04
+        - os: ubuntu-24.04
           python-version: 3.6  # EOL, only provided for older OSs
         - python-version: 3.6
           towncrier-version: 22.8.0  # Dropped support for Python 3.6
