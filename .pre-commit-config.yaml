@@ -104,15 +104,15 @@ repos:
     files: ^\.github/workflows/[^/]+$
     types:
     - yaml
+  - id: check-jsonschema
+    name: Check GitHub Workflows set timeout-minutes
+    args:
+    - --builtin-schema
+    - github-workflows-require-timeout
+    files: ^\.github/workflows/[^/]+$
+    types:
+    - yaml
   # yamllint disable rule:comments-indentation
-  # - id: check-jsonschema
-  #   name: Check GitHub Workflows set timeout-minutes
-  #   args:
-  #   - --builtin-schema
-  #   - github-workflows-require-timeout
-  #   files: ^\.github/workflows/[^/]+$
-  #   types:
-  #   - yaml
   # - id: check-readthedocs
   # yamllint enable rule:comments-indentation
 
