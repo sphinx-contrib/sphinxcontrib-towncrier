@@ -556,6 +556,8 @@ jobs:
         exclude:
         - os: macos-14
           python-version: 3.6  # EOL, only provided for older OSs
+        - os: macos-14
+          python-version: 3.7  # EOL, only provided for older OSs
         - os: ubuntu-24.04
           python-version: 3.6  # EOL, only provided for older OSs
         - os: ubuntu-24.04
