@@ -688,6 +688,7 @@ jobs:
         files: .test-results/pytest/cov.xml
         flags: >-
           CI-GHA,
+          tests,
           OS-${{
             runner.os
           }},
