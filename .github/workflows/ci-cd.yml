@@ -688,7 +688,7 @@ jobs:
         files: .test-results/pytest/cov.xml
         flags: >-
           CI-GHA,
-          tests,
+          pytest,
           OS-${{
             runner.os
           }},
@@ -709,7 +709,7 @@ jobs:
         files: .test-results/pytest/results.xml
         flags: >-
           CI-GHA,
-          tests,
+          pytest,
           OS-${{
             runner.os
           }},
