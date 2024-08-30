@@ -237,7 +237,7 @@ repos:
     alias: mypy-py313
     name: MyPy, for Python 3.13
     additional_dependencies:
-    - lxml  # requirement of `--txt-report`
+    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
     - Sphinx >= 3.1.2
     - types-colorama
@@ -247,13 +247,15 @@ repos:
     - types-setuptools
     args:
     - --python-version=3.13
-    - --txt-report=.tox/.tmp/.mypy/python-3.13
+    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.13
+    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.13
+    - --html-report=.tox/.tmp/.test-results/mypy--py-3.13
     pass_filenames: false
   - id: mypy
     alias: mypy-py311
     name: MyPy, for Python 3.11
     additional_dependencies:
-    - lxml  # requirement of `--txt-report`
+    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
     - Sphinx >= 3.1.2
     - types-colorama
@@ -263,13 +265,15 @@ repos:
     - types-setuptools
     args:
     - --python-version=3.11
-    - --txt-report=.tox/.tmp/.mypy/python-3.11
+    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.11
+    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.11
+    - --html-report=.tox/.tmp/.test-results/mypy--py-3.11
     pass_filenames: false
   - id: mypy
     alias: mypy-py39
     name: MyPy, for Python 3.9
     additional_dependencies:
-    - lxml  # requirement of `--txt-report`
+    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
     - Sphinx >= 3.1.2
     - types-colorama
@@ -279,7 +283,9 @@ repos:
     - types-setuptools
     args:
     - --python-version=3.9
-    - --txt-report=.tox/.tmp/.mypy/python-3.9
+    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.9
+    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.9
+    - --html-report=.tox/.tmp/.test-results/mypy--py-3.9
     pass_filenames: false
 - repo: https://github.com/pre-commit/mirrors-mypy.git
   # NOTE: This is kept at v1.5.1 until we stop supporting Python 3.6.
@@ -290,7 +296,7 @@ repos:
     name: MyPy, for Python 3.7
     additional_dependencies:
     - importlib_metadata
-    - lxml  # requirement of `--txt-report`
+    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest ~= 7.4.4  # last to have Python 3.6-compatible syntax
     - Sphinx >= 3.1.2, < 6
     - types-colorama
@@ -302,14 +308,16 @@ repos:
     - typing-extensions  # Literal
     args:
     - --python-version=3.7
-    - --txt-report=.tox/.tmp/.mypy/python-3.7
+    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.7
+    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.7
+    - --html-report=.tox/.tmp/.test-results/mypy--py-3.7
     pass_filenames: false
   - id: mypy
     alias: mypy-py36
     name: MyPy, for Python 3.6
     additional_dependencies:
     - importlib_metadata
-    - lxml  # requirement of `--txt-report`
+    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest ~= 7.4.4  # last to have Python 3.6-compatible syntax
     - Sphinx >= 3.1.2, < 6
     - types-colorama
@@ -321,7 +329,9 @@ repos:
     - typing-extensions  # Literal
     args:
     - --python-version=3.6
-    - --txt-report=.tox/.tmp/.mypy/python-3.6
+    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.6
+    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.6
+    - --html-report=.tox/.tmp/.test-results/mypy--py-3.6
     pass_filenames: false
 
 ...
