@@ -701,6 +701,24 @@ jobs:
           Towncrier-v${{
             matrix.towncrier-version
           }}
+    - name: Upload test results to Codecov
+      if: >-
+        !cancelled()
+      uses: codecov/test-results-action@v1
+      with:
+        files: .test-results/pytest/results.xml
+        flags: >-
+          CI-GHA,
+          tests,
+          OS-${{
+            runner.os
+          }},
+          VM-${{
+            inputs.runner-vm-os
+          }},
+          Py-${{
+            steps.python-install.outputs.python-version
+          }}
 
   check:  # This job does nothing and is only used for the branch protection
     if: always()
