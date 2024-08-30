@@ -550,8 +550,8 @@ jobs:
         os:
         - ubuntu-22.04
         - ubuntu-20.04
-        - macos-12
-        - macos-11
+        - macos-14
+        - macos-13
         - windows-latest
         exclude:
         - os: ubuntu-22.04
