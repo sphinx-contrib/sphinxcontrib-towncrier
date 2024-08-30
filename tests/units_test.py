@@ -1,8 +1,7 @@
 """Unit tests of the extension bits."""
 
-from __future__ import annotations
-
 import sys
+import typing
 
 import pytest
 
@@ -67,7 +66,7 @@ _get_changelog_draft_entries_unwrapped = (
     ),
 )
 def test_towncrier_draft_generation_failure_msg(
-        failing_cmd: tuple[str], stdout_msg: str, stderr_msg: str,
+        failing_cmd: typing.Tuple[str], stdout_msg: str, stderr_msg: str,
         monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test that a failing command produces a :class:`RuntimeError`."""
