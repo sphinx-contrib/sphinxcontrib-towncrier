@@ -5,6 +5,7 @@ codecov:
   bot: codecov
   notify:
     require_ci_to_pass: yes
+  token: bf9ea742-9470-4a97-bfe5-aab1553f30a6  # repo-scoped
 
 coverage:
   precision: 2
