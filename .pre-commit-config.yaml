@@ -231,7 +231,7 @@ repos:
     - manual
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v1.10.1
+  rev: v1.11.2
   hooks:
   - id: mypy
     alias: mypy-py313
