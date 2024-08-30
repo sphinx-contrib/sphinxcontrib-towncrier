@@ -234,8 +234,8 @@ repos:
   rev: v1.10.1
   hooks:
   - id: mypy
-    alias: mypy-py312
-    name: MyPy, for Python 3.12
+    alias: mypy-py313
+    name: MyPy, for Python 3.13
     additional_dependencies:
     - lxml  # requirement of `--txt-report`
     - pytest
@@ -246,12 +246,12 @@ repos:
     - types-pytz
     - types-setuptools
     args:
-    - --python-version=3.12
-    - --txt-report=.tox/.tmp/.mypy/python-3.12
+    - --python-version=3.13
+    - --txt-report=.tox/.tmp/.mypy/python-3.13
     pass_filenames: false
   - id: mypy
-    alias: mypy-py310
-    name: MyPy, for Python 3.10
+    alias: mypy-py311
+    name: MyPy, for Python 3.11
     additional_dependencies:
     - lxml  # requirement of `--txt-report`
     - pytest
@@ -262,12 +262,12 @@ repos:
     - types-pytz
     - types-setuptools
     args:
-    - --python-version=3.10
-    - --txt-report=.tox/.tmp/.mypy/python-3.10
+    - --python-version=3.11
+    - --txt-report=.tox/.tmp/.mypy/python-3.11
     pass_filenames: false
   - id: mypy
-    alias: mypy-py38
-    name: MyPy, for Python 3.8
+    alias: mypy-py39
+    name: MyPy, for Python 3.9
     additional_dependencies:
     - lxml  # requirement of `--txt-report`
     - pytest
@@ -278,13 +278,32 @@ repos:
     - types-pytz
     - types-setuptools
     args:
-    - --python-version=3.8
-    - --txt-report=.tox/.tmp/.mypy/python-3.8
+    - --python-version=3.9
+    - --txt-report=.tox/.tmp/.mypy/python-3.9
     pass_filenames: false
 - repo: https://github.com/pre-commit/mirrors-mypy.git
   # NOTE: This is kept at v1.5.1 until we stop supporting Python 3.6.
   rev: v1.5.1  # enforce-version: v1.5.1
   hooks:
+  - id: mypy
+    alias: mypy-py37
+    name: MyPy, for Python 3.7
+    additional_dependencies:
+    - importlib_metadata
+    - lxml  # requirement of `--txt-report`
+    - pytest ~= 7.4.4  # last to have Python 3.6-compatible syntax
+    - Sphinx >= 3.1.2, < 6
+    - types-colorama
+    - types-Pillow
+    - types-Pygments
+    - types-pytz
+    - types-setuptools
+    - types-typed-ast
+    - typing-extensions  # Literal
+    args:
+    - --python-version=3.7
+    - --txt-report=.tox/.tmp/.mypy/python-3.7
+    pass_filenames: false
   - id: mypy
     alias: mypy-py36
     name: MyPy, for Python 3.6
