@@ -556,6 +556,8 @@ jobs:
         exclude:
         - os: ubuntu-24.04
           python-version: 3.6  # EOL, only provided for older OSs
+        - os: ubuntu-24.04
+          python-version: 3.7  # EOL, only provided for older OSs
         - python-version: 3.6
           towncrier-version: 22.8.0  # Dropped support for Python 3.6
         - python-version: 3.6
