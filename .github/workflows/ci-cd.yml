@@ -532,7 +532,6 @@ jobs:
         towncrier-version:
         - 24.8.0
         - 23.11.0
-        - 23.10.0
         - 23.6.0
         - 22.12.0
         - 22.8.0
@@ -570,10 +569,6 @@ jobs:
           towncrier-version: 22.12.0  # Does not support Python 3.6
         - python-version: 3.6
           towncrier-version: 23.6.0  # Dropped support for Python 3.6
-        - python-version: 3.6
-          towncrier-version: 23.10.0  # Does not support Python 3.6
-        - python-version: 3.7
-          towncrier-version: 23.10.0  # Dropped support for Python 3.7
         - python-version: 3.6
           towncrier-version: 23.11.0  # Does not support Python 3.6
         - python-version: 3.7
