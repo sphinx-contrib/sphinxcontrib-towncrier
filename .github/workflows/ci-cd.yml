@@ -530,6 +530,7 @@ jobs:
     strategy:
       matrix:
         towncrier-version:
+        - 24.8.0
         - 23.11.0
         - 23.10.0
         - 23.6.0
@@ -577,6 +578,10 @@ jobs:
           towncrier-version: 23.11.0  # Does not support Python 3.6
         - python-version: 3.7
           towncrier-version: 23.11.0  # Does not support Python 3.7
+        - python-version: 3.6
+          towncrier-version: 24.8.0  # Does not support Python 3.6
+        - python-version: 3.7
+          towncrier-version: 24.8.0  # Does not support Python 3.7
         - python-version: ~3.12.0-0
           towncrier-version: 19.2.0  # Does not support Python 3.12
         - python-version: ~3.12.0-0
