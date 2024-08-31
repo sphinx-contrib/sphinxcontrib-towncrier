@@ -67,10 +67,21 @@ def lookup_towncrier_fragments(  # noqa: WPS210
     else:
         fragment_directory = None
 
-    _fragments, fragment_filenames = find_fragments(
-        str(fragment_base_directory),
-        towncrier_config.sections,
-        fragment_directory,
-        towncrier_config.types,
-    )
+    try:
+        # Towncrier < 24.7.0rc1
+        # pylint: disable-next=too-many-function-args
+        _fragments, fragment_filenames = find_fragments(
+            str(fragment_base_directory),
+            towncrier_config.sections,
+            fragment_directory,
+            towncrier_config.types,
+        )
+    except TypeError:
+        # Towncrier >= 24.7.0rc1
+        _fragments, fragment_filenames = find_fragments(  # noqa: WPS121
+            str(fragment_base_directory),
+            towncrier_config,
+            strict=False,
+        )
+
     return set(fragment_filenames)
