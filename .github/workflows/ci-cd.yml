@@ -691,6 +691,8 @@ jobs:
         --installpkg 'dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}'
         --force-dep 'towncrier ~= ${{ matrix.towncrier-version }}'
         --quiet
+        --
+        --cov-report=xml:.test-results/pytest/cov.xml
     - name: Send coverage data to Codecov
       if: >-
         !cancelled()
