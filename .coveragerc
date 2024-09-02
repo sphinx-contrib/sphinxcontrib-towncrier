@@ -21,6 +21,6 @@ cover_pylib = false
 parallel = true
 relative_files = true
 source =
-  tests
+  .
 source_pkgs =
   sphinxcontrib.towncrier
