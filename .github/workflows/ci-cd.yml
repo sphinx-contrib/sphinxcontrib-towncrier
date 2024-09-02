@@ -693,6 +693,7 @@ jobs:
         --quiet
         --
         --cov-report=xml:.test-results/pytest/cov.xml
+        --junitxml=.test-results/pytest/results.xml
     - name: Send coverage data to Codecov
       if: >-
         !cancelled()
