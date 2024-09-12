@@ -763,7 +763,9 @@ jobs:
         jobs: ${{ toJSON(needs) }}
 
   publish-pypi:
-    name: Publish 🐍📦 ${{ needs.pre-setup.outputs.git-tag }} to PyPI
+    name: >-
+      📦
+      Publish ${{ needs.pre-setup.outputs.git-tag }} to PyPI
     needs:
     - check
     - pre-setup  # transitive, for accessing settings
@@ -803,7 +805,9 @@ jobs:
         attestations: true
 
   publish-testpypi:
-    name: Publish 🐍📦 ${{ needs.pre-setup.outputs.git-tag }} to TestPyPI
+    name: >-
+      📦
+      Publish ${{ needs.pre-setup.outputs.git-tag }} to TestPyPI
     needs:
     - check
     - pre-setup  # transitive, for accessing settings
