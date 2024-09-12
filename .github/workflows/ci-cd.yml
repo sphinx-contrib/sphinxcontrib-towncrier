@@ -98,9 +98,9 @@ run-name: >-
     || ''
   }}
   ${{
-      github.event.pull_request.number && 'PR' || ''
+      github.event.pull_request.number && '🔀 PR' || ''
   }}${{
-      !github.event.pull_request.number && 'Commit' || ''
+      !github.event.pull_request.number && '🌱 Commit' || ''
   }}
   ${{ github.event.pull_request.number || github.sha }}
   triggered by: ${{ github.event_name }} of ${{
@@ -537,11 +537,12 @@ jobs:
           }}
 
   lint:
+    name: 🧹 Linters${{ '' }}  # nest jobs under the same sidebar category
     uses: ./.github/workflows/reusable-linters.yml
 
   tests:
     name: >-
-      📝${{ matrix.towncrier-version }}
+      🧪 📝${{ matrix.towncrier-version }}
       /
       🐍${{ matrix.python-version }}
       /
@@ -877,6 +878,7 @@ jobs:
 
   post-release-repo-update:
     name: >-
+      🏷️
       Publish post-release Git tag
       for ${{ needs.pre-setup.outputs.git-tag }}
     needs:
@@ -924,6 +926,7 @@ jobs:
       uses: fregante/setup-git-user@v2
 
     - name: >-
+        🏷️
         Tag the release in the local Git repo
         as ${{ needs.pre-setup.outputs.git-tag }}
       if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
@@ -945,6 +948,7 @@ jobs:
         ${{ github.event.inputs.release-committish }}
 
     - name: >-
+        🏷️
         Push ${{ needs.pre-setup.outputs.git-tag }} tag corresponding
         to the just published release back to GitHub
       if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
@@ -1010,6 +1014,7 @@ jobs:
 
   publish-github-release:
     name: >-
+      🏷️
       Publish a GitHub Release for
       ${{ needs.pre-setup.outputs.git-tag }}
     needs:
