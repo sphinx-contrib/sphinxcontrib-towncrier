@@ -785,7 +785,7 @@ jobs:
         }}
 
     permissions:
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
+      id-token: write  # PyPI Trusted Publishing (OIDC)
 
     steps:
     - name: Download all the dists
@@ -829,7 +829,7 @@ jobs:
         }}
 
     permissions:
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
+      id-token: write  # PyPI Trusted Publishing (OIDC)
 
     steps:
     - name: Download all the dists
