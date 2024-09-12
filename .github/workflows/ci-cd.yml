@@ -156,7 +156,7 @@ jobs:
       wheel-artifact-name: ${{ steps.artifact-name.outputs.wheel }}
 
     steps:
-    - name: Switch to using Python v3.11 by default
+    - name: Switch to using Python 3.11 by default
       uses: actions/setup-python@v5
       with:
         python-version: 3.11
@@ -379,7 +379,7 @@ jobs:
       TOXENV: build-dists
 
     steps:
-    - name: Switch to using Python v3.11
+    - name: Switch to using Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: 3.11
