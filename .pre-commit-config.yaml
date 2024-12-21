@@ -42,36 +42,6 @@ repos:
     language: system
     files: >-
       ^tests/__init__\.py$
-  - id: enforced-versions
-    name: Verify that enforced hook versions stay unchanged
-    description: >-
-      This is a sanity check and fixer that makes sure that
-      the some hook versions in this file remain matching the
-      corresponding request in the `# enforce-version` comment.
-    # Using Python here because using
-    # shell test does not always work in CIs:
-    entry: >-
-      python -c 'import pathlib, re, sys;
-      pre_commit_config = pathlib.Path(sys.argv[1]);
-      cfg_txt = pre_commit_config.read_text();
-      new_cfg_txt = re.sub(
-      r"(?P<spaces>\s+)rev:\s+(?:v?\d+\.\d+\.\d+)\s+"
-      r"#\s+enforce-version:\s(?P<enforced_version>v?\d+\.\d+\.\d+)"
-      r"[ \t\f\v]*",
-      r"\g<spaces>rev: \g<enforced_version>  "
-      r"# enforce-version: \g<enforced_version>",
-      cfg_txt,
-      );
-      cfg_txt != new_cfg_txt and
-      pre_commit_config.write_text(new_cfg_txt) and
-      sys.exit(1)
-      '
-    pass_filenames: true
-    language: system
-    files: >-
-      ^\.pre-commit-config\.ya?ml$
-    types:
-    - yaml
 
 - repo: https://github.com/asottile/add-trailing-comma.git
   rev: v3.1.0
@@ -79,11 +49,11 @@ repos:
   - id: add-trailing-comma
 
 - repo: https://github.com/asottile/pyupgrade.git
-  rev: v3.16.0
+  rev: v3.19.1
   hooks:
   - id: pyupgrade
     args:
-    - --py36-plus
+    - --py38-plus
 
 - repo: https://github.com/PyCQA/isort.git
   rev: 5.13.2
@@ -286,52 +256,6 @@ repos:
     - --txt-report=.tox/.tmp/.test-results/mypy--py-3.9
     - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.9
     - --html-report=.tox/.tmp/.test-results/mypy--py-3.9
-    pass_filenames: false
-- repo: https://github.com/pre-commit/mirrors-mypy.git
-  # NOTE: This is kept at v1.5.1 until we stop supporting Python 3.6.
-  rev: v1.5.1  # enforce-version: v1.5.1
-  hooks:
-  - id: mypy
-    alias: mypy-py37
-    name: MyPy, for Python 3.7
-    additional_dependencies:
-    - importlib_metadata
-    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
-    - pytest ~= 7.4.4  # last to have Python 3.6-compatible syntax
-    - Sphinx >= 3.1.2, < 6
-    - types-colorama
-    - types-Pillow
-    - types-Pygments
-    - types-pytz
-    - types-setuptools
-    - types-typed-ast
-    - typing-extensions  # Literal
-    args:
-    - --python-version=3.7
-    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.7
-    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.7
-    - --html-report=.tox/.tmp/.test-results/mypy--py-3.7
-    pass_filenames: false
-  - id: mypy
-    alias: mypy-py36
-    name: MyPy, for Python 3.6
-    additional_dependencies:
-    - importlib_metadata
-    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
-    - pytest ~= 7.4.4  # last to have Python 3.6-compatible syntax
-    - Sphinx >= 3.1.2, < 6
-    - types-colorama
-    - types-Pillow
-    - types-Pygments
-    - types-pytz
-    - types-setuptools
-    - types-typed-ast
-    - typing-extensions  # Literal
-    args:
-    - --python-version=3.6
-    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.6
-    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.6
-    - --html-report=.tox/.tmp/.test-results/mypy--py-3.6
     pass_filenames: false
 
 ...

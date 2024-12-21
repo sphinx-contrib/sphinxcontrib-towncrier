@@ -6,8 +6,7 @@ include = [
 
     # "py://nitpick/resources/python/flake8",
     # "py://nitpick/resources/python/github-workflow",
-    "gh://andreoliwa/nitpick@8a1d2bd0/src/nitpick/resources/python/hooks.toml",  # NOTE: Needed for as long as Python 3.6 remains supported
-    # "py://nitpick/resources/python/pre-commit-hooks",  # FIXME: Uncomment as soon as Python 3.6 support is dropped
+    # "py://nitpick/resources/python/pre-commit-hooks",
     # "py://nitpick/resources/python/isort",  # Requires config to be in `setup.cfg` so not for us
     # "py://nitpick/resources/python/mypy",  # Requires CLI args but we have that in `mypy.ini`
     # "py://nitpick/resources/python/pylint",  # Makes several bad suggestions

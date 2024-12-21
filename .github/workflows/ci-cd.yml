@@ -71,7 +71,6 @@ env:
   PUBLISHING_TO_TESTPYPI_ENABLED: true
   PY_COLORS: 1  # Recognized by the `py` package, dependency of `pytest`
   PYTHONIOENCODING: utf-8
-  PYTHONLEGACYWINDOWSSTDIO: 1  # Python 3.6 hack
   PYTHONUTF8: 1
   TOX_PARALLEL_NO_SPINNER: 1  # Disable tox's parallel run spinner animation
   TOX_TESTENV_PASSENV: >-  # Make tox-wrapped tools see color requests
@@ -574,9 +573,6 @@ jobs:
         - >-
           3.10
         - 3.9
-        - 3.8
-        - 3.7
-        - 3.6
         os:
         - ubuntu-24.04
         - ubuntu-20.04
@@ -584,28 +580,6 @@ jobs:
         - macos-13
         - windows-latest
         exclude:
-        - os: macos-14
-          python-version: 3.6  # EOL, only provided for older OSs
-        - os: macos-14
-          python-version: 3.7  # EOL, only provided for older OSs
-        - os: ubuntu-24.04
-          python-version: 3.6  # EOL, only provided for older OSs
-        - os: ubuntu-24.04
-          python-version: 3.7  # EOL, only provided for older OSs
-        - python-version: 3.6
-          towncrier-version: 22.8.0  # Dropped support for Python 3.6
-        - python-version: 3.6
-          towncrier-version: 22.12.0  # Does not support Python 3.6
-        - python-version: 3.6
-          towncrier-version: 23.6.0  # Dropped support for Python 3.6
-        - python-version: 3.6
-          towncrier-version: 23.11.0  # Does not support Python 3.6
-        - python-version: 3.7
-          towncrier-version: 23.11.0  # Does not support Python 3.7
-        - python-version: 3.6
-          towncrier-version: 24.8.0  # Does not support Python 3.6
-        - python-version: 3.7
-          towncrier-version: 24.8.0  # Does not support Python 3.7
         - python-version: ~3.12.0-0
           towncrier-version: 19.2.0  # Does not support Python 3.12
         - python-version: ~3.12.0-0
@@ -689,16 +663,6 @@ jobs:
     - name: Log installed dists
       run: |
         python -m pip freeze --all
-
-    - name: Patch tox.ini for Python 3.6 under Windows
-      if: >-
-        runner.os == 'Windows'
-        && matrix.python-version == '3.6'
-      run: >-
-        sed -i
-        's/^package_env\(\s\)\?=.*/package_env = py36-win-dummy/g'
-        tox.ini
-      shell: bash
 
     - name: Initialize tox envs
       run: >-

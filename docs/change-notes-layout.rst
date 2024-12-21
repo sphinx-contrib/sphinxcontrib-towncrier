@@ -324,7 +324,7 @@ like failing the build on any warnings and having nice URLs.
       image: latest
 
     python:
-      version: 3.8
+      version: 3.13
       install:
       - requirements: docs/requirements.txt
     ...

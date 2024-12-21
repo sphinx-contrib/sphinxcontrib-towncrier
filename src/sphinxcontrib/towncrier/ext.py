@@ -1,12 +1,13 @@
 """Sphinx extension for injecting an unreleased changelog into docs."""
 
 
+import shlex
 import subprocess  # noqa: S404
 import sys
 from contextlib import suppress as suppress_exceptions
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Dict, List, Literal, Optional, Set, Tuple, Union
 
 from sphinx.application import Sphinx
 from sphinx.config import Config as SphinxConfig
@@ -24,7 +25,6 @@ from sphinx.util.nodes import nested_parse_with_titles, nodes
 from docutils import statemachine  # pylint: disable=wrong-import-order
 from docutils.parsers.rst.states import RSTState
 
-from ._compat import Literal, shlex_join  # noqa: WPS436
 from ._data_transformers import (  # noqa: WPS436
     escape_project_version_rst_substitution,
 )
@@ -68,11 +68,11 @@ def _get_changelog_draft_entries(
             TOWNCRIER_DRAFT_CMD + extra_cli_args,
             cwd=str(working_dir) if working_dir else None,
             stderr=subprocess.PIPE,
-            universal_newlines=True,  # a "text" alias exists since Python 3.7
+            text=True,
         ).strip()
 
     except subprocess.CalledProcessError as proc_exc:
-        cmd = shlex_join(proc_exc.cmd)
+        cmd = shlex.join(proc_exc.cmd)
         stdout = proc_exc.stdout or '[No output]'
         stderr = proc_exc.stderr or '[No output]'
         raise RuntimeError(

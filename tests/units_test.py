@@ -1,11 +1,11 @@
 """Unit tests of the extension bits."""
 
+import shlex
 import sys
 import typing
 
 import pytest
 
-from sphinxcontrib.towncrier._compat import shlex_join
 from sphinxcontrib.towncrier.ext import _get_changelog_draft_entries
 
 
@@ -78,7 +78,7 @@ def test_towncrier_draft_generation_failure_msg(
     )
 
     escaped_failing_cmd = (  # This is necessary because it's used in a regexp
-        shlex_join(failing_cmd).
+        shlex.join(failing_cmd).
         replace('\\', r'\\').
         replace('(', r'\(').
         replace(')', r'\)')

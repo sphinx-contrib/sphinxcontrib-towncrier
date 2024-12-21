@@ -1,14 +1,8 @@
 """Towncrier related shims."""
 
-from contextlib import suppress as _suppress_exception
+from dataclasses import asdict as _dataclass_to_dict
 from pathlib import Path
 from typing import Any, Dict, Union
-
-
-with _suppress_exception(ImportError):
-    # NOTE: This will not raise an exception under Python >= 3.7, and is only
-    # NOTE: needed for Towncrier >= 22.12.0rc1 which doesn't support Python 3.6
-    from dataclasses import asdict as _dataclass_to_dict  # noqa: WPS433
 
 
 try:
