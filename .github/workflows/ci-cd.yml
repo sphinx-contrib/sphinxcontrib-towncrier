@@ -692,6 +692,7 @@ jobs:
         !cancelled()
       uses: codecov/codecov-action@v5
       with:
+        fail_ci_if_error: true
         files: .test-results/pytest/cov.xml
         flags: >-
           CI-GHA,
@@ -713,6 +714,7 @@ jobs:
         !cancelled()
       uses: codecov/test-results-action@v1
       with:
+        fail_ci_if_error: true
         files: .test-results/pytest/results.xml
         flags: >-
           CI-GHA,
