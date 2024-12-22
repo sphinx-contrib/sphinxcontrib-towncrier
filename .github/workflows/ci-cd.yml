@@ -561,12 +561,6 @@ jobs:
         - 24.8.0
         - 23.11.0
         - 23.6.0
-        - 22.12.0
-        - 22.8.0
-        - 21.9.0
-        - 21.3.0
-        - 19.9.0
-        - 19.2.0
         python-version:
         - ~3.12.0-0
         - 3.11
@@ -579,13 +573,6 @@ jobs:
         - macos-14
         - macos-13
         - windows-latest
-        exclude:
-        - python-version: ~3.12.0-0
-          towncrier-version: 19.2.0  # Does not support Python 3.12
-        - python-version: ~3.12.0-0
-          towncrier-version: 19.9.0  # Does not support Python 3.12
-        - python-version: ~3.12.0-0
-          towncrier-version: 21.3.0  # Does not support Python 3.12
 
     continue-on-error: >-
       ${{
