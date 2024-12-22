@@ -291,7 +291,7 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
     def process_doc(self, app: Sphinx, doctree: nodes.document) -> None:
         """React to :event:`doctree-read` with no-op."""
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable-next=too-many-arguments,too-many-positional-arguments
     def get_outdated_docs(  # noqa: WPS211
             self,
             app: Sphinx,
