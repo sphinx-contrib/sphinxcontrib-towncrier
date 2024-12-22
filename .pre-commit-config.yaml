@@ -187,19 +187,6 @@ repos:
     - wemake-python-styleguide ~= 0.19.2
     language_version: python3
 
-- repo: local
-  hooks:
-  - id: pylint
-    language: system
-    name: PyLint
-    files: \.py$
-    entry: python -m pylint
-    args:
-    - --rcfile
-    - .pylintrc
-    stages:
-    - manual
-
 - repo: https://github.com/pre-commit/mirrors-mypy.git
   rev: v1.11.2
   hooks:
@@ -257,5 +244,15 @@ repos:
     - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.9
     - --html-report=.tox/.tmp/.test-results/mypy--py-3.9
     pass_filenames: false
+
+- repo: https://github.com/PyCQA/pylint.git
+  rev: v3.3.2
+  hooks:
+  - id: pylint
+    additional_dependencies:
+    - pytest
+    - setuptools-scm  # docs
+    - sphinx
+    - towncrier >= 23
 
 ...
