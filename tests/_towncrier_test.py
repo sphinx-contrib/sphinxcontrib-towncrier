@@ -6,8 +6,9 @@ from typing import Union
 
 import pytest
 
+from towncrier._settings.load import ConfigError as TowncrierConfigError
+
 from sphinxcontrib.towncrier._towncrier import get_towncrier_config
-from ._compat import TowncrierConfigError
 
 
 def test_towncrier_config_section_missing(
