@@ -6,16 +6,8 @@ from pathlib import Path
 from typing import Optional, Set
 
 from sphinx.util import logging
-
-
-try:
-    # pylint: disable=no-name-in-module
-    from towncrier.build import find_fragments  # noqa: WPS433
-except ImportError:
-    # pylint: disable=import-self,no-name-in-module
-    from towncrier import (  # noqa: WPS433, WPS440
-        find_fragments,
-    )
+# pylint: disable-next=no-name-in-module
+from towncrier.build import find_fragments  # noqa: WPS433
 
 from ._towncrier import get_towncrier_config  # noqa: WPS436
 
