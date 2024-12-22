@@ -4,7 +4,7 @@
 codecov:
   bot: codecov
   notify:
-    after_n_builds: 60  # number of test matrix+lint jobs uploading coverage
+    after_n_builds: 75  # number of test matrix+lint jobs uploading coverage
     wait_for_ci: false
 
   require_ci_to_pass: false
