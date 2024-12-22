@@ -22,7 +22,12 @@ ignore-patterns=
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.
-jobs = 0
+# jobs = 0
+# FIXME: Revert to auto-detection once the pylint bug is fixed. Currently, the
+# FIXME: parallel execution mode causes import-related false-positives and
+# FIXME: tracebacks.
+# Ref: https://github.com/pylint-dev/pylint/issues/10147
+jobs = 1
 
 # Control the amount of potential inferred values when inferring a single
 # object. This can help the performance when dealing with large functions or
