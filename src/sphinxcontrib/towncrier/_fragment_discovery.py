@@ -60,8 +60,8 @@ def lookup_towncrier_fragments(  # noqa: WPS210
 
     fragment_directory: Optional[str] = 'newsfragments'
     try:
-        fragment_base_directory = project_path / towncrier_config['directory']
-    except KeyError:
+        fragment_base_directory = project_path / towncrier_config.directory
+    except TypeError:
         assert fragment_directory is not None
         fragment_base_directory = project_path / fragment_directory
     else:
@@ -69,8 +69,8 @@ def lookup_towncrier_fragments(  # noqa: WPS210
 
     _fragments, fragment_filenames = find_fragments(
         str(fragment_base_directory),
-        towncrier_config['sections'],
+        towncrier_config.sections,
         fragment_directory,
-        towncrier_config['types'],
+        towncrier_config.types,
     )
     return set(fragment_filenames)
