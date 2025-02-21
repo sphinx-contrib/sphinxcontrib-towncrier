@@ -49,7 +49,7 @@ def test__get_draft_version_fallback_invalid_strategy(  # noqa: WPS116, WPS118
     expected_error_msg = (
         '^Expected "strategy" to be one of '
         r"{'[\w,\s'-]+'} "
-        fr'but got {autoversion_mode !r}$'
+        f'but got {autoversion_mode !r}$'
     )
     with pytest.raises(ValueError, match=expected_error_msg):
         _get_draft_version_fallback.__wrapped__(
