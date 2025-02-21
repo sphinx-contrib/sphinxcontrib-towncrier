@@ -67,6 +67,7 @@ def lookup_towncrier_fragments(  # noqa: WPS210
     else:
         fragment_directory = None
 
+    # pylint: disable-next=too-many-function-args
     _fragments, fragment_filenames = find_fragments(
         str(fragment_base_directory),
         towncrier_config.sections,
