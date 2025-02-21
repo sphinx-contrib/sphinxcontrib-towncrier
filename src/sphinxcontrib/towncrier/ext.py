@@ -4,10 +4,11 @@
 import shlex
 import subprocess  # noqa: S404
 import sys
+from collections.abc import Set
 from contextlib import suppress as suppress_exceptions
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Literal, Optional, Set, Tuple, Union
+from typing import Dict, List, Literal, Optional, Tuple, Union
 
 from sphinx.application import Sphinx
 from sphinx.config import Config as SphinxConfig
