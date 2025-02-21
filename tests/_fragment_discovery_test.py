@@ -2,11 +2,13 @@
 
 
 from pathlib import Path
-from typing import Set
+from typing import Set, Union
 
 import pytest
 
-from sphinxcontrib.towncrier._fragment_discovery import _find_config_file
+from sphinxcontrib.towncrier._fragment_discovery import (
+    _find_config_file, _resolve_spec_config,
+)
 
 
 PYPROJECT_TOML_FILENAME = 'pyproject.toml'
@@ -50,3 +52,24 @@ def test_find_config_file(
         )
 
     assert _find_config_file(tmp_path).name == expected_config_file_name
+
+
+@pytest.mark.parametrize(
+    ('base_path', 'config_path', 'resolved_path'),
+    (
+        (
+            Path('sentinel-path'),
+            'towncrier.toml',
+            Path('sentinel-path/towncrier.toml'),
+        ),
+        (Path('sentinel-path'), None, None),
+    ),
+    ids=('explicit-config-path', 'unset-config-path'),
+)
+def test_resolve_spec_config(
+        base_path: Path,
+        config_path: Union[str, None],
+        resolved_path: Union[Path, None],
+) -> None:
+    """Verify that config path is resolved properly."""
+    assert _resolve_spec_config(base_path, config_path) == resolved_path
