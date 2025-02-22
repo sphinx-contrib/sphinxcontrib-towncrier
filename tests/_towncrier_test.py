@@ -48,8 +48,10 @@ def test_towncrier_config_file_missing(
     monkeypatch.chdir(tmp_working_dir_path)
 
     expected_error_msg = (
-        fr"^\[Errno 2\] No such file or directory: '{config_file_name}'$"
+        '^Towncrier was unable to load the configuration from file '
+        fr'`{config_file_name !s}`: '
+        fr"\[Errno 2\] No such file or directory: '{config_file_name !s}'$"
     )
 
-    with pytest.raises(FileNotFoundError, match=expected_error_msg):
+    with pytest.raises(LookupError, match=expected_error_msg):
         get_towncrier_config(tmp_path, config_file_name)

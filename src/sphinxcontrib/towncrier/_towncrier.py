@@ -17,8 +17,8 @@ def get_towncrier_config(
     """Return the towncrier config in native format."""
     try:
         return load_config_from_file(str(project_path), str(final_config_path))
-    except TowncrierConfigError as config_err:
+    except (FileNotFoundError, TowncrierConfigError) as config_load_err:
         raise LookupError(
             'Towncrier was unable to load the configuration from file '
-            f'`{final_config_path !s}`: {config_err !s}',
-        ) from config_err
+            f'`{final_config_path !s}`: {config_load_err !s}',
+        ) from config_load_err
