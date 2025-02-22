@@ -6,8 +6,6 @@ from typing import Union
 
 import pytest
 
-from towncrier._settings.load import ConfigError as TowncrierConfigError
-
 from sphinxcontrib.towncrier._towncrier import get_towncrier_config
 
 
@@ -22,9 +20,12 @@ def test_towncrier_config_section_missing(
     (tmp_working_dir_path / empty_config_file).touch()
     monkeypatch.chdir(tmp_working_dir_path)
 
-    expected_error_msg = r'^No \[tool\.towncrier\] section\.$'
+    expected_error_msg = (
+        '^Towncrier was unable to load the configuration from file '
+        fr'`{empty_config_file !s}`: No \[tool\.towncrier\] section\.$'
+    )
 
-    with pytest.raises(TowncrierConfigError, match=expected_error_msg):
+    with pytest.raises(LookupError, match=expected_error_msg):
         get_towncrier_config(tmp_path, empty_config_file)
 
 

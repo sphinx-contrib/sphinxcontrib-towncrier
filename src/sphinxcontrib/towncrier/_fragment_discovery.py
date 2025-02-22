@@ -51,11 +51,8 @@ def lookup_towncrier_fragments(  # noqa: WPS210
             project_path,
             final_config_path,
         )
-    except KeyError as key_err:
-        # NOTE: The error is missing key 'towncrier' or similar
-        logger.warning(
-            f'Missing key {key_err!s} in file {final_config_path!s}',
-        )
+    except LookupError as lookup_err:
+        logger.warning(str(lookup_err))
         return set()
 
     fragment_directory: Optional[str] = 'newsfragments'
