@@ -49,7 +49,7 @@ def test_towncrier_config_file_missing(
 
     expected_error_msg = (
         '^Towncrier was unable to load the configuration from file '
-        fr'`{config_file_name !s}`: '
+        f'`{config_file_name !s}`: '
         fr"\[Errno 2\] No such file or directory: '{config_file_name !s}'$"
     )
 
