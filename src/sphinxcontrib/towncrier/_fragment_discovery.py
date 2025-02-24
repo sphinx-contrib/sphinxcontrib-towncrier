@@ -55,29 +55,20 @@ def lookup_towncrier_fragments(  # noqa: WPS210
         logger.warning(str(lookup_err))
         return set()
 
-    fragment_directory: Optional[str] = 'newsfragments'
-    try:
-        fragment_base_directory = project_path / towncrier_config.directory
-    except TypeError:
-        assert fragment_directory is not None
-        fragment_base_directory = project_path / fragment_directory
-    else:
-        fragment_directory = None
-
     try:
         # Towncrier < 24.7.0rc1
         # pylint: disable-next=no-value-for-parameter,unexpected-keyword-arg
         _fragments, fragment_filenames = find_fragments(
-            base_directory=str(fragment_base_directory),
+            base_directory=str(project_path),
             sections=towncrier_config.sections,
-            fragment_directory=fragment_directory,
+            fragment_directory=towncrier_config.directory,
             frag_type_names=towncrier_config.types,
             orphan_prefix='+',
         )
     except TypeError:
         # Towncrier >= 24.7.0rc1
         _fragments, fragment_filenames = find_fragments(  # noqa: WPS121
-            base_directory=str(fragment_base_directory),
+            base_directory=str(project_path),
             config=towncrier_config,
             strict=False,
         )
