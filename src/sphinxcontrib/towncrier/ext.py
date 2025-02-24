@@ -59,9 +59,6 @@ def _get_changelog_draft_entries(
         escape_project_version_rst_substitution(target_version),
     )
     if config_path is not None:
-        # This isn't actually supported by a released version of Towncrier yet:
-        # https://github.com/twisted/towncrier/pull/157#issuecomment-666549246
-        # https://github.com/twisted/towncrier/issues/269
         extra_cli_args += '--config', str(config_path)
 
     try:
