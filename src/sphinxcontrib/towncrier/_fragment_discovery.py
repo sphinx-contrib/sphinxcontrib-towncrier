@@ -84,4 +84,4 @@ def lookup_towncrier_fragments(  # noqa: WPS210
 
         return {Path(fname[0]) for fname in fragment_filenames}
 
-    return set(fragment_filenames)
+    return set(map(Path, fragment_filenames))
