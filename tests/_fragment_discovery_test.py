@@ -134,3 +134,16 @@ def test_lookup_towncrier_fragments_missing_cfg(tmp_path: Path) -> None:
         'blah.toml',
     )
     assert discovered_fragment_paths == set()
+
+
+def test_lookup_towncrier_fragments_missing_dir(tmp_path: Path) -> None:
+    """Test that missing fragments folder causes zero fragment set."""
+    (tmp_path / TOWNCRIER_TOML_FILENAME).write_text(
+        '[tool.towncrier]\ndirectory="non/existing/dir"',
+        encoding=UTF8_ENCODING,
+    )
+    discovered_fragment_paths = lookup_towncrier_fragments.__wrapped__(
+        tmp_path,
+        TOWNCRIER_TOML_FILENAME,
+    )
+    assert discovered_fragment_paths == set()
