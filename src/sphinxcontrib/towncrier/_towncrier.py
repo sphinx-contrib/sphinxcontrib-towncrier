@@ -28,14 +28,20 @@ def find_towncrier_fragments(
         return {fname[0] for fname in fragment_filenames}
 
     # Towncrier < 24.7.0rc1
-    # pylint: disable-next=no-value-for-parameter,unexpected-keyword-arg
-    _fragments, fragment_filenames = find_fragments(  # noqa: WPS121
-        base_directory=base_directory,
-        sections=towncrier_config.sections,
-        fragment_directory=towncrier_config.directory,
-        frag_type_names=towncrier_config.types,
-        orphan_prefix='+',
-    )
+    try:
+        # pylint: disable-next=no-value-for-parameter,unexpected-keyword-arg
+        _fragments, fragment_filenames = find_fragments(  # noqa: WPS121
+            base_directory=base_directory,
+            sections=towncrier_config.sections,
+            fragment_directory=towncrier_config.directory,
+            frag_type_names=towncrier_config.types,
+            orphan_prefix='+',
+        )
+    except TowncrierConfigError as lookup_err:
+        raise LookupError(
+            'Towncrier was unable to perform change note lookup: '
+            f'{lookup_err !s}',
+        ) from lookup_err
 
     return set(fragment_filenames)
 
