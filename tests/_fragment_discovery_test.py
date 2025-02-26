@@ -14,6 +14,8 @@ from sphinxcontrib.towncrier._fragment_discovery import (
 PYPROJECT_TOML_FILENAME = 'pyproject.toml'
 TOWNCRIER_TOML_FILENAME = 'towncrier.toml'
 
+UTF8_ENCODING = 'utf-8'
+
 
 @pytest.mark.parametrize(
     ('config_file_names_on_disk', 'expected_config_file_name'),
@@ -48,7 +50,7 @@ def test_find_config_file(
     """Verify that the correct Towncrier config is always preferred."""
     for config_file_name_on_disk in config_file_names_on_disk:
         tmp_path.joinpath(config_file_name_on_disk).write_text(
-            '', encoding='utf-8',
+            '', encoding=UTF8_ENCODING,
         )
 
     assert _find_config_file(tmp_path).name == expected_config_file_name
@@ -109,11 +111,11 @@ def test_lookup_towncrier_fragments(
     change_note_sentinel_path = change_notes_dir_path / '0.misc.1.rst'
 
     change_notes_dir_path.mkdir(parents=True)
-    change_note_sentinel_path.write_text('sentinel', encoding='utf-8')
+    change_note_sentinel_path.write_text('sentinel', encoding=UTF8_ENCODING)
 
     (tmp_working_dir_path / config_file_path).write_text(
         f'[tool.towncrier]\ndirectory={change_notes_dir_base_name !r}',
-        encoding='utf-8',
+        encoding=UTF8_ENCODING,
     )
 
     if chdir:
