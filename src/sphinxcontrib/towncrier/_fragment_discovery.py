@@ -6,10 +6,10 @@ from pathlib import Path
 from typing import Optional, Set
 
 from sphinx.util import logging
-# pylint: disable-next=no-name-in-module
-from towncrier.build import find_fragments  # noqa: WPS433
 
-from ._towncrier import get_towncrier_config  # noqa: WPS436
+from ._towncrier import (  # noqa: WPS436
+    find_towncrier_fragments, get_towncrier_config,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -51,28 +51,17 @@ def lookup_towncrier_fragments(  # noqa: WPS210
             project_path,
             final_config_path,
         )
-    except LookupError as lookup_err:
-        logger.warning(str(lookup_err))
+    except LookupError as config_lookup_err:
+        logger.warning(str(config_lookup_err))
         return set()
 
     try:
-        # Towncrier < 24.7.0rc1
-        # pylint: disable-next=no-value-for-parameter,unexpected-keyword-arg
-        _fragments, fragment_filenames = find_fragments(
-            base_directory=str(project_path),
-            sections=towncrier_config.sections,
-            fragment_directory=towncrier_config.directory,
-            frag_type_names=towncrier_config.types,
-            orphan_prefix='+',
+        fragment_filenames = find_towncrier_fragments(
+            str(project_path),
+            towncrier_config,
         )
-    except TypeError:
-        # Towncrier >= 24.7.0rc1
-        _fragments, fragment_filenames = find_fragments(  # noqa: WPS121
-            base_directory=str(project_path),
-            config=towncrier_config,
-            strict=False,
-        )
-
-        return {Path(fname[0]) for fname in fragment_filenames}
+    except LookupError as change_notes_lookup_err:
+        logger.warning(str(change_notes_lookup_err))
+        return set()
 
     return set(map(Path, fragment_filenames))
