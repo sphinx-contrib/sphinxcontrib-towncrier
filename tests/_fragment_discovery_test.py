@@ -147,3 +147,16 @@ def test_lookup_towncrier_fragments_missing_dir(tmp_path: Path) -> None:
         TOWNCRIER_TOML_FILENAME,
     )
     assert discovered_fragment_paths == set()
+
+
+def test_lookup_towncrier_fragments_unset_dir(tmp_path: Path) -> None:
+    """Test that implicit fragments folder uses defaults."""
+    (tmp_path / TOWNCRIER_TOML_FILENAME).write_text(
+        '[tool.towncrier]',
+        encoding=UTF8_ENCODING,
+    )
+    discovered_fragment_paths = lookup_towncrier_fragments.__wrapped__(
+        tmp_path,
+        TOWNCRIER_TOML_FILENAME,
+    )
+    assert discovered_fragment_paths == set()
