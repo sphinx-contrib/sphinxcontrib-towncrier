@@ -46,41 +46,15 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: >-
-        Calculate Python interpreter version hash value
+        Calculate dependency files' combined hash value
         for use in the cache key
-      id: calc_cache_key_py
-      run: |
-        from hashlib import sha512
-        from os import environ
-        from pathlib import Path
-        from sys import version
-
-        FILE_APPEND_MODE = 'a'
-
-        hash = sha512(version.encode()).hexdigest()
-
-        with Path(environ['GITHUB_OUTPUT']).open(
-                mode=FILE_APPEND_MODE,
-        ) as outputs_file:
-            print(f'py_hash_key={hash}', file=outputs_file)
-      shell: python
+      id: calc-cache-key-files
+      uses: ./.github/actions/cache-keys
     - name: Set up pip cache
-      uses: actions/cache@v4
+      uses: re-actors/cache-python-deps@release/v1
       with:
-        path: ~/.cache/pip
-        key: >-
-          ${{ runner.os }}-pip-${{
-          steps.calc_cache_key_py.outputs.py_hash_key }}-${{
-          hashFiles('setup.cfg') }}-${{
-          hashFiles('tox.ini') }}-${{
-          hashFiles('pyproject.toml') }}-${{
-          hashFiles('.pre-commit-config.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-${{
-            steps.calc_cache_key_py.outputs.py_hash_key
-          }}-
-          ${{ runner.os }}-pip-
-          ${{ runner.os }}-
+        cache-key-for-dependency-files: >-
+          ${{ steps.calc-cache-key-files.outputs.cache-key-for-dep-files }}
     - name: Set up pre-commit cache
       uses: actions/cache@v4
       with:
