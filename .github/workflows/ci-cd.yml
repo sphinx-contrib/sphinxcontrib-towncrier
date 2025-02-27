@@ -887,7 +887,9 @@ jobs:
       run: >-
         git tag
         -m '${{ needs.pre-setup.outputs.git-tag }}'
-        -m 'Published at https://pypi.org/project/${{ env.PROJECT_NAME }}/${{
+        -m 'Published at https://pypi.org/project/${{
+          env.PROJECT_NAME
+        }}/${{
           needs.pre-setup.outputs.dist-version
         }}'
         -m 'This release has been produced by the following workflow run: ${{
