@@ -1,4 +1,10 @@
 [darglint]
+# NOTE: All `darglint` styles except for `sphinx` hit ridiculously low
+# NOTE: performance on some of the in-project Python modules.
+# Refs:
+# * https://github.com/terrencepreilly/darglint/issues/186
+# * https://github.com/wemake-services/wemake-python-styleguide/issues/2287
 docstring_style = sphinx
-enable = DAR104
+# enable = DAR104  # covered by `sphinx_autodoc_typehints`
 strictness = long
+# strictness = full
