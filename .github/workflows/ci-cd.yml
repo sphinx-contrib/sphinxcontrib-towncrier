@@ -13,13 +13,14 @@ on:
     - patchback/backports/**  # Patchback always creates PRs
     - pre-commit-ci-update-config  # pre-commit.ci always creates a PR
   pull_request:
+    ignore-paths:  # changes to the cron workflow are triggered through it
+    - .github/workflows/scheduled-runs.yml
     types:
     - opened  # default
     - synchronize  # default
     - reopened  # default
     - ready_for_review  # used in PRs created from the release workflow
-  schedule:
-  - cron: 3 5 * * *  # Run daily at 5:03 UTC
+  workflow_call:  # a way to embed the main tests
   workflow_dispatch:
     inputs:
       release-version:
