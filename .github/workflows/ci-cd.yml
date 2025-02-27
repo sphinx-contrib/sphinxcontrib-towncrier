@@ -766,6 +766,7 @@ jobs:
         }}
 
     permissions:
+      contents: read  # This job doesn't need to `git push` anything
       id-token: write  # PyPI Trusted Publishing (OIDC)
 
     steps:
@@ -812,6 +813,7 @@ jobs:
         }}
 
     permissions:
+      contents: read  # This job doesn't need to `git push` anything
       id-token: write  # PyPI Trusted Publishing (OIDC)
 
     steps:
