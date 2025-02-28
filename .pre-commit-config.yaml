@@ -257,6 +257,6 @@ repos:
     - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
     - setuptools-scm  # docs
     - sphinx
-    - towncrier >= 23
+    - towncrier >= 24
 
 ...
