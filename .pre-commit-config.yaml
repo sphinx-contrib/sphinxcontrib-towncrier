@@ -4,6 +4,7 @@ ci:
   autoupdate_schedule: quarterly
   skip:
   - nitpick-check  # can't run on pre-commit.ci while using gh://
+  - pylint  # pylint-pytest crashes because the project isn't self-installed
 
 repos:
 - repo: local
