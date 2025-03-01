@@ -489,6 +489,16 @@ jobs:
         ${{ needs.pre-setup.outputs.cache-key-for-dep-files }}
       check-name: >-
         ${{ matrix.check-name }}
+      # NOTE: `pre-commit --show-diff-on-failure` and
+      # NOTE: `sphinxcontrib-spellcheck` with Git authors allowlist enabled
+      # NOTE: both depend on the presence of a Git repository.
+      checkout-src-from-git: >-
+        ${{
+          contains(
+            fromJSON('["pre-commit", "spellcheck-docs"]'),
+            matrix.toxenv
+          )
+        }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       environment-variables: >-

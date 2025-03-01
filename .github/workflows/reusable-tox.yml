@@ -22,6 +22,14 @@ on:
         description: A custom name for the Checks API-reported status
         required: false
         type: string
+      checkout-src-from-git:
+        description: >-
+          Flag whether this CI job should fetch the source by from Git.
+          It will unpack the sdist in-place otherwise, which is also
+          the default.
+        default: 'false'
+        required: false
+        type: string
       dists-artifact-name:
         description: Workflow artifact name containing dists
         required: true
@@ -171,18 +179,15 @@ jobs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    # NOTE: `pre-commit --show-diff-on-failure` and `sphinxcontrib-spellcheck`
-    # NOTE: with Git authors allowlist enabled both depend on the presence of a
-    # NOTE: Git repository.
     - name: Grab the source from Git
       if: >-
-        contains(fromJSON('["pre-commit", "spellcheck-docs"]'), inputs.toxenv)
+        fromJSON(inputs.checkout-src-from-git)
       uses: actions/checkout@v4
       with:
         ref: ${{ github.event.inputs.release-committish }}
     - name: Retrieve the project source from an sdist inside the GHA artifact
       if: >-
-        !contains(fromJSON('["pre-commit", "spellcheck-docs"]'), inputs.toxenv)
+        !fromJSON(inputs.checkout-src-from-git)
       uses: re-actors/checkout-python-sdist@release/v2
       with:
         source-tarball-name: ${{ inputs.source-tarball-name }}
