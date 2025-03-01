@@ -358,12 +358,30 @@ jobs:
         cache-key-for-dependency-files: >-
           ${{ needs.pre-setup.outputs.cache-key-for-dep-files }}
 
+    - name: Identify tox's own lock file
+      id: tox-deps
+      run: >
+        LOCK_FILE_PATH="dependencies/lock-files/$(
+        python bin/print_lockfile_base_name.py tox
+        ).txt"
+
+
+        echo lock-file="$(
+        ls -1 "${LOCK_FILE_PATH}"
+        || >&2 echo "${LOCK_FILE_PATH}" not found, not injecting...
+        )"
+        >> "${GITHUB_OUTPUT}"
+      shell: bash  # windows compat
+
     - name: Install tox
       run: >-
-        python -m
-        pip install
-        --user
-        tox
+        python -Im pip install -r dependencies/direct/tox.in
+        ${{
+          steps.tox-deps.outputs.lock-file
+          && format('--constraint={0}', steps.tox-deps.outputs.lock-file)
+          || ''
+        }}
+      shell: bash  # windows compat
 
     - name: Pre-populate the tox env
       run: >-
