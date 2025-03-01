@@ -244,7 +244,7 @@ jobs:
       shell: bash
     - name: Download all the dists
       if: >-
-        contains(fromJSON('["metadata-validation", "py"]'), inputs.toxenv)
+        inputs.built-wheel-names != ''
       uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.dists-artifact-name }}
