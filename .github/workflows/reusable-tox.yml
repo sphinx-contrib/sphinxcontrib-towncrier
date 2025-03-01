@@ -43,7 +43,7 @@ on:
         type: string
       runner-vm-os:
         description: VM OS to use
-        default: ubuntu
+        default: ubuntu-latest
         required: false
         type: string
       source-tarball-name:
