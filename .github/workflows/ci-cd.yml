@@ -523,6 +523,8 @@ jobs:
             matrix.toxenv
           )
         }}
+      checkout-src-git-committish: >-
+        ${{ github.event.inputs.release-committish }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       environment-variables: >-
@@ -602,6 +604,8 @@ jobs:
         🐍${{ matrix.python-version }}
         /
         💻${{ matrix.runner-vm-os }}
+      checkout-src-git-committish: >-
+        ${{ github.event.inputs.release-committish }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       python-version: >-

@@ -22,6 +22,14 @@ on:
         description: A custom name for the Checks API-reported status
         required: false
         type: string
+      checkout-src-git-committish:
+        description: >-
+          A Git-resolvable ref that is used when the source is taken
+          from Git. No-op otherwise. The default is whatever
+          `actions/checkout` does.
+        default: ''
+        required: false
+        type: string
       checkout-src-from-git:
         description: >-
           Flag whether this CI job should fetch the source by from Git.
@@ -192,7 +200,7 @@ jobs:
         fromJSON(inputs.checkout-src-from-git)
       uses: actions/checkout@v4
       with:
-        ref: ${{ github.event.inputs.release-committish }}
+        ref: ${{ inputs.checkout-src-git-committish }}
     - name: Retrieve the project source from an sdist inside the GHA artifact
       if: >-
         !fromJSON(inputs.checkout-src-from-git)
