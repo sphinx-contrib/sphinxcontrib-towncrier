@@ -40,6 +40,14 @@ on:
           to be set using `${GITHUB_ENV}`
         required: false
         type: string
+      post-toxenv-preparation-command:
+        description: >-
+          A command to run at the end of the preparation stage, before
+          invoking the Tox's main environment command. Can be used to
+          pre-download things and perform actions that aren't seen as
+          testing directly.
+        required: false
+        type: string
       python-version:
         description: Python version to provision in the VM
         required: true
@@ -260,7 +268,7 @@ jobs:
         }}
         --notest
     - name: Initialize pre-commit envs if needed
-      if: inputs.toxenv == 'pre-commit'
+      if: inputs.post-toxenv-preparation-command != ''
       run: >-
         python -Xutf8 -Im
         tox
@@ -268,7 +276,7 @@ jobs:
         --skip-pkg-install
         --quiet
         --
-        python -Im pre_commit install-hooks
+        ${{ inputs.post-toxenv-preparation-command }}
     - name: >-
         Run tox envs: `${{ env.TOXENV }}`
       id: tox-run

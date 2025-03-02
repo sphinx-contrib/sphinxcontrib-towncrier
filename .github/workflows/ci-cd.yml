@@ -527,6 +527,12 @@ jobs:
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       environment-variables: >-
         ${{ matrix.environment-variables }}
+      post-toxenv-preparation-command: >-
+        ${{
+          matrix.toxenv == 'pre-commit'
+          && 'python -Im pre_commit install-hooks'
+          || ''
+        }}
       python-version: >-
         ${{ matrix.python-version }}
       release-requested: >-
