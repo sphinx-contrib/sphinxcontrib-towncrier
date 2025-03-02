@@ -275,7 +275,7 @@ jobs:
           || ''
         }}
         --notest
-    - name: Initialize pre-commit envs if needed
+    - name: Pre-heat the `${{ env.TOXENV }}` tox env
       if: inputs.post-toxenv-preparation-command != ''
       run: >-
         python -Xutf8 -Im
