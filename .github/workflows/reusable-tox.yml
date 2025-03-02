@@ -236,12 +236,6 @@ jobs:
         }}
       shell: bash  # windows compat
 
-    - name: Make the env clean of non-test files
-      if: inputs.toxenv == 'metadata-validation'
-      run: |
-        shopt -s extglob
-        rm -rf !tox.ini
-      shell: bash
     - name: Download all the dists
       if: >-
         inputs.built-wheel-names != ''
