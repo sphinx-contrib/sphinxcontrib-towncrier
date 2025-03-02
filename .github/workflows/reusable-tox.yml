@@ -209,17 +209,14 @@ jobs:
         source-tarball-name: ${{ inputs.source-tarball-name }}
         workflow-artifact-name: ${{ inputs.dists-artifact-name }}
 
-    - name: Cache pre-commit.com virtualenvs
-      if: inputs.toxenv == 'pre-commit'
-      uses: actions/cache@v4
+    - name: 🪝 Invoke the in-repo `post-src-checkout` hook (if exists)
+      if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
+        hashFiles(
+          '.github/stdlib-workflows/reusable-tox/actions/post-src-checkout/action.yml'
+        ) != ''
+      uses: ./.github/stdlib-workflows/reusable-tox/actions/post-src-checkout
       with:
-        path: ~/.cache/pre-commit
-        key: >-
-          ${{
-            runner.os
-          }}-pre-commit-${{
-            hashFiles('.pre-commit-config.yaml')
-          }}
+        calling-job-context: ${{ toJSON(inputs) }}
 
     - name: Set up pip cache
       uses: re-actors/cache-python-deps@release/v1
