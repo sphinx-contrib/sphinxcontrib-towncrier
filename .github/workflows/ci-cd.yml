@@ -599,11 +599,13 @@ jobs:
       cache-key-for-dependency-files: >-
         ${{ needs.pre-setup.outputs.cache-key-for-dep-files }}
       check-name: >-
-        📝${{ matrix.towncrier-version }}
-        /
-        🐍${{ matrix.python-version }}
-        /
-        💻${{ matrix.runner-vm-os }}
+        📝${{
+          matrix.towncrier-version
+        }}@🐍${{
+          matrix.python-version
+        }}@💻${{
+          matrix.runner-vm-os
+        }}
       checkout-src-git-committish: >-
         ${{ github.event.inputs.release-committish }}
       dists-artifact-name: >-
