@@ -155,7 +155,7 @@ jobs:
         inputs.check-name
         && inputs.check-name
         || format(
-             '{0}@🐍{1}@{2}',
+             '{0}@🐍{1}@💻{2}',
              inputs.toxenv,
              inputs.python-version,
              inputs.runner-vm-os
