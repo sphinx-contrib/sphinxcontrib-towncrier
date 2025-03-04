@@ -12,7 +12,7 @@ runs:
     if: fromJSON(inputs.calling-job-context).toxenv == 'pre-commit'
     run: >-
       >&2 echo Caching ~/.cache/pre-commit based on
-      the contents of `.pre-commit-config.yaml`...
+      the contents of '.pre-commit-config.yaml'...
     shell: bash
   - name: Cache pre-commit.com virtualenvs
     if: fromJSON(inputs.calling-job-context).toxenv == 'pre-commit'
