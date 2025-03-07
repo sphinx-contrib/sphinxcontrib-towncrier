@@ -200,6 +200,11 @@ jobs:
         fromJSON(inputs.checkout-src-from-git)
       uses: actions/checkout@v4
       with:
+        fetch-depth: >-
+          ${{
+              fromJSON(inputs.release-requested)
+              && 1 || 0
+          }}
         ref: ${{ inputs.checkout-src-git-committish }}
     - name: Retrieve the project source from an sdist inside the GHA artifact
       if: >-
