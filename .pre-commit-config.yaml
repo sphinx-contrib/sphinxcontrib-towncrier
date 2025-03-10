@@ -198,6 +198,7 @@ repos:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
     - Sphinx >= 3.1.2
+    - tox  # toxfile.py
     - types-colorama
     - types-Pillow
     - types-Pygments
@@ -216,6 +217,7 @@ repos:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
     - Sphinx >= 3.1.2
+    - tox  # toxfile.py
     - types-colorama
     - types-Pillow
     - types-Pygments
@@ -234,6 +236,7 @@ repos:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
     - Sphinx >= 3.1.2
+    - tox  # toxfile.py
     - types-colorama
     - types-Pillow
     - types-Pygments
@@ -259,5 +262,6 @@ repos:
     - setuptools-scm  # docs
     - sphinx
     - towncrier >= 24
+    - tox  # toxfile.py
 
 ...
