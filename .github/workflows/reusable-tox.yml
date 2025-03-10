@@ -52,9 +52,10 @@ on:
         default: >-
           {}
         description: >-
-          The `${{ needs }}` context passed from the calling workflow
+          The `$ {{ needs }}` context passed from the calling workflow
           encoded as a JSON string. The caller is expected to form this
-          input as follows: `job-dependencies-context: ${{ toJSON(needs) }}`.
+          input as follows:
+          `job-dependencies-context: $ {{ toJSON(needs) }}`.
         required: false
         type: string
       post-toxenv-preparation-command:
