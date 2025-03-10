@@ -48,6 +48,15 @@ on:
           to be set using `${GITHUB_ENV}`
         required: false
         type: string
+      job-dependencies-context:
+        default: >-
+          {}
+        description: >-
+          The `${{ needs }}` context passed from the calling workflow
+          encoded as a JSON string. The caller is expected to form this
+          input as follows: `job-dependencies-context: ${{ toJSON(needs) }}`.
+        required: false
+        type: string
       post-toxenv-preparation-command:
         description: >-
           A command to run at the end of the preparation stage, before
@@ -222,6 +231,7 @@ jobs:
       uses: ./.github/stdlib-workflows/reusable-tox/actions/post-src-checkout
       with:
         calling-job-context: ${{ toJSON(inputs) }}
+        job-dependencies-context: ${{ inputs.job-dependencies-context }}
 
     - name: Set up pip cache
       uses: re-actors/cache-python-deps@release/v1
