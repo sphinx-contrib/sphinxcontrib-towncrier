@@ -13,6 +13,7 @@ from tox.tox_env.api import ToxEnv
 
 IS_GITHUB_ACTIONS_RUNTIME = getenv('GITHUB_ACTIONS') == 'true'
 FILE_APPEND_MODE = 'a'
+UNICODE_ENCODING = 'utf-8'
 
 
 logger = getLogger(__name__)
@@ -73,6 +74,7 @@ def tox_after_run_commands(tox_env: ToxEnv) -> None:
         ).decode()
 
         with Path(environ['GITHUB_OUTPUT']).open(
+            encoding=UNICODE_ENCODING,
             mode=FILE_APPEND_MODE,
         ) as outputs_file:
             print(  # noqa: WPS421
