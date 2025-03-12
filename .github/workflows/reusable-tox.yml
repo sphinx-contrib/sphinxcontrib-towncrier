@@ -319,6 +319,17 @@ jobs:
           && format('-- {0}', inputs.tox-run-posargs)
           || ''
         }}
+
+    - name: 🪝 Invoke the in-repo `post-tox-run` hook (if exists)
+      if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
+        hashFiles(
+          '.github/stdlib-workflows/reusable-tox/actions/post-tox-run/action.yml'
+        ) != ''
+      uses: ./.github/stdlib-workflows/reusable-tox/actions/post-tox-run
+      with:
+        calling-job-context: ${{ toJSON(inputs) }}
+        job-dependencies-context: ${{ inputs.job-dependencies-context }}
+
     - name: Produce markdown test summary from JUnit
       if: >-
         !cancelled()
