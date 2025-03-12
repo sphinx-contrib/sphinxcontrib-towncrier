@@ -130,6 +130,11 @@ on:
         description: An API token for uploading to Codecov
         required: false
 
+    outputs:
+      tox:
+        description: JSON-formatted outputs object from the tox invocation
+        value: ${{ toJSON(jobs.tox.outputs.tox-run) }}
+
 env:
   COLOR: >-  # Supposedly, pytest or coveragepy use this
     yes
