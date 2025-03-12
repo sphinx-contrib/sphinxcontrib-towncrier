@@ -293,6 +293,15 @@ jobs:
         --quiet
         --
         ${{ inputs.post-toxenv-preparation-command }}
+    - name: 🪝 Invoke the in-repo `prepare-for-tox-run` hook (if exists)
+      if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
+        hashFiles(
+          '.github/stdlib-workflows/reusable-tox/actions/prepare-for-tox-run/action.yml'
+        ) != ''
+      uses: ./.github/stdlib-workflows/reusable-tox/actions/prepare-for-tox-run
+      with:
+        calling-job-context: ${{ toJSON(inputs) }}
+        job-dependencies-context: ${{ inputs.job-dependencies-context }}
     - name: >-
         Run tox envs: `${{ env.TOXENV }}`
       id: tox-run
