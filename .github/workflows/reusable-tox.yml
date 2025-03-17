@@ -126,8 +126,8 @@ on:
         type: string
     secrets:
       codecov-token:
-        description: Mandatory token for uploading to Codecov
-        required: true
+        description: An API token for uploading to Codecov
+        required: false
 
 env:
   COLOR: >-  # Supposedly, pytest or coveragepy use this
