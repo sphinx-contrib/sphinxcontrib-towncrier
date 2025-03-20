@@ -522,12 +522,12 @@ jobs:
       # NOTE: both depend on the presence of a Git repository.
       source-tarball-name: >-
         ${{
-          contains(
+          !contains(
             fromJSON('["pre-commit", "spellcheck-docs"]'),
             matrix.toxenv
           )
-          && ''
-          || needs.pre-setup.outputs.sdist-artifact-name
+          && needs.pre-setup.outputs.sdist-artifact-name
+          || ''
         }}
       timeout-minutes: 3
       toxenv: >-
