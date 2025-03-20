@@ -30,14 +30,6 @@ on:
         default: ''
         required: false
         type: string
-      checkout-src-from-git:
-        description: >-
-          Flag whether this CI job should fetch the source by from Git.
-          It will unpack the sdist in-place otherwise, which is also
-          the default.
-        default: 'false'
-        required: false
-        type: string
       dists-artifact-name:
         description: Workflow artifact name containing dists
         required: true
@@ -82,7 +74,7 @@ on:
         type: string
       source-tarball-name:
         description: Sdist filename wildcard
-        required: true
+        required: false
         type: string
       timeout-minutes:
         description: Deadline for the job to complete
@@ -206,8 +198,7 @@ jobs:
         python-version: ${{ inputs.python-version }}
 
     - name: Grab the source from Git
-      if: >-
-        fromJSON(inputs.checkout-src-from-git)
+      if: inputs.source-tarball-name == ''
       uses: actions/checkout@v4
       with:
         fetch-depth: >-
@@ -217,8 +208,7 @@ jobs:
           }}
         ref: ${{ inputs.checkout-src-git-committish }}
     - name: Retrieve the project source from an sdist inside the GHA artifact
-      if: >-
-        !fromJSON(inputs.checkout-src-from-git)
+      if: inputs.source-tarball-name != ''
       uses: re-actors/checkout-python-sdist@release/v2
       with:
         source-tarball-name: ${{ inputs.source-tarball-name }}

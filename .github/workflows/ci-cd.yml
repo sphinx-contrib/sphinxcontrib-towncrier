@@ -499,16 +499,6 @@ jobs:
         ${{ needs.pre-setup.outputs.cache-key-for-dep-files }}
       check-name: >-
         ${{ matrix.check-name }}
-      # NOTE: `pre-commit --show-diff-on-failure` and
-      # NOTE: `sphinxcontrib-spellcheck` with Git authors allowlist enabled
-      # NOTE: both depend on the presence of a Git repository.
-      checkout-src-from-git: >-
-        ${{
-          contains(
-            fromJSON('["pre-commit", "spellcheck-docs"]'),
-            matrix.toxenv
-          )
-        }}
       checkout-src-git-committish: >-
         ${{ github.event.inputs.release-committish }}
       dists-artifact-name: >-
@@ -527,8 +517,18 @@ jobs:
         ${{ needs.pre-setup.outputs.release-requested }}
       runner-vm-os: >-
         ${{ matrix.runner-vm-os }}
+      # NOTE: `pre-commit --show-diff-on-failure` and
+      # NOTE: `sphinxcontrib-spellcheck` with Git authors allowlist enabled
+      # NOTE: both depend on the presence of a Git repository.
       source-tarball-name: >-
-        ${{ needs.pre-setup.outputs.sdist-artifact-name }}
+        ${{
+          contains(
+            fromJSON('["pre-commit", "spellcheck-docs"]'),
+            matrix.toxenv
+          )
+          && ''
+          || needs.pre-setup.outputs.sdist-artifact-name
+        }}
       timeout-minutes: 3
       toxenv: >-
         ${{ matrix.toxenv }}
