@@ -38,8 +38,11 @@ on:
         required: false
         type: string
       dists-artifact-name:
-        description: Workflow artifact name containing dists
-        required: true
+        description: >-
+          Workflow artifact name containing dists.
+          Defaults to "python-package-distributions".
+        default: python-package-distributions
+        required: false
         type: string
       environment-variables:
         description: >-
