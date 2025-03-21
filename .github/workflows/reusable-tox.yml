@@ -69,6 +69,14 @@ on:
         description: Python version to provision in the VM
         required: true
         type: string
+      require-successful-codecov-uploads:
+        default: >-
+          true
+        description: >-
+          A boolean string for whether Codecov upload failures would
+          fail the entire job. Defaults to "true".
+        required: false
+        type: string
       runner-vm-os:
         description: VM OS to use
         default: ubuntu-latest
@@ -105,10 +113,6 @@ on:
       tox-rerun-posargs:
         description: Positional arguments to pass to the re-attempted tox run
         required: false
-        type: string
-      upstream-repository-id:
-        description: ID of the upstream GitHub Repository
-        required: true
         type: string
       xfail:
         description: >-
@@ -367,7 +371,7 @@ jobs:
       with:
         disable_search: true
         fail_ci_if_error: >-
-          ${{ toJSON(inputs.upstream-repository-id == github.repository_id) }}
+          ${{ inputs.require-successful-codecov-uploads }}
         files: >-
           ${{ steps.tox-run.outputs.cov-report-files }}
         flags: >-
@@ -391,7 +395,7 @@ jobs:
       with:
         disable_search: true
         fail_ci_if_error: >-
-          ${{ toJSON(inputs.upstream-repository-id == github.repository_id) }}
+          ${{ inputs.require-successful-codecov-uploads }}
         files: >-
           ${{ steps.tox-run.outputs.test-result-files }}
         flags: >-
