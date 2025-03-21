@@ -30,6 +30,13 @@ on:
         default: ''
         required: false
         type: string
+      checkout-src-git-fetch-depth:
+        description: >-
+          A number of commits for Git to retrieve. Defaults to 1. Set to
+          0 when the entire history is necessary.
+        default: '1'
+        required: false
+        type: string
       dists-artifact-name:
         description: Workflow artifact name containing dists
         required: true
@@ -61,11 +68,6 @@ on:
       python-version:
         description: Python version to provision in the VM
         required: true
-        type: string
-      release-requested:
-        description: Flag whether this is CI run is a release request
-        default: 'false'
-        required: false
         type: string
       runner-vm-os:
         description: VM OS to use
@@ -201,11 +203,7 @@ jobs:
       if: inputs.source-tarball-name == ''
       uses: actions/checkout@v4
       with:
-        fetch-depth: >-
-          ${{
-              fromJSON(inputs.release-requested)
-              && 1 || 0
-          }}
+        fetch-depth: ${{ inputs.checkout-src-git-fetch-depth }}
         ref: ${{ inputs.checkout-src-git-committish }}
     - name: Retrieve the project source from an sdist inside the GHA artifact
       if: inputs.source-tarball-name != ''

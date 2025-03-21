@@ -501,6 +501,12 @@ jobs:
         ${{ matrix.check-name }}
       checkout-src-git-committish: >-
         ${{ github.event.inputs.release-committish }}
+      checkout-src-git-fetch-depth: >-
+        ${{
+            fromJSON(needs.pre-setup.outputs.release-requested)
+            && 1
+            || 0
+        }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       environment-variables: >-
@@ -513,8 +519,6 @@ jobs:
         }}
       python-version: >-
         ${{ matrix.python-version }}
-      release-requested: >-
-        ${{ needs.pre-setup.outputs.release-requested }}
       runner-vm-os: >-
         ${{ matrix.runner-vm-os }}
       # NOTE: `pre-commit --show-diff-on-failure` and
@@ -594,12 +598,16 @@ jobs:
         }}
       checkout-src-git-committish: >-
         ${{ github.event.inputs.release-committish }}
+      checkout-src-git-fetch-depth: >-
+        ${{
+            fromJSON(needs.pre-setup.outputs.release-requested)
+            && 1
+            || 0
+        }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       python-version: >-
         ${{ matrix.python-version }}
-      release-requested: >-
-        ${{ needs.pre-setup.outputs.release-requested }}
       runner-vm-os: >-
         ${{ matrix.runner-vm-os }}
       source-tarball-name: >-
