@@ -503,9 +503,9 @@ jobs:
         ${{ github.event.inputs.release-committish }}
       checkout-src-git-fetch-depth: >-
         ${{
-            fromJSON(needs.pre-setup.outputs.release-requested)
-            && 1
-            || 0
+          fromJSON(needs.pre-setup.outputs.release-requested)
+          && 1
+          || 0
         }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
