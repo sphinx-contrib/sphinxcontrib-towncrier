@@ -134,6 +134,10 @@ on:
       tox:
         description: JSON-formatted outputs object from the tox invocation
         value: ${{ toJSON(jobs.tox.outputs.tox-run) }}
+        # hooks:
+        #   description: >-
+        #     JSON-formatted list of outputs object from the hook invocations
+        #   value:  # FIXME
 
 env:
   COLOR: >-  # Supposedly, pytest or coveragepy use this
