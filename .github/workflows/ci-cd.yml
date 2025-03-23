@@ -368,14 +368,8 @@ jobs:
         # - doctest-docs
         # - linkcheck-docs
         # - spellcheck-docs
-        environment-variables:
-        - ''
-        tox-run-posargs:
-        - ''
         xfail:
         - false
-        check-name:
-        - ''
       fail-fast: false
     uses: ./.github/workflows/reusable-tox.yml
     with:
@@ -387,8 +381,6 @@ jobs:
         }}
       cache-key-for-dependency-files: >-
         ${{ needs.pre-setup.outputs.cache-key-for-dep-files }}
-      check-name: >-
-        ${{ matrix.check-name }}
       checkout-src-git-committish: >-
         ${{ github.event.inputs.release-committish }}
       checkout-src-git-fetch-depth: >-
@@ -399,8 +391,6 @@ jobs:
         }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
-      environment-variables: >-
-        ${{ matrix.environment-variables }}
       post-toxenv-preparation-command: >-
         ${{
           matrix.toxenv == 'pre-commit'
@@ -433,8 +423,6 @@ jobs:
       timeout-minutes: 3
       toxenv: >-
         ${{ matrix.toxenv }}
-      tox-run-posargs: >-
-        ${{ matrix.tox-run-posargs }}
       xfail: >-
         ${{
           fromJSON(needs.pre-setup.outputs.is-yolo-mode)
