@@ -1,0 +1,89 @@
+---
+
+inputs:
+  calling-job-context:
+    description: A JSON with the calling job inputs
+    type: string
+  job-dependencies-context:
+    default: >-
+      {}
+    description: >-
+      The `$ {{ needs }}` context passed from the calling workflow
+      encoded as a JSON string. The caller is expected to form this
+      input as follows:
+      `job-dependencies-context: $ {{ toJSON(needs) }}`.
+    required: false
+    type: string
+
+runs:
+  using: composite
+  steps:
+  - name: Drop Git tags from HEAD for non-tag-create events
+    if: >-
+      fromJSON(inputs.calling-job-context).toxenv == 'build-dists'
+      && !fromJSON(
+        fromJSON(
+          inputs.job-dependencies-context
+        ).pre-setup.outputs.release-requested
+      )
+    run: >-
+      git tag --points-at HEAD
+      |
+      xargs git tag --delete
+    shell: bash
+
+  - name: Setup git user as [bot]
+    if: >-
+      fromJSON(inputs.calling-job-context).toxenv == 'build-dists'
+      && (
+        fromJSON(
+          fromJSON(
+            inputs.job-dependencies-context
+          ).pre-setup.outputs.release-requested
+        )
+        || fromJSON(
+          fromJSON(
+            inputs.job-dependencies-context
+          ).pre-setup.outputs.is-untagged-devel
+        )
+      )
+    uses: fregante/setup-git-user@v2
+  - name: >-
+      Tag the release in the local Git repo
+      as ${{
+        fromJSON(
+          inputs.job-dependencies-context
+        ).pre-setup.outputs.git-tag
+      }}
+      for setuptools-scm to set the desired version
+    if: >-
+      fromJSON(inputs.calling-job-context).toxenv == 'build-dists'
+      && (
+        fromJSON(
+          fromJSON(
+            inputs.job-dependencies-context
+          ).pre-setup.outputs.is-untagged-devel
+        )
+        || fromJSON(
+          fromJSON(
+            inputs.job-dependencies-context
+          ).pre-setup.outputs.release-requested
+        )
+      )
+    run: >-
+      git tag
+      -m '${{
+        fromJSON(
+          inputs.job-dependencies-context
+        ).pre-setup.outputs.git-tag
+      }}'
+      '${{
+        fromJSON(
+          inputs.job-dependencies-context
+        ).pre-setup.outputs.git-tag
+      }}'
+      --
+      ${{ fromJSON(inputs.calling-job-context).release-committish }}
+    shell: bash
+
+...
