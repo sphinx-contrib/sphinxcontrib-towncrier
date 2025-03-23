@@ -131,9 +131,10 @@ on:
         required: false
 
     outputs:
-      tox:
-        description: JSON-formatted outputs object from the tox invocation
-        value: ${{ toJSON(jobs.tox.outputs.tox-run) }}
+      steps:
+        description: >-
+          JSON-formatted collection of all tox steps with their outputs
+        value: ${{ jobs.tox.outputs.steps }}
 
 env:
   COLOR: >-  # Supposedly, pytest or coveragepy use this
@@ -193,6 +194,9 @@ jobs:
           ) && true || false
       }}
 
+    outputs:
+      steps: ${{ toJSON(steps) }}
+
     env:
       TOXENV: ${{ inputs.toxenv }}
 
@@ -225,6 +229,7 @@ jobs:
         workflow-artifact-name: ${{ inputs.dists-artifact-name }}
 
     - name: 🪝 Invoke the in-repo `post-src-checkout` hook (if exists)
+      id: hook-post-src-checkout
       if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
         hashFiles(
           '.github/stdlib-workflows/reusable-tox/actions/post-src-checkout/action.yml'
@@ -299,6 +304,7 @@ jobs:
         --
         ${{ inputs.post-toxenv-preparation-command }}
     - name: 🪝 Invoke the in-repo `prepare-for-tox-run` hook (if exists)
+      id: hook-prepare-for-tox-run
       if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
         hashFiles(
           '.github/stdlib-workflows/reusable-tox/actions/prepare-for-tox-run/action.yml'
@@ -326,6 +332,7 @@ jobs:
         }}
 
     - name: 🪝 Invoke the in-repo `post-tox-run` hook (if exists)
+      id: hook-post-tox-run
       if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
         hashFiles(
           '.github/stdlib-workflows/reusable-tox/actions/post-tox-run/action.yml'
