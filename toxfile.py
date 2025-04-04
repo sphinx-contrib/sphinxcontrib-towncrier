@@ -23,6 +23,10 @@ logger = getLogger(__name__)
 def tox_before_run_commands(tox_env: ToxEnv) -> None:
     """Inject SOURCE_DATE_EPOCH env var into build-dists."""
     if tox_env.name == 'build-dists':
+        logger.debug(
+            'toxfile:tox_before_run_commands> Setting the Git HEAD-based '
+            'epoch for reproducibility in GHA...',
+        )
         git_executable = 'git'
         git_log_cmd = (
             git_executable,
@@ -64,6 +68,10 @@ def _produce_sha256sum_line(file_path: Path) -> str:
 def tox_after_run_commands(tox_env: ToxEnv) -> None:
     """Compute combined dists hash post build-dists under GHA."""
     if tox_env.name == 'build-dists' and IS_GITHUB_ACTIONS_RUNTIME:
+        logger.debug(
+            'toxfile:tox_after_run_commands> Computing and storing the base64 '
+            'representation of the combined dists SHA-256 hash in GHA...',
+        )
         dists_dir_path = Path(__file__).parent / 'dist'
         emulated_sha256sum_output = '\n'.join(
             _produce_sha256sum_line(artifact_path)
