@@ -18,7 +18,7 @@ ignore-patterns=
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-init-hook='import os, pathlib, sys; repo_root_path = pathlib.Path.cwd(); src_path = repo_root_path / 'src'; sys.path[:0] = [str(src_path if src_path.exists() else repo_root_path)]; os.environ['PYTHONPATH'] = sys.path[0]'
+init-hook='import os, pathlib, sys; repo_root_path = pathlib.Path.cwd(); src_path = repo_root_path / 'src'; sys.path[:0] = [str(src_path if src_path.exists() else repo_root_path), str(repo_root_path / 'bin')]; os.environ['PYTHONPATH'] = os.sep.join(sys.path[:2])'
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.

@@ -84,6 +84,12 @@ per-file-ignores =
   # FIXME: WPS402 too many `noqa`s
   src/sphinxcontrib/towncrier/ext.py: WPS201, WPS402
 
+  # FIXME: toxfile is currently rather complicated, allowing these temporarily:
+  # WPS201 Found module with too many imports: 18 > 12
+  # WPS202 Found too many module members: 11 > 7
+  # WPS402 Found `noqa` comments overuse: 14
+  toxfile.py: WPS201, WPS202, WPS402
+
   # There are multiple `assert`s (S101)
   # and subprocesses (import – S404; call – S603) in tests;
   # also, using fixtures looks like shadowing the outer scope (WPS442);
