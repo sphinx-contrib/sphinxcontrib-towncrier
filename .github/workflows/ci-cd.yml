@@ -736,8 +736,8 @@ jobs:
       base64-subjects: >-
         ${{
           fromJSON(
-            needs.build.outputs.tox
-          ).combined-dists-base64-encoded-sha256-hash
+            needs.build.outputs.steps
+          ).tox-run.outputs.combined-dists-base64-encoded-sha256-hash
         }}
 
   publish-github-attestations:
