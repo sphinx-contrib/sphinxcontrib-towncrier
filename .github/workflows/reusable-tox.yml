@@ -239,9 +239,9 @@ jobs:
       id: hook-post-src-checkout
       if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
         hashFiles(
-          '.github/stdlib-workflows/reusable-tox/actions/post-src-checkout/action.yml'
+          '.github/reusables/tox-dev/workflow/reusable-tox/hooks/post-src-checkout/action.yml'
         ) != ''
-      uses: ./.github/stdlib-workflows/reusable-tox/actions/post-src-checkout
+      uses: ./.github/reusables/tox-dev/workflow/reusable-tox/hooks/post-src-checkout  # yamllint disable-line rule:line-length
       with:
         calling-job-context: ${{ toJSON(inputs) }}
         job-dependencies-context: ${{ inputs.job-dependencies-context }}
@@ -327,9 +327,9 @@ jobs:
       id: hook-prepare-for-tox-run
       if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
         hashFiles(
-          '.github/stdlib-workflows/reusable-tox/actions/prepare-for-tox-run/action.yml'
+          '.github/reusables/tox-dev/workflow/reusable-tox/hooks/prepare-for-tox-run/action.yml'
         ) != ''
-      uses: ./.github/stdlib-workflows/reusable-tox/actions/prepare-for-tox-run
+      uses: ./.github/reusables/tox-dev/workflow/reusable-tox/hooks/prepare-for-tox-run  # yamllint disable-line rule:line-length
       with:
         calling-job-context: ${{ toJSON(inputs) }}
         job-dependencies-context: ${{ inputs.job-dependencies-context }}
@@ -355,9 +355,9 @@ jobs:
       id: hook-post-tox-run
       if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
         hashFiles(
-          '.github/stdlib-workflows/reusable-tox/actions/post-tox-run/action.yml'
+          '.github/reusables/tox-dev/workflow/reusable-tox/hooks/post-tox-run/action.yml'
         ) != ''
-      uses: ./.github/stdlib-workflows/reusable-tox/actions/post-tox-run
+      uses: ./.github/reusables/tox-dev/workflow/reusable-tox/hooks/post-tox-run
       with:
         calling-job-context: ${{ toJSON(inputs) }}
         job-dependencies-context: ${{ inputs.job-dependencies-context }}
