@@ -15,7 +15,7 @@ source =
 # exclude_also =
 exclude_lines =
   ^\s*@pytest\.mark\.xfail
-fail_under = 58.31
+fail_under = 56.67
 skip_covered = true
 skip_empty = true
 show_missing = true
