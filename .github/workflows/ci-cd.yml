@@ -439,9 +439,9 @@ jobs:
     - pre-setup  # transitive, for accessing settings
 
     strategy:
-      fail-fast: >-
+      fail-fast: >-  # ${{ runner.debug }} is unavailable in this context
         ${{
-          runner.debug == '1'
+          env.RUNNER_DEBUG == '1'
           && 'false'
           || 'true'
         }}
