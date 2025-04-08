@@ -117,6 +117,13 @@ on:
         description: Positional arguments to pass to the re-attempted tox run
         required: false
         type: string
+      tox-tool-deps:
+        default: tox tox-uv
+        description: >-
+          PEP 508 specifiers passed to `pip install`. Ignored when
+          `dependencies/direct/tox.in` exists. Defaults to "tox tox-uv".
+        required: false
+        type: string
       xfail:
         description: >-
           Whether this job is expected to fail. Controls if the run outcomes
@@ -249,7 +256,8 @@ jobs:
       id: tox-deps
       if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
         hashFiles(
-          'bin/print_lockfile_base_name.py'
+          'bin/print_lockfile_base_name.py',
+          'dependencies/direct/tox.in'
         ) != ''
       run: >
         LOCK_FILE_PATH="dependencies/lock-files/$(
@@ -264,7 +272,9 @@ jobs:
         >> "${GITHUB_OUTPUT}"
       shell: bash  # windows compat
 
-    - name: Install tox
+    - name: Install tox and plugins from `dependencies/direct/tox.in`
+      if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
+        hashFiles('dependencies/direct/tox.in') != ''
       run: >-
         python -Im pip install -r dependencies/direct/tox.in
         ${{
@@ -272,6 +282,12 @@ jobs:
           && format('--constraint={0}', steps.tox-deps.outputs.lock-file)
           || ''
         }}
+      shell: bash  # windows compat
+
+    - name: Install ${{ inputs.tox-tool-deps }}
+      if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
+        hashFiles('dependencies/direct/tox.in') == ''
+      run: python -Im pip install ${{ inputs.tox-tool-deps }}
       shell: bash  # windows compat
 
     - name: Download all the dists
