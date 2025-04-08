@@ -439,6 +439,12 @@ jobs:
     - pre-setup  # transitive, for accessing settings
 
     strategy:
+      fail-fast: >-
+        ${{
+          runner.debug == '1'
+          && 'false'
+          || 'true'
+        }}
       matrix:
         towncrier-version:
         - 24.8.0
