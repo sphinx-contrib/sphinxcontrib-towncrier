@@ -247,6 +247,10 @@ jobs:
 
     - name: Identify tox's own lock file
       id: tox-deps
+      if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
+        hashFiles(
+          'bin/print_lockfile_base_name.py'
+        ) != ''
       run: >
         LOCK_FILE_PATH="dependencies/lock-files/$(
         python bin/print_lockfile_base_name.py tox
