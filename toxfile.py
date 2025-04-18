@@ -83,7 +83,7 @@ def _compute_sha256sum(file_path: Path) -> str:
 
 
 def _produce_sha256sum_line(file_path: Path) -> str:
-    sha256_str = sha256(file_path.read_bytes()).hexdigest()
+    sha256_str = _compute_sha256sum(file_path)
     return f'{sha256_str !s}  {file_path.name !s}'
 
 
