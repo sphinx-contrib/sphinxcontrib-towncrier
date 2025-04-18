@@ -83,7 +83,7 @@ runs:
         ).pre-setup.outputs.git-tag
       }}'
       --
-      ${{ fromJSON(inputs.calling-job-context).release-committish }}
+      ${{ fromJSON(inputs.calling-job-context).checkout-src-git-committish }}
     shell: bash
 
 ...
