@@ -421,7 +421,7 @@ jobs:
           && needs.pre-setup.outputs.sdist-artifact-name
           || ''
         }}
-      timeout-minutes: 3
+      timeout-minutes: 4  # docker+network are slow sometimes
       toxenv: >-
         ${{ matrix.toxenv }}
       xfail: >-
