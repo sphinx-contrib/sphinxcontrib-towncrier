@@ -1,12 +1,21 @@
 """Towncrier config reader tests."""
 
 
+from importlib.metadata import version as _get_installed_project_version
 from pathlib import Path
 from typing import Union
 
 import pytest
 
+from towncrier._settings.load import Config  # noqa: WPS436
+
 from sphinxcontrib.towncrier._towncrier import get_towncrier_config
+
+
+_TOWNCRIER_VERSION = _get_installed_project_version('towncrier')
+_TOWNCRIER_RELEASED_POST_2025_INCLUSIVE = int(  # noqa: WPS114
+    _TOWNCRIER_VERSION.split('.', 1)[0],
+) >= 25  # noqa: WPS432
 
 
 def test_towncrier_config_section_missing(
@@ -24,6 +33,13 @@ def test_towncrier_config_section_missing(
         '^Towncrier was unable to load the configuration from file '
         fr'`{empty_config_file !s}`: No \[tool\.towncrier\] section\.$'
     )
+
+    if _TOWNCRIER_RELEASED_POST_2025_INCLUSIVE:
+        assert isinstance(
+            get_towncrier_config(tmp_path, empty_config_file),
+            Config,
+        )
+        return
 
     with pytest.raises(LookupError, match=expected_error_msg):
         get_towncrier_config(tmp_path, empty_config_file)
