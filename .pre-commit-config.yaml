@@ -45,12 +45,12 @@ repos:
       ^tests/__init__\.py$
 
 - repo: https://github.com/asottile/add-trailing-comma.git
-  rev: v3.1.0
+  rev: v3.2.0
   hooks:
   - id: add-trailing-comma
 
 - repo: https://github.com/asottile/pyupgrade.git
-  rev: v3.19.1
+  rev: v3.20.0
   hooks:
   - id: pyupgrade
     args:
@@ -69,7 +69,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.32.1
+  rev: 0.33.2
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -156,7 +156,7 @@ repos:
       ^\.github/\.json-schemas/.*\.json$
 
 - repo: https://github.com/adrienverge/yamllint.git
-  rev: v1.37.0
+  rev: v1.37.1
   hooks:
   - id: yamllint
     files: \.(yaml|yml)$
@@ -178,7 +178,7 @@ repos:
   - id: shellcheck
 
 - repo: https://github.com/PyCQA/flake8.git
-  rev: 7.2.0
+  rev: 7.3.0
   hooks:
   - id: flake8
     additional_dependencies:
@@ -189,7 +189,7 @@ repos:
     language_version: python3
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v1.15.0
+  rev: v1.16.1
   hooks:
   - id: mypy
     alias: mypy-py313
@@ -250,7 +250,7 @@ repos:
     pass_filenames: false
 
 - repo: https://github.com/PyCQA/pylint.git
-  rev: v3.3.6
+  rev: v3.3.7
   hooks:
   - id: pylint
     additional_dependencies:
