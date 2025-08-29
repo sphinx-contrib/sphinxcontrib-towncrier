@@ -6,7 +6,7 @@
 #
 packaging==24.2
     # via setuptools-scm
-setuptools-scm[toml]==8.2.0
+setuptools-scm==8.2.0
     # via
     #   setuptools-scm
     #   sphinxcontrib-towncrier (pyproject.toml::build-system.requires)
