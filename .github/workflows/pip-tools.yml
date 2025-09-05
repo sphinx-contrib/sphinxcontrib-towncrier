@@ -1,0 +1,430 @@
+---
+
+name: 🔒 pip-tools
+
+on:
+  workflow_dispatch:
+    inputs:
+      package-distribuition:
+        # github.event_name == 'workflow_dispatch'
+        # && github.event.inputs.package-distribuition
+        description: >-
+          A target Python package distribution to upgrade
+        required: false
+  pull_request:
+    paths:
+    - .github/workflows/pip-tools.yml
+  schedule:
+  - cron: 7 6 * * Mon  # Run every Monday at 06:07 UTC
+
+env:
+  GIT_BRANCH: >-
+    maintenance/pip-tools-constraint-lockfiles${{
+      (
+      github.event_name == 'workflow_dispatch'
+      && github.event.inputs.package-distribuition
+      )
+      && format('-updating-{0}', github.event.inputs.package-distribuition)
+      || ''
+    }}
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
+  PIP_NO_PYTHON_VERSION_WARNING: 1
+  PIP_NO_WARN_SCRIPT_LOCATION: 1
+  PY_COLORS: 1
+
+concurrency:
+  group: >-
+    ${{
+        github.workflow
+    }}-${{
+        github.event.inputs.package-distribuition
+        || github.event.pull_request.number
+        || github.sha
+    }}
+  cancel-in-progress: true
+
+run-name: >-
+  ⮸
+  Bumping
+  ${{
+  (
+      github.event_name == 'workflow_dispatch'
+      && github.event.inputs.package-distribuition
+  )
+  && format('`{0}`', github.event.inputs.package-distribuition)
+  || 'everything'
+  }}
+  in all the lock files
+  🔒
+
+jobs:
+
+  deps:
+    name: >-
+      ⛓${{ matrix.lock-file-env }}:
+      🐍${{
+          matrix.python-version
+      }}@${{
+          matrix.os
+      }}
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 3
+
+    strategy:
+      matrix:
+        python-version:
+        # NOTE: The latest and the lowest supported Pythons are prioritized
+        # NOTE: to improve the responsiveness. It's nice to see the most
+        # NOTE: important results first.
+        - 3.13
+        - 3.9
+        - 3.12
+        - 3.11
+        - >-
+          3.10
+        os:
+        - ubuntu-24.04-arm
+        - macos-15  # arm64
+        - windows-11-arm
+        - ubuntu-24.04
+        - macos-13  # intel
+        - windows-2022
+        lock-file-env:
+        - build-dists
+        # - build-docs
+        # - codelinter-docs
+        # - coverage-docs
+        # - doctest-docs
+        # - linkcheck-docs
+        # - metadata-validation
+        - pip-compile
+        - pip-compile-build-lock
+        - pip-compile-tox-env-lock
+        - pre-commit
+        - py
+        - tox
+        # - spellcheck-docs
+        lock-file-extra-input:
+        - pyproject.toml setup.cfg
+        - ''
+        exclude:
+        - lock-file-env: build-dists
+          lock-file-extra-input: pyproject.toml setup.cfg
+        - lock-file-env: build-docs
+          lock-file-extra-input: ''
+        - lock-file-env: codelinter-docs
+          lock-file-extra-input: ''
+        - lock-file-env: coverage-docs
+          lock-file-extra-input: ''
+        - lock-file-env: doctest-docs
+          lock-file-extra-input: ''
+        - lock-file-env: linkcheck-docs
+          lock-file-extra-input: ''
+        - lock-file-env: metadata-validation
+          lock-file-extra-input: pyproject.toml setup.cfg
+        - lock-file-env: pip-compile
+          lock-file-extra-input: pyproject.toml setup.cfg
+        - lock-file-env: pip-compile-build-lock
+          lock-file-extra-input: pyproject.toml setup.cfg
+        - lock-file-env: pip-compile-tox-env-lock
+          lock-file-extra-input: pyproject.toml setup.cfg
+        - lock-file-env: pre-commit
+          lock-file-extra-input: pyproject.toml setup.cfg
+        - lock-file-env: py
+          lock-file-extra-input: ''
+        - lock-file-env: tox
+          lock-file-extra-input: pyproject.toml setup.cfg
+        - lock-file-env: spellcheck-docs
+          lock-file-extra-input: ''
+
+    env:
+      TOXENV: pip-compile-tox-env-lock
+
+    steps:
+    - name: Grab the source from Git
+      uses: actions/checkout@v4  # Keep before `setup-python` for cache to work
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: >-
+        Calculate dependency files' combined hash value
+        for use in the cache key
+      id: calc-cache-key-files
+      uses: ./.github/actions/cache-keys
+    - name: Set up pip cache
+      uses: re-actors/cache-python-deps@release/v1
+      with:
+        cache-key-for-dependency-files: >-
+          ${{ steps.calc-cache-key-files.outputs.cache-key-for-dep-files }}
+
+    - name: Identify tox's own lock file
+      id: tox-deps
+      run: >
+        LOCK_FILE_PATH="dependencies/lock-files/$(
+        python bin/print_lockfile_base_name.py tox
+        ).txt"
+
+
+        echo lock-file="$(
+        ls -1 "${LOCK_FILE_PATH}"
+        || >&2 echo "${LOCK_FILE_PATH}" not found, not injecting...
+        )"
+        >> "${GITHUB_OUTPUT}"
+      shell: bash  # windows compat
+
+    - name: Install tox
+      run: >-
+        python -Im pip install -r dependencies/direct/tox.in
+        ${{
+          steps.tox-deps.outputs.lock-file
+          && format('--constraint={0}', steps.tox-deps.outputs.lock-file)
+          || ''
+        }}
+      shell: bash  # windows compat
+
+    - name: Pre-populate the tox env
+      run: python -Im tox --skip-missing-interpreters false --notest
+
+    - name: Setup git user as [bot]
+      # Refs:
+      # * https://github.community/t/github-actions-bot-email-address/17204/6
+      # * https://github.com/actions/checkout/issues/13#issuecomment-724415212
+      uses: fregante/setup-git-user@v2.0.1
+
+    - name: Generate constraints files
+      run: >-
+        python -Im tox r --quiet
+        --
+        ${{ matrix.lock-file-env }} ${{ matrix.lock-file-extra-input }}
+        ${{
+          (
+            github.event_name == 'workflow_dispatch'
+            && github.event.inputs.package-distribuition
+          )
+          && format(
+            '--upgrade-package="{0}"',
+            github.event.inputs.package-distribuition
+          )
+          || '--upgrade'
+        }}
+
+    - name: Commit version bumps to Git
+      id: constraints
+      run: |
+        LOCK_BASE_NAME=$(python bin/print_lockfile_base_name.py ${{
+          matrix.lock-file-env
+        }})
+
+        git add "dependencies/lock-files/${LOCK_BASE_NAME}.txt"
+
+        git commit "dependencies/lock-files/${LOCK_BASE_NAME}.txt" \
+          -m "Update ${LOCK_BASE_NAME} constraints${{
+          (
+          github.event_name == 'workflow_dispatch'
+          && github.event.inputs.package-distribuition
+          )
+          && format(' for {0}', github.event.inputs.package-distribuition)
+          || ''
+          }}" \
+          && {
+            echo "patch=${{
+              runner.temp
+            }}/patches/0001-Update-${LOCK_BASE_NAME}-constraints.patch" \
+            >> "${GITHUB_OUTPUT}"
+          } \
+          || :
+      shell: bash  # windows compat
+
+    - name: Log the patch
+      if: steps.constraints.outputs.patch
+      run: git show --color
+    - name: Create a temporary patch directory
+      if: steps.constraints.outputs.patch
+      run: mkdir -pv '${{ runner.temp }}/patches'
+      shell: bash  # windows compat
+    - name: Create a patch from the last Git commit
+      if: steps.constraints.outputs.patch
+      run: >-
+        git format-patch
+        --output='${{ steps.constraints.outputs.patch }}'
+        -1
+        HEAD
+    - name: Make a GHA artifact suffix
+      if: steps.constraints.outputs.patch
+      id: random
+      run: >-
+        echo uuid=$(python -c 'import uuid; print(uuid.uuid4())')
+        >> "${GITHUB_OUTPUT}"
+      shell: bash  # windows compat
+    - name: Save the package bump patch as a GHA artifact
+      if: steps.constraints.outputs.patch
+      uses: actions/upload-artifact@v4
+      with:
+        name: pip-constraints-git-patches--${{ steps.random.outputs.uuid }}
+        path: ${{ steps.constraints.outputs.patch }}
+
+  check:  # This job does nothing and is only used for the branch protection
+    if: always()
+
+    needs:
+    - deps
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 1
+
+    steps:
+    - name: Decide whether the needed jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
+
+  publish-pr:
+    name: Open/refresh a PR
+    if: github.event_name != 'pull_request'
+
+    needs:
+    - check
+
+    runs-on: Ubuntu-latest
+
+    timeout-minutes: 1
+
+    environment:
+      name: pip-tools
+      url: ${{ steps.pr.outputs.pull_request_url }}
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Download all the dists
+      id: artifacts-download
+      continue-on-error: true  # and judge whether there's updates later
+      uses: actions/download-artifact@v4
+      with:
+        merge-multiple: true
+        path: ${{ runner.temp }}/patches/
+        pattern: pip-constraints-git-patches--*
+    - name: >-
+        Determine whether any change suggestions to lockfiles
+        have been produced
+      if: steps.artifacts-download.outcome == 'success'
+      id: artifacts
+      run: >-
+        echo "lockfile-updates-needed=true" >> "${GITHUB_OUTPUT}"
+    - name: Grab the source from Git
+      if: steps.artifacts.outputs.lockfile-updates-needed
+      uses: actions/checkout@v4
+    - name: Setup git user as [bot]
+      if: steps.artifacts.outputs.lockfile-updates-needed
+      # Refs:
+      # * https://github.community/t/github-actions-bot-email-address/17204/6
+      # * https://github.com/actions/checkout/issues/13#issuecomment-724415212
+      uses: fregante/setup-git-user@v2.0.1
+
+    - name: Figure out if the pre-existing remote branch exists
+      if: steps.artifacts.outputs.lockfile-updates-needed
+      id: pre-existing-remote-branch
+      run: >-
+        echo "info=$(
+        git ls-remote origin "${GIT_BRANCH}"
+        )" >> "${GITHUB_OUTPUT}"
+    - name: Fetch the existing remote PR branch
+      if: steps.pre-existing-remote-branch.outputs.info
+      run: git fetch origin "${GIT_BRANCH}"
+    - name: Switch to the PR branch
+      if: steps.artifacts.outputs.lockfile-updates-needed
+      run: git checkout -B "${GIT_BRANCH}"
+
+    - name: List Git patches
+      if: steps.artifacts.outputs.lockfile-updates-needed
+      run: ls -alh '${{ runner.temp }}/patches/'
+    - name: Apply patches to the Git repo
+      if: steps.artifacts.outputs.lockfile-updates-needed
+      run: git am '${{ runner.temp }}/patches'/*.patch
+    - name: Force-push the PR branch to remote
+      if: steps.artifacts.outputs.lockfile-updates-needed
+      run: git push origin "HEAD:${GIT_BRANCH}" --force-with-lease
+
+    - name: Create a PR
+      if: >-
+        !steps.pre-existing-remote-branch.outputs.info
+        && steps.artifacts.outputs.lockfile-updates-needed
+      id: new-pr
+      uses: vsoch/pull-request-action@1.1.1
+      env:
+        BRANCH_PREFIX: ''
+        GITHUB_TOKEN: ${{ github.token }}
+        PULL_REQUEST_BODY: >-
+          Automated pip-tools-managed pip constraint lockfiles update.
+        PULL_REQUEST_BRANCH: ${{ github.event.repository.default_branch }}
+        PULL_REQUEST_DRAFT: true
+        PULL_REQUEST_FROM_BRANCH: ${{ env.GIT_BRANCH }}
+        PULL_REQUEST_TITLE: >-
+          ⛓🔒 Bump transitive deps in pip-tools-managed lockfiles${{
+          (
+          github.event_name == 'workflow_dispatch'
+          && github.event.inputs.package-distribuition
+          )
+          && format(' for {0}', github.event.inputs.package-distribuition)
+          || ''
+          }}
+    - name: Retrieve the existing PR URL
+      if: steps.pre-existing-remote-branch.outputs.info
+      id: existing-pr
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: >
+        echo -n pull_request_url=
+        >> "${GITHUB_OUTPUT}"
+
+
+        gh pr view
+        --json 'url'
+        --jq '.url'
+        --repo '${{ github.repository }}'
+        '${{ env.GIT_BRANCH }}'
+        >> "${GITHUB_OUTPUT}"
+    - name: Select the actual PR URL
+      id: pr
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: >
+        echo -n pull_request_url=
+        >> "${GITHUB_OUTPUT}"
+
+
+        echo '${{
+          steps.new-pr.outputs.pull_request_url
+          || steps.existing-pr.outputs.pull_request_url
+        }}'
+        >> "${GITHUB_OUTPUT}"
+    - name: Log the pull request details
+      run: >-
+        echo 'PR URL: ${{ steps.pr.outputs.pull_request_url }}'
+        | tee -a "${GITHUB_STEP_SUMMARY}"
+
+    - name: Turn the PR into a draft
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: >-
+        gh pr ready --undo
+        --repo '${{ github.repository }}'
+        '${{ steps.pr.outputs.pull_request_url }}'
+
+    - name: Instruct the maintainers to trigger CI by undrafting the PR
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: >-
+        gh pr comment
+        --body 'Please mark the PR as ready for review to trigger PR checks.'
+        --repo '${{ github.repository }}'
+        '${{ steps.pr.outputs.pull_request_url }}'
+
+...
