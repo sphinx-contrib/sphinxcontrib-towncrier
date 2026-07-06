@@ -6,9 +6,7 @@ from typing import Set, Union
 
 from towncrier._settings.load import Config  # noqa: WPS436
 from towncrier._settings.load import load_config_from_file  # noqa: WPS436
-from towncrier._settings.load import (  # noqa: WPS436
-    ConfigError as TowncrierConfigError,
-)
+from towncrier._settings.load import ConfigError as TowncrierConfigError  # noqa: WPS436
 from towncrier.build import find_fragments
 
 
