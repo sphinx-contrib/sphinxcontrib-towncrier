@@ -7,7 +7,8 @@ from typing import Set, Union
 import pytest
 
 from sphinxcontrib.towncrier._fragment_discovery import (
-    _find_config_file, _resolve_spec_config, lookup_towncrier_fragments,
+    _find_config_file, _resolve_spec_config, lookup_towncrier_config_files,
+    lookup_towncrier_fragments,
 )
 
 
@@ -160,3 +161,41 @@ def test_lookup_towncrier_fragments_unset_dir(tmp_path: Path) -> None:
         TOWNCRIER_TOML_FILENAME,
     )
     assert discovered_fragment_paths == set()
+
+
+def test_lookup_towncrier_config_files(tmp_path: Path) -> None:
+    """Test that the config and the template files are discovered."""
+    config_file_path = tmp_path / TOWNCRIER_TOML_FILENAME
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('', encoding=UTF8_ENCODING)
+    config_file_path.write_text(
+        f'[tool.towncrier]\ntemplate = {template_path.name !r}',
+        encoding=UTF8_ENCODING,
+    )
+
+    discovered_config_file_paths = (
+        lookup_towncrier_config_files.__wrapped__(tmp_path, None)
+    )
+    assert discovered_config_file_paths == {config_file_path, template_path}
+
+
+def test_lookup_config_files_missing_cfg(tmp_path: Path) -> None:
+    """Test that missing config file causes zero config file set."""
+    discovered_config_file_paths = (
+        lookup_towncrier_config_files.__wrapped__(tmp_path, 'blah.toml')
+    )
+    assert discovered_config_file_paths == set()
+
+
+def test_lookup_config_files_invalid_cfg(tmp_path: Path) -> None:
+    """Test that an invalid config file is still discovered."""
+    config_file_path = tmp_path / TOWNCRIER_TOML_FILENAME
+    config_file_path.write_text(
+        '[tool.towncrier]\ntemplate = "non-existing-template.j2"',
+        encoding=UTF8_ENCODING,
+    )
+
+    discovered_config_file_paths = (
+        lookup_towncrier_config_files.__wrapped__(tmp_path, None)
+    )
+    assert discovered_config_file_paths == {config_file_path}
