@@ -1,5 +1,7 @@
 """Data transformation helpers."""
 
+from typing import Iterable, Tuple, Union
+
 
 def escape_project_version_rst_substitution(version: str) -> str:
     """Prepend an escaped whitespace before RST substitution."""
@@ -15,3 +17,15 @@ def escape_project_version_rst_substitution(version: str) -> str:
     # the substitution gets processed properly so the result would
     # be something like `v1.0` as expected.
     return rf'\ {version}'
+
+
+def normalize_empty_markers(
+        markers: Union[str, Iterable[str]],
+) -> Tuple[str, ...]:
+    """Turn the configured empty-changelog markers into a tuple.
+
+    A bare string is wrapped rather than iterated: iterating it would
+    match single characters against the Towncrier output, silently
+    swallowing non-empty changelogs.
+    """
+    return (markers, ) if isinstance(markers, str) else tuple(markers)
