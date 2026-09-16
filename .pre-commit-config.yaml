@@ -185,6 +185,12 @@ repos:
     - flake8-2020 ~= 1.7.0
     - flake8-length ~= 0.3.0
     - flake8-pytest-style ~= 1.6.0
+    # NOTE: `wemake-python-styleguide` pins `flake8-commas < 3` and that 2.x
+    # NOTE: series imports `pkg_resources`, which setuptools 82 removed.
+    # NOTE: Without a setuptools that still ships it, Flake8 cannot load the
+    # NOTE: plugin at all. Drop the pin once WPS allows a `flake8-commas`
+    # NOTE: release that no longer needs `pkg_resources`.
+    - setuptools < 82
     - wemake-python-styleguide ~= 0.19.2
     language_version: python3
 
@@ -202,6 +208,7 @@ repos:
     - types-colorama
     - types-Pillow
     - types-Pygments
+    - types-docutils
     - types-pytz
     - types-setuptools
     args:
@@ -221,6 +228,7 @@ repos:
     - types-colorama
     - types-Pillow
     - types-Pygments
+    - types-docutils
     - types-pytz
     - types-setuptools
     args:
@@ -232,14 +240,23 @@ repos:
   - id: mypy
     alias: mypy-py39
     name: MyPy, for Python 3.9
+    # NOTE: `--python-version=3.9` makes MyPy parse *every* module it follows
+    # NOTE: with the 3.9 grammar, third-party sources included. The dists below
+    # NOTE: are resolved for the hook env's own interpreter, so anything that
+    # NOTE: dropped 3.9 support is free to use `match` statements that this run
+    # NOTE: then rejects with a syntax error. Hence the upper bounds -- they
+    # NOTE: are the newest releases that still support Python 3.9, and they can
+    # NOTE: all go away once this project does the same.
     additional_dependencies:
+    - filelock < 3.20  # transitive dep of `tox`
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
-    - pytest
+    - pytest < 9
     - Sphinx >= 3.1.2
     - tox  # toxfile.py
     - types-colorama
     - types-Pillow
     - types-Pygments
+    - types-docutils
     - types-pytz
     - types-setuptools
     args:
