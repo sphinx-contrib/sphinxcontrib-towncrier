@@ -40,7 +40,7 @@ How to use this?
 
     extensions = ['sphinxcontrib.towncrier.ext']
 
-    # Options: draft/sphinx-version/sphinx-release
+    # Options: draft (the default)/sphinx-version/sphinx-release
     towncrier_draft_autoversion_mode = 'draft'
     towncrier_draft_include_empty = True
     towncrier_draft_working_directory = PROJECT_ROOT_DIR
@@ -58,7 +58,8 @@ If everything above is  set up correctly, you should be able to add
 
 to your documents, like ``changelog.rst``. With no argument, the version
 title will be generated using the strategy set up in the
-``towncrier_draft_autoversion_mode`` setting.
+``towncrier_draft_autoversion_mode`` setting, which defaults to
+``draft``.
 
 If you want to be in control, override it with an argument you like:
 
