@@ -7,7 +7,9 @@ from typing import Set, Union
 import pytest
 
 from sphinxcontrib.towncrier._fragment_discovery import (
-    _find_config_file, _resolve_spec_config, lookup_towncrier_fragments,
+    _find_config_file, _resolve_spec_config,
+    lookup_towncrier_fragment_categories, lookup_towncrier_fragments,
+    resolve_towncrier_config_path,
 )
 
 
@@ -160,3 +162,82 @@ def test_lookup_towncrier_fragments_unset_dir(tmp_path: Path) -> None:
         TOWNCRIER_TOML_FILENAME,
     )
     assert discovered_fragment_paths == set()
+
+
+@pytest.mark.parametrize(
+    ('sphinx_configured_path', 'expected_config_file_name'),
+    (
+        (None, PYPROJECT_TOML_FILENAME),
+        (TOWNCRIER_TOML_FILENAME, TOWNCRIER_TOML_FILENAME),
+    ),
+    ids=('implicit-config-path', 'explicit-config-path'),
+)
+def test_resolve_towncrier_config_path(
+        expected_config_file_name: str,
+        sphinx_configured_path: Union[str, None],
+        tmp_path: Path,
+) -> None:
+    """Check that the config path honors the Sphinx setting."""
+    resolved_config_path = resolve_towncrier_config_path(
+        str(tmp_path),
+        sphinx_configured_path,
+    )
+    assert resolved_config_path == tmp_path / expected_config_file_name
+
+
+def test_lookup_fragment_categories(tmp_path: Path) -> None:
+    """Check that the configured categories and titles are emitted."""
+    (tmp_path / TOWNCRIER_TOML_FILENAME).write_text(
+        '[tool.towncrier]\n'
+        '[[tool.towncrier.type]]\n'
+        'directory = "bugfix"\n'
+        'name = "Bugfixes"\n'
+        'showcontent = true\n'
+        '[[tool.towncrier.type]]\n'
+        'directory = "trivial"\n'
+        'name = ""\n'
+        'showcontent = false\n',
+        encoding=UTF8_ENCODING,
+    )
+
+    discovered_categories = (
+        lookup_towncrier_fragment_categories.__wrapped__(
+            str(tmp_path),
+            TOWNCRIER_TOML_FILENAME,
+        )
+    )
+
+    # An unset category title falls back to the category name itself:
+    assert discovered_categories == (
+        ('bugfix', 'Bugfixes'),
+        ('trivial', 'trivial'),
+    )
+
+
+def test_lookup_fragment_categories_default(tmp_path: Path) -> None:
+    """Check that Towncrier's built-in categories are emitted."""
+    (tmp_path / TOWNCRIER_TOML_FILENAME).write_text(
+        '[tool.towncrier]',
+        encoding=UTF8_ENCODING,
+    )
+
+    discovered_categories = (
+        lookup_towncrier_fragment_categories.__wrapped__(
+            str(tmp_path),
+            TOWNCRIER_TOML_FILENAME,
+        )
+    )
+
+    assert discovered_categories
+    assert all(map(all, discovered_categories))
+
+
+def test_lookup_fragment_categories_no_cfg(tmp_path: Path) -> None:
+    """Check that a missing config file yields no categories."""
+    discovered_categories = (
+        lookup_towncrier_fragment_categories.__wrapped__(
+            str(tmp_path),
+            'blah.toml',
+        )
+    )
+    assert not discovered_categories

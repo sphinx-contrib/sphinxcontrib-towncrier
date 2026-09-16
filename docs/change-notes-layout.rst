@@ -100,6 +100,15 @@ useful write-up on :ref:`authoring changelog fragments
 in this place so that it shows up on GitHub when the users navigate to
 the folder with the fragments via the web UI.
 
+Such a guide has to spell out the categories a change note file name may
+be suffixed with. Rather than keeping a hand-written copy of what
+``pyproject.toml`` declares, let |project| render it from the very same
+config:
+
+.. code-block:: rst
+
+    .. towncrier-fragment-categories::
+
 
 ``docs/``
 ^^^^^^^^^^^^^^^^^^^^^
