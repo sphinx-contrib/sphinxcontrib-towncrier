@@ -71,6 +71,18 @@ any non-default ones via ``rst_epilog`` or at the end of the document
 where the ``towncrier-draft-entries`` directive is being used.
 
 
+Either way, the version only shows up if Towncrier renders a title for
+it. It won't when the Towncrier config sets ``title_format = false``, or
+when a custom ``template`` never renders ``versiondata`` (``top_line``
+under Towncrier < 19.9) — the version is dropped silently. This
+extension flags that with a ``towncrier.missing-version-title``
+warning. If the title-less output is what you want, silence it via
+
+.. code-block:: python
+
+    suppress_warnings = ['towncrier.missing-version-title']
+
+
 Does anybody actually use this?
 -------------------------------
 
