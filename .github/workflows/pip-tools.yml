@@ -292,11 +292,14 @@ jobs:
 
     runs-on: Ubuntu-latest
 
-    timeout-minutes: 1
+    # NOTE: Signing makes `create-pull-request` recreate every commit via
+    # NOTE: 3 throttled GitHub API calls, taking ~3s per lock file. With
+    # NOTE: all the lock files updated, this adds up to ~11 minutes.
+    timeout-minutes: 15
 
     environment:
       name: pip-tools
-      url: ${{ steps.pr.outputs.pull_request_url }}
+      url: ${{ steps.pr.outputs.pull-request-url }}
 
     permissions:
       contents: write
@@ -328,45 +331,25 @@ jobs:
       # * https://github.com/actions/checkout/issues/13#issuecomment-724415212
       uses: fregante/setup-git-user@v2.0.1
 
-    - name: Figure out if the pre-existing remote branch exists
-      if: steps.artifacts.outputs.lockfile-updates-needed
-      id: pre-existing-remote-branch
-      run: >-
-        echo "info=$(
-        git ls-remote origin "${GIT_BRANCH}"
-        )" >> "${GITHUB_OUTPUT}"
-    - name: Fetch the existing remote PR branch
-      if: steps.pre-existing-remote-branch.outputs.info
-      run: git fetch origin "${GIT_BRANCH}"
-    - name: Switch to the PR branch
-      if: steps.artifacts.outputs.lockfile-updates-needed
-      run: git checkout -B "${GIT_BRANCH}"
-
     - name: List Git patches
       if: steps.artifacts.outputs.lockfile-updates-needed
       run: ls -alh '${{ runner.temp }}/patches/'
     - name: Apply patches to the Git repo
       if: steps.artifacts.outputs.lockfile-updates-needed
       run: git am '${{ runner.temp }}/patches'/*.patch
-    - name: Force-push the PR branch to remote
-      if: steps.artifacts.outputs.lockfile-updates-needed
-      run: git push origin "HEAD:${GIT_BRANCH}" --force-with-lease
 
     - name: Create a PR
-      if: >-
-        !steps.pre-existing-remote-branch.outputs.info
-        && steps.artifacts.outputs.lockfile-updates-needed
-      id: new-pr
-      uses: vsoch/pull-request-action@1.1.1
-      env:
-        BRANCH_PREFIX: ''
-        GITHUB_TOKEN: ${{ github.token }}
-        PULL_REQUEST_BODY: >-
+      if: steps.artifacts.outputs.lockfile-updates-needed
+      id: pr
+      uses: peter-evans/create-pull-request@v8.1.1
+      with:
+        base: ${{ github.event.repository.default_branch }}
+        body: >-
           Automated pip-tools-managed pip constraint lockfiles update.
-        PULL_REQUEST_BRANCH: ${{ github.event.repository.default_branch }}
-        PULL_REQUEST_DRAFT: true
-        PULL_REQUEST_FROM_BRANCH: ${{ env.GIT_BRANCH }}
-        PULL_REQUEST_TITLE: >-
+        branch: ${{ env.GIT_BRANCH }}
+        draft: always-true
+        sign-commits: true
+        title: >-
           ⛓🔒 Bump transitive deps in pip-tools-managed lockfiles${{
           (
           github.event_name == 'workflow_dispatch'
@@ -375,56 +358,20 @@ jobs:
           && format(' for {0}', github.event.inputs.package-distribuition)
           || ''
           }}
-    - name: Retrieve the existing PR URL
-      if: steps.pre-existing-remote-branch.outputs.info
-      id: existing-pr
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: >
-        echo -n pull_request_url=
-        >> "${GITHUB_OUTPUT}"
-
-
-        gh pr view
-        --json 'url'
-        --jq '.url'
-        --repo '${{ github.repository }}'
-        '${{ env.GIT_BRANCH }}'
-        >> "${GITHUB_OUTPUT}"
-    - name: Select the actual PR URL
-      id: pr
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: >
-        echo -n pull_request_url=
-        >> "${GITHUB_OUTPUT}"
-
-
-        echo '${{
-          steps.new-pr.outputs.pull_request_url
-          || steps.existing-pr.outputs.pull_request_url
-        }}'
-        >> "${GITHUB_OUTPUT}"
+        token: ${{ github.token }}
     - name: Log the pull request details
       run: >-
-        echo 'PR URL: ${{ steps.pr.outputs.pull_request_url }}'
+        echo 'PR URL: ${{ steps.pr.outputs.pull-request-url }}'
         | tee -a "${GITHUB_STEP_SUMMARY}"
 
-    - name: Turn the PR into a draft
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: >-
-        gh pr ready --undo
-        --repo '${{ github.repository }}'
-        '${{ steps.pr.outputs.pull_request_url }}'
-
     - name: Instruct the maintainers to trigger CI by undrafting the PR
+      if: steps.pr.outputs.pull-request-operation == 'created'
       env:
         GITHUB_TOKEN: ${{ github.token }}
       run: >-
         gh pr comment
         --body 'Please mark the PR as ready for review to trigger PR checks.'
         --repo '${{ github.repository }}'
-        '${{ steps.pr.outputs.pull_request_url }}'
+        '${{ steps.pr.outputs.pull-request-url }}'
 
 ...
