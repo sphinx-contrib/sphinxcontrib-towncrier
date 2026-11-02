@@ -12,6 +12,8 @@ from sphinxcontrib.towncrier.ext import _get_changelog_draft_entries
 
 NO_OUTPUT_MARKER = r'\[No output\]'
 PYTHON_INLINE_SNIPPET_CMD_FLAG = '-c'
+TEST_VERSION = 'test version'
+DRAFT_CMD_ATTR = 'sphinxcontrib.towncrier.ext.TOWNCRIER_DRAFT_CMD'
 
 
 _get_changelog_draft_entries_unwrapped = (
@@ -72,10 +74,8 @@ def test_towncrier_draft_generation_failure_msg(
         monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test that a failing command produces a :class:`RuntimeError`."""
-    version_string = 'test version'
-
     monkeypatch.setattr(
-        'sphinxcontrib.towncrier.ext.TOWNCRIER_DRAFT_CMD',
+        DRAFT_CMD_ATTR,
         failing_cmd,  # So that the invoked command would return a failure
     )
 
@@ -89,7 +89,7 @@ def test_towncrier_draft_generation_failure_msg(
     expected_error_message = (
         '^'  # noqa: WPS221
         'Command exited unexpectedly.\n\n'
-        rf"Command: {escaped_failing_cmd} --version '{version_string}'\n"
+        rf"Command: {escaped_failing_cmd} --version '{TEST_VERSION}'\n"
         f'Return code: {expected_return_code}\n\n'
         'Standard output:\n'
         f'{stdout_msg}\n\n'
@@ -99,7 +99,7 @@ def test_towncrier_draft_generation_failure_msg(
     )
 
     with pytest.raises(RuntimeError, match=expected_error_message):
-        _get_changelog_draft_entries_unwrapped(version_string)
+        _get_changelog_draft_entries_unwrapped(TEST_VERSION)
 
 
 def test_towncrier_draft_generation_with_config(
@@ -107,7 +107,7 @@ def test_towncrier_draft_generation_with_config(
 ) -> None:
     """Test explicit config gets passed into Towncrier."""
     monkeypatch.setattr(
-        'sphinxcontrib.towncrier.ext.TOWNCRIER_DRAFT_CMD',
+        DRAFT_CMD_ATTR,
         (
             sys.executable,
             '-I',
@@ -117,7 +117,7 @@ def test_towncrier_draft_generation_with_config(
     )
 
     argv_json = _get_changelog_draft_entries_unwrapped(
-        'test version',
+        TEST_VERSION,
         config_path='sentinel-config-path',
     )
     computed_proc_args = json.loads(argv_json)
@@ -131,7 +131,7 @@ def test_towncrier_draft_generation_with_empty_cl(
 ) -> None:
     """Test that empty change log triggers an exception."""
     monkeypatch.setattr(
-        'sphinxcontrib.towncrier.ext.TOWNCRIER_DRAFT_CMD',
+        DRAFT_CMD_ATTR,
         (
             sys.executable,
             '-I',
@@ -145,6 +145,54 @@ def test_towncrier_draft_generation_with_empty_cl(
     )
     with pytest.raises(LookupError, match=expected_error_message):
         _get_changelog_draft_entries_unwrapped(
-            'test version',
+            TEST_VERSION,
             allow_empty=False,
         )
+
+
+@pytest.mark.parametrize(
+    ('draft_output', 'empty_markers', 'is_empty'),
+    (
+        ('Nothing to see here', ('Nothing to see here', ), True),
+        ('Nothing to see here', ('No significant changes', ), False),
+        ('No significant changes', (), False),
+        ('No significant changes', ('nope', 'No significant'), True),
+    ),
+    ids=(
+        'custom marker matches',
+        'custom marker does not match',
+        'no markers configured',
+        'one of several markers matches',
+    ),
+)
+def test_empty_cl_markers(
+        draft_output: str, empty_markers: typing.Tuple[str, ...],
+        is_empty: bool,
+        monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test that the emptiness check honors the configured markers."""
+    monkeypatch.setenv('TEST_DRAFT_OUTPUT', draft_output)
+    monkeypatch.setattr(
+        DRAFT_CMD_ATTR,
+        (
+            sys.executable,
+            '-I',
+            PYTHON_INLINE_SNIPPET_CMD_FLAG,
+            'import os; print(os.environ["TEST_DRAFT_OUTPUT"])',
+        ),
+    )
+
+    if is_empty:
+        with pytest.raises(LookupError, match='no unreleased changelog'):
+            _get_changelog_draft_entries_unwrapped(
+                TEST_VERSION,
+                allow_empty=False,
+                empty_markers=empty_markers,
+            )
+        return
+
+    assert _get_changelog_draft_entries_unwrapped(
+        TEST_VERSION,
+        allow_empty=False,
+        empty_markers=empty_markers,
+    ) == draft_output

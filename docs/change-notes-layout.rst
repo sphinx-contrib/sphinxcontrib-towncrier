@@ -228,6 +228,10 @@ with ``towncrier_draft_``.
     towncrier_draft_autoversion_mode = 'draft'  # or: 'sphinx-version', 'sphinx-release'
     towncrier_draft_include_empty = True
     towncrier_draft_working_directory = PROJECT_ROOT_DIR
+    # Markers signalling an empty draft; only consulted when
+    # `towncrier_draft_include_empty` is `False`. Override this when using a
+    # custom Towncrier template that words this differently:
+    towncrier_draft_empty_markers = ['No significant changes']
     # Not yet supported: towncrier_draft_config_path = 'pyproject.toml'  # relative to cwd
 
     # -- Strict mode -------------------------------------------------------------

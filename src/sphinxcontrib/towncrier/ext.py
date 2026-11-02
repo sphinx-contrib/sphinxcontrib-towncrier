@@ -27,7 +27,7 @@ from docutils import statemachine  # pylint: disable=wrong-import-order
 from docutils.parsers.rst.states import RSTState
 
 from ._data_transformers import (  # noqa: WPS436
-    escape_project_version_rst_substitution,
+    escape_project_version_rst_substitution, normalize_empty_markers,
 )
 from ._fragment_discovery import lookup_towncrier_fragments  # noqa: WPS436
 from ._version import __version__  # noqa: WPS436
@@ -40,6 +40,7 @@ TOWNCRIER_DRAFT_CMD = (
     'build',
     '--draft',  # write to stdout, don't change anything on disk
 )
+DEFAULT_EMPTY_CHANGELOG_MARKERS = ('No significant changes', )
 
 
 logger = logging.getLogger(__name__)
@@ -51,6 +52,7 @@ def _get_changelog_draft_entries(
         allow_empty: bool = False,
         working_dir: Optional[str] = None,
         config_path: Optional[str] = None,
+        empty_markers: Tuple[str, ...] = DEFAULT_EMPTY_CHANGELOG_MARKERS,
 ) -> str:
     """Retrieve the unreleased changelog entries from Towncrier."""
     extra_cli_args: Tuple[str, ...] = (
@@ -81,7 +83,10 @@ def _get_changelog_draft_entries(
             f'Standard error:\n{stderr}',
         ) from proc_exc
 
-    if not allow_empty and 'No significant changes' in towncrier_output:
+    if allow_empty:
+        return towncrier_output
+
+    if any(marker in towncrier_output for marker in empty_markers):
         raise LookupError('There are no unreleased changelog entries so far')
 
     return towncrier_output
@@ -190,6 +195,9 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
                 allow_empty=include_empty,
                 working_dir=config.towncrier_draft_working_directory,
                 config_path=config.towncrier_draft_config_path,
+                empty_markers=normalize_empty_markers(
+                    config.towncrier_draft_empty_markers,
+                ),
             )
         except RuntimeError as runtime_err:
             raise self.error(str(runtime_err)) from runtime_err
@@ -342,6 +350,11 @@ def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
     app.add_config_value(
         'towncrier_draft_include_empty',
         default=True,
+        rebuild=rebuild_trigger,
+    )
+    app.add_config_value(
+        'towncrier_draft_empty_markers',
+        default=DEFAULT_EMPTY_CHANGELOG_MARKERS,
         rebuild=rebuild_trigger,
     )
     app.add_config_value(
