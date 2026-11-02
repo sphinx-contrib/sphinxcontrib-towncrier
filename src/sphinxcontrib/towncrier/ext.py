@@ -29,7 +29,9 @@ from docutils.parsers.rst.states import RSTState
 from ._data_transformers import (  # noqa: WPS436
     escape_project_version_rst_substitution,
 )
-from ._fragment_discovery import lookup_towncrier_fragments  # noqa: WPS436
+from ._fragment_discovery import (  # noqa: WPS436
+    lookup_towncrier_config_files, lookup_towncrier_fragments,
+)
 from ._version import __version__  # noqa: WPS436
 
 
@@ -156,7 +158,11 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
             working_dir=config.towncrier_draft_working_directory,
             config_path=config.towncrier_draft_config_path,
         )
-        for path in towncrier_fragment_paths:
+        towncrier_config_file_paths = lookup_towncrier_config_files(
+            working_dir=config.towncrier_draft_working_directory,
+            config_path=config.towncrier_draft_config_path,
+        )
+        for path in towncrier_fragment_paths | towncrier_config_file_paths:
             # make sphinx discard doctree cache on file changes
             self.env.note_dependency(str(path))
 
