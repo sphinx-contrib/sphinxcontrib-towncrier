@@ -88,7 +88,7 @@ repos:
   # yamllint enable rule:comments-indentation
 
 - repo: https://github.com/andreoliwa/nitpick.git
-  rev: v0.35.0
+  rev: v0.38.1
   hooks:
   - id: nitpick-check
     args:
