@@ -50,6 +50,13 @@ How to use this?
 Make sure to point to the dir with ``pyproject.toml`` and pre-configure
 towncrier itself in the config.
 
+Towncrier runs in a subprocess under the same interpreter as Sphinx.
+Under Python 3.11+, it's invoked with ``-P`` so the working directory
+isn't put on the import path. So if towncrier's ``package`` setting is
+set, the installed distribution is imported, not the source checkout.
+This matters when the checkout can't be imported, for example, because
+its C-extensions aren't compiled.
+
 If everything above is  set up correctly, you should be able to add
 
 .. code-block:: rst
