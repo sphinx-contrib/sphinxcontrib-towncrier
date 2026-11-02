@@ -27,9 +27,13 @@ from docutils import statemachine  # pylint: disable=wrong-import-order
 from docutils.parsers.rst.states import RSTState
 
 from ._data_transformers import (  # noqa: WPS436
-    escape_project_version_rst_substitution,
+    definition_list_from_pairs, escape_project_version_rst_substitution,
 )
-from ._fragment_discovery import lookup_towncrier_fragments  # noqa: WPS436
+from ._fragment_discovery import (  # noqa: WPS436
+    lookup_towncrier_fragment_categories,
+    lookup_towncrier_fragments,
+    resolve_towncrier_config_path,
+)
 from ._version import __version__  # noqa: WPS436
 
 
@@ -202,6 +206,36 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
         )
 
 
+class TowncrierFragmentCategoriesDirective(SphinxDirective):
+    """Definition of the ``towncrier-fragment-categories`` directive."""
+
+    def run(self) -> List[nodes.Node]:
+        """Generate a definition list of the change note categories."""
+        config = self.env.config
+        working_dir = config.towncrier_draft_working_directory
+        config_path = config.towncrier_draft_config_path
+
+        towncrier_config_path = resolve_towncrier_config_path(
+            working_dir=working_dir,
+            config_path=config_path,
+        )
+        if towncrier_config_path.is_file():
+            # make sphinx discard doctree cache on config changes
+            self.env.note_dependency(str(towncrier_config_path))
+
+        categories = lookup_towncrier_fragment_categories(
+            working_dir=working_dir,
+            config_path=config_path,
+        )
+        if not categories:
+            raise self.error(
+                f'Error in "{self.name!s}" directive: '
+                'unable to look up the Towncrier change note categories.',
+            )
+
+        return [definition_list_from_pairs(categories)]
+
+
 class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
     r"""Environment collector for ``TowncrierDraftEntriesDirective``.
 
@@ -352,6 +386,10 @@ def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
     app.add_directive(
         'towncrier-draft-entries',
         TowncrierDraftEntriesDirective,
+    )
+    app.add_directive(
+        'towncrier-fragment-categories',
+        TowncrierFragmentCategoriesDirective,
     )
 
     # Register an environment collector to merge data gathered by the

@@ -71,6 +71,22 @@ any non-default ones via ``rst_epilog`` or at the end of the document
 where the ``towncrier-draft-entries`` directive is being used.
 
 
+Listing the change note categories
+----------------------------------
+
+The categories that the change note file names may be suffixed with are
+declared in the Towncrier config. To avoid maintaining a second, manually
+synchronized copy of that list in the contributor docs, put
+
+.. code-block:: rst
+
+    .. towncrier-fragment-categories::
+
+into a document. It renders a definition list mapping every configured
+category to the changelog section title Towncrier files it under, reading
+the same config as ``towncrier-draft-entries``.
+
+
 Does anybody actually use this?
 -------------------------------
 
