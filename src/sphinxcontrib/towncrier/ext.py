@@ -131,6 +131,33 @@ def _nodes_from_document_markup_source(
     return node.children
 
 
+def _warn_on_missing_version_title(
+        expected_version: str,
+        draft_markup_source: str,
+        location: Optional[str] = None,
+) -> None:
+    """Warn if Towncrier dropped the version title from the draft.
+
+    Towncrier only emits a version title when ``title_format`` is a
+    non-empty string or the template renders one itself. Otherwise the
+    version this extension computes is silently discarded, which makes
+    both the directive argument and
+    ``towncrier_draft_autoversion_mode`` look broken.
+    """
+    if expected_version in draft_markup_source:
+        return
+
+    logger.warning(
+        f'The Towncrier draft is missing the {expected_version !r} version '
+        'title. Set `title_format` to a non-empty string in the Towncrier '
+        'config or make the configured template render `versiondata` '
+        '(`top_line` under Towncrier < 19.9).',
+        location=location,
+        type='towncrier',
+        subtype='missing-version-title',
+    )
+
+
 class TowncrierDraftEntriesDirective(SphinxDirective):
     """Definition of the ``towncrier-draft-entries`` directive."""
 
@@ -183,10 +210,13 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
                 self.env.docname,
             }
 
+        draft_version = target_version or _get_draft_version_fallback(
+            autoversion_mode, config,
+        )
+
         try:
             draft_changes = _get_changelog_draft_entries(
-                target_version or
-                _get_draft_version_fallback(autoversion_mode, config),
+                draft_version,
                 allow_empty=include_empty,
                 working_dir=config.towncrier_draft_working_directory,
                 config_path=config.towncrier_draft_config_path,
@@ -195,6 +225,12 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
             raise self.error(str(runtime_err)) from runtime_err
         except LookupError:
             return []
+
+        _warn_on_missing_version_title(
+            escape_project_version_rst_substitution(draft_version),
+            draft_changes,
+            location=self.get_location(),
+        )
 
         return _nodes_from_document_markup_source(
             state=self.state,
