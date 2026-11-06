@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Dict, List, Literal, Optional, Tuple, Union
 
 from sphinx.application import Sphinx
+from sphinx.config import ENUM
 from sphinx.config import Config as SphinxConfig
 from sphinx.environment import BuildEnvironment
 from sphinx.environment.collectors import EnvironmentCollector
@@ -34,6 +35,11 @@ from ._version import __version__  # noqa: WPS436
 
 
 PROJECT_ROOT_DIR = Path(__file__).parents[3].resolve()
+DRAFT_AUTOVERSION_STRATEGIES = (
+    'draft',
+    'sphinx-version',
+    'sphinx-release',
+)
 TOWNCRIER_DRAFT_CMD = (
     sys.executable, '-m',  # invoke via runpy under the same interpreter
     'towncrier',
@@ -93,7 +99,7 @@ def _get_draft_version_fallback(
         sphinx_config: SphinxConfig,
 ) -> str:
     """Generate a fallback version string for towncrier draft."""
-    known_strategies = {'draft', 'sphinx-version', 'sphinx-release'}
+    known_strategies = set(DRAFT_AUTOVERSION_STRATEGIES)
     if strategy not in known_strategies:
         raise ValueError(
             'Expected "strategy" to be '
@@ -336,8 +342,9 @@ def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
     )
     app.add_config_value(
         'towncrier_draft_autoversion_mode',
-        default='scm-draft',
+        default='draft',
         rebuild=rebuild_trigger,
+        types=ENUM(*DRAFT_AUTOVERSION_STRATEGIES),
     )
     app.add_config_value(
         'towncrier_draft_include_empty',
