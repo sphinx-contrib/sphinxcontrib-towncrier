@@ -35,7 +35,12 @@ from ._version import __version__  # noqa: WPS436
 
 PROJECT_ROOT_DIR = Path(__file__).parents[3].resolve()
 TOWNCRIER_DRAFT_CMD = (
-    sys.executable, '-m',  # invoke via runpy under the same interpreter
+    sys.executable,
+    # Don't prepend the working directory to `sys.path` so that the
+    # installed project is imported, not an unbuilt source checkout.
+    # Ref: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/issues/53
+    *(('-P',) if sys.version_info >= (3, 11) else ()),
+    '-m',  # invoke via runpy under the same interpreter
     'towncrier',
     'build',
     '--draft',  # write to stdout, don't change anything on disk
