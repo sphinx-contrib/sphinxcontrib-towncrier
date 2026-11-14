@@ -1,8 +1,8 @@
 """Unit tests of the fragment discovery logic."""
 
 
+import typing as _t
 from pathlib import Path
-from typing import Set, Union
 
 import pytest
 
@@ -43,7 +43,7 @@ UTF8_ENCODING = 'utf-8'
     ),
 )
 def test_find_config_file(
-        config_file_names_on_disk: Set[str],
+        config_file_names_on_disk: _t.Set[str],
         expected_config_file_name: str,
         tmp_path: Path,
 ) -> None:
@@ -70,8 +70,8 @@ def test_find_config_file(
 )
 def test_resolve_spec_config(
         base_path: Path,
-        config_path: Union[str, None],
-        resolved_path: Union[Path, None],
+        config_path: _t.Union[str, None],
+        resolved_path: _t.Union[Path, None],
 ) -> None:
     """Verify that config path is resolved properly."""
     assert _resolve_spec_config(base_path, config_path) == resolved_path
@@ -101,7 +101,7 @@ def test_lookup_towncrier_fragments(
         chdir: bool,
         config_file_path: str,
         monkeypatch: pytest.MonkeyPatch,
-        sphinx_configured_path: Union[str, None],
+        sphinx_configured_path: _t.Union[str, None],
         tmp_path: Path,
 ) -> None:
     """Test that fragments can be discovered in configured location."""

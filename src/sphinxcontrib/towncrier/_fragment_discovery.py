@@ -1,9 +1,9 @@
 """Changelog fragment discovery helpers."""
 
 
+import typing as _t
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Set
 
 from sphinx.util import logging
 
@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 def _resolve_spec_config(
-        base: Path, spec_name: Optional[str] = None,
-) -> Optional[Path]:
-    return base / spec_name if spec_name is not None else None
+        base: Path, spec_name: _t.Optional[str] = None,
+) -> _t.Optional[Path]:
+    return None if spec_name is None else base / spec_name
 
 
 # pylint: disable=fixme
@@ -35,9 +35,9 @@ def _find_config_file(base: Path) -> Path:
 # FIXME: refactor `lookup_towncrier_fragments` to drop noqas
 @lru_cache(maxsize=1, typed=True)  # noqa: WPS210
 def lookup_towncrier_fragments(  # noqa: WPS210
-        working_dir: Optional[str] = None,
-        config_path: Optional[str] = None,
-) -> Set[Path]:
+        working_dir: _t.Optional[str] = None,
+        config_path: _t.Optional[str] = None,
+) -> _t.Set[Path]:
     """Emit RST-formatted Towncrier changelog fragment paths."""
     project_path = Path.cwd() if working_dir is None else Path(working_dir)
 

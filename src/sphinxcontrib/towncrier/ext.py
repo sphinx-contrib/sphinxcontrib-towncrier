@@ -4,11 +4,11 @@
 import shlex
 import subprocess  # noqa: S404
 import sys
+import typing as _t
 from collections.abc import Set
 from contextlib import suppress as suppress_exceptions
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Literal, Optional, Tuple, Union
 
 from sphinx.application import Sphinx
 from sphinx.config import Config as SphinxConfig
@@ -49,11 +49,11 @@ logger = logging.getLogger(__name__)
 def _get_changelog_draft_entries(
         target_version: str,
         allow_empty: bool = False,
-        working_dir: Optional[str] = None,
-        config_path: Optional[str] = None,
+        working_dir: _t.Optional[str] = None,
+        config_path: _t.Optional[str] = None,
 ) -> str:
     """Retrieve the unreleased changelog entries from Towncrier."""
-    extra_cli_args: Tuple[str, ...] = (
+    extra_cli_args: _t.Tuple[str, ...] = (
         '--version',
         # A version to be used in the RST title:
         escape_project_version_rst_substitution(target_version),
@@ -113,7 +113,7 @@ def _get_draft_version_fallback(
 def _nodes_from_document_markup_source(
         state: RSTState,
         markup_source: str,
-) -> List[nodes.Node]:
+) -> _t.List[nodes.Node]:
     """Turn an RST or Markdown string into a list of nodes.
 
     These nodes can be used in the document.
@@ -136,7 +136,7 @@ class TowncrierDraftEntriesDirective(SphinxDirective):
 
     has_content = True  # default: False
 
-    def run(self) -> List[nodes.Node]:  # noqa: WPS210
+    def run(self) -> _t.List[nodes.Node]:  # noqa: WPS210
         """Generate a node tree in place of the directive."""
         target_version = (
             self.content[:1][0]
@@ -297,7 +297,7 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
             added: Set[str],
             changed: Set[str],
             removed: Set[str],
-    ) -> List[str]:
+    ) -> _t.List[str]:
         """Mark docs with changed fragment deps for rebuild.
 
         This is a handler for :event:`env-get-outdated`.
@@ -324,9 +324,9 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
         )
 
 
-def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
+def setup(app: Sphinx) -> _t.Dict[str, _t.Union[bool, str]]:
     """Initialize the extension."""
-    rebuild_trigger: Literal[  # rebuild full html on settings change
+    rebuild_trigger: _t.Literal[  # rebuild full html on settings change
         'html',
     ] = 'html'
     app.add_config_value(

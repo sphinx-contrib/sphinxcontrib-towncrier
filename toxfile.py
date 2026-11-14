@@ -1,5 +1,6 @@
 """Project-local tox env customizations."""
 
+import typing as _t
 from base64 import b64encode
 from functools import cached_property
 from hashlib import sha256
@@ -7,7 +8,6 @@ from logging import getLogger
 from os import environ, getenv
 from pathlib import Path
 from sys import path as _sys_path
-from typing import cast
 
 from tox.config.types import Command
 from tox.execute.request import StdinSource
@@ -170,7 +170,7 @@ class PinnedPipInstallerSelectedMixin:
     @cached_property
     def installer(self) -> PinnedPipInstaller:
         """Return a constraint-aware pip installer."""
-        return PinnedPipInstaller(cast(Python, self))
+        return PinnedPipInstaller(_t.cast(Python, self))
 
 
 # pylint: disable-next=too-many-ancestors

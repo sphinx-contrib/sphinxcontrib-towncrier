@@ -1,8 +1,8 @@
 """Towncrier related shims."""
 
+import typing as _t
 from contextlib import suppress as suppress_exceptions
 from pathlib import Path
-from typing import Set, Union
 
 from towncrier._settings.load import Config  # noqa: WPS436
 from towncrier._settings.load import load_config_from_file  # noqa: WPS436
@@ -15,7 +15,7 @@ from towncrier.build import find_fragments
 def find_towncrier_fragments(
         base_directory: str,
         towncrier_config: Config,
-) -> Set[str]:
+) -> _t.Set[str]:
     """Look up the change note file paths."""
     with suppress_exceptions(TypeError):
         # Towncrier >= 24.7.0rc1
@@ -48,7 +48,7 @@ def find_towncrier_fragments(
 
 def get_towncrier_config(
         project_path: Path,
-        final_config_path: Union[Path, None],
+        final_config_path: _t.Union[Path, None],
 ) -> Config:
     """Return the towncrier config in native format."""
     try:
