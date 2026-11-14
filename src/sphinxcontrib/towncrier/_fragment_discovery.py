@@ -3,12 +3,13 @@
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Set
+from typing import Optional, Set, Tuple
 
 from sphinx.util import logging
 
 from ._towncrier import (  # noqa: WPS436
     find_towncrier_fragments, get_towncrier_config,
+    get_towncrier_template_path,
 )
 
 
@@ -31,19 +32,29 @@ def _find_config_file(base: Path) -> Path:
     return next(extant, candidates[-1])
 
 
-# pylint: disable=fixme
-# FIXME: refactor `lookup_towncrier_fragments` to drop noqas
-@lru_cache(maxsize=1, typed=True)  # noqa: WPS210
-def lookup_towncrier_fragments(  # noqa: WPS210
+def _resolve_config_location(
         working_dir: Optional[str] = None,
         config_path: Optional[str] = None,
-) -> Set[Path]:
-    """Emit RST-formatted Towncrier changelog fragment paths."""
+) -> Tuple[Path, Path]:
+    """Compute the project directory and the Towncrier config paths."""
     project_path = Path.cwd() if working_dir is None else Path(working_dir)
 
     final_config_path = (
         _resolve_spec_config(project_path, config_path)
         or _find_config_file(project_path)
+    )
+
+    return project_path, final_config_path
+
+
+@lru_cache(maxsize=1, typed=True)
+def lookup_towncrier_fragments(
+        working_dir: Optional[str] = None,
+        config_path: Optional[str] = None,
+) -> Set[Path]:
+    """Emit RST-formatted Towncrier changelog fragment paths."""
+    project_path, final_config_path = _resolve_config_location(
+        working_dir, config_path,
     )
 
     try:
@@ -65,3 +76,33 @@ def lookup_towncrier_fragments(  # noqa: WPS210
         return set()
 
     return set(map(Path, fragment_filenames))
+
+
+@lru_cache(maxsize=1, typed=True)
+def lookup_towncrier_config_files(
+        working_dir: Optional[str] = None,
+        config_path: Optional[str] = None,
+) -> Set[Path]:
+    """Emit Towncrier config and template file paths."""
+    project_path, final_config_path = _resolve_config_location(
+        working_dir, config_path,
+    )
+
+    if not final_config_path.is_file():
+        return set()
+
+    try:
+        towncrier_config = get_towncrier_config(
+            project_path,
+            final_config_path,
+        )
+    except LookupError:
+        # The error is reported by `lookup_towncrier_fragments()` while
+        # tracking the broken config lets its fix trigger a rebuild
+        return {final_config_path}
+
+    template_path = get_towncrier_template_path(towncrier_config)
+    if template_path is None:
+        return {final_config_path}
+
+    return {final_config_path, template_path}
