@@ -1,5 +1,9 @@
 """Data transformation helpers."""
 
+from typing import Tuple
+
+from docutils import nodes
+
 
 def escape_project_version_rst_substitution(version: str) -> str:
     """Prepend an escaped whitespace before RST substitution."""
@@ -15,3 +19,20 @@ def escape_project_version_rst_substitution(version: str) -> str:
     # the substitution gets processed properly so the result would
     # be something like `v1.0` as expected.
     return rf'\ {version}'
+
+
+def definition_list_from_pairs(
+        term_definition_pairs: Tuple[Tuple[str, str], ...],
+) -> nodes.definition_list:
+    """Compose a definition list out of literal-term/text-body pairs."""
+    return nodes.definition_list(
+        '',
+        *(
+            nodes.definition_list_item(
+                '',
+                nodes.term('', '', nodes.literal(text=term)),
+                nodes.definition('', nodes.paragraph(text=definition)),
+            )
+            for term, definition in term_definition_pairs
+        ),
+    )

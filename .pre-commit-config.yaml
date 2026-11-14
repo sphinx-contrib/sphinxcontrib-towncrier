@@ -206,6 +206,7 @@ repos:
     - Sphinx >= 3.1.2
     - tox  # toxfile.py
     - types-colorama
+    - types-docutils
     - types-Pillow
     - types-Pygments
     - types-docutils
@@ -226,6 +227,7 @@ repos:
     - Sphinx >= 3.1.2
     - tox  # toxfile.py
     - types-colorama
+    - types-docutils
     - types-Pillow
     - types-Pygments
     - types-docutils
@@ -254,6 +256,7 @@ repos:
     - Sphinx >= 3.1.2
     - tox  # toxfile.py
     - types-colorama
+    - types-docutils
     - types-Pillow
     - types-Pygments
     - types-docutils

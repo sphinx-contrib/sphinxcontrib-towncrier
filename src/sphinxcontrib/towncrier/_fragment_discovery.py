@@ -3,12 +3,12 @@
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Set
+from typing import Optional, Set, Tuple
 
 from sphinx.util import logging
 
 from ._towncrier import (  # noqa: WPS436
-    find_towncrier_fragments, get_towncrier_config,
+    Config, find_towncrier_fragments, get_towncrier_config,
 )
 
 
@@ -31,28 +31,68 @@ def _find_config_file(base: Path) -> Path:
     return next(extant, candidates[-1])
 
 
-# pylint: disable=fixme
-# FIXME: refactor `lookup_towncrier_fragments` to drop noqas
-@lru_cache(maxsize=1, typed=True)  # noqa: WPS210
-def lookup_towncrier_fragments(  # noqa: WPS210
+def _resolve_project_path(working_dir: Optional[str] = None) -> Path:
+    return Path.cwd() if working_dir is None else Path(working_dir)
+
+
+def resolve_towncrier_config_path(
         working_dir: Optional[str] = None,
         config_path: Optional[str] = None,
-) -> Set[Path]:
-    """Emit RST-formatted Towncrier changelog fragment paths."""
-    project_path = Path.cwd() if working_dir is None else Path(working_dir)
-
-    final_config_path = (
+) -> Path:
+    """Compute the Towncrier config file path to be loaded."""
+    project_path = _resolve_project_path(working_dir)
+    return (
         _resolve_spec_config(project_path, config_path)
         or _find_config_file(project_path)
     )
 
+
+def _load_towncrier_config(
+        working_dir: Optional[str] = None,
+        config_path: Optional[str] = None,
+) -> Optional[Config]:
+    """Load the Towncrier config, warning when it's unavailable."""
     try:
-        towncrier_config = get_towncrier_config(
-            project_path,
-            final_config_path,
+        return get_towncrier_config(
+            _resolve_project_path(working_dir),
+            resolve_towncrier_config_path(working_dir, config_path),
         )
     except LookupError as config_lookup_err:
         logger.warning(str(config_lookup_err))
+        return None
+
+
+@lru_cache(maxsize=1, typed=True)
+def lookup_towncrier_fragment_categories(
+        working_dir: Optional[str] = None,
+        config_path: Optional[str] = None,
+) -> Tuple[Tuple[str, str], ...]:
+    """Emit the configured change note categories and their titles.
+
+    The first element of each pair is the category name that the change
+    note file names are suffixed with. The second one is the
+    human-readable section title Towncrier renders it under.
+    """
+    towncrier_config = _load_towncrier_config(working_dir, config_path)
+    if towncrier_config is None:
+        return ()
+
+    return tuple(
+        (category, category_spec['name'] or category)
+        for category, category_spec in towncrier_config.types.items()
+    )
+
+
+@lru_cache(maxsize=1, typed=True)
+def lookup_towncrier_fragments(
+        working_dir: Optional[str] = None,
+        config_path: Optional[str] = None,
+) -> Set[Path]:
+    """Emit RST-formatted Towncrier changelog fragment paths."""
+    project_path = _resolve_project_path(working_dir)
+
+    towncrier_config = _load_towncrier_config(working_dir, config_path)
+    if towncrier_config is None:
         return set()
 
     try:
