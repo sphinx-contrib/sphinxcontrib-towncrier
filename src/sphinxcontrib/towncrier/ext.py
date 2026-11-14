@@ -314,6 +314,15 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
                 ^ env.towncrier_fragment_paths,  # type: ignore[attr-defined]
             )
 
+        if fragments_changed:
+            # The directive only ever adds fragments to this set so the
+            # removed ones must be forgotten here, before the docs are
+            # read. Otherwise, they'd mark the docs outdated in all the
+            # subsequent builds.
+            env.towncrier_fragment_paths = (  # type: ignore[attr-defined]
+                set(towncrier_fragment_paths)
+            )
+
         return (
             list(
                 env.towncrier_fragment_docs  # type: ignore[attr-defined]
