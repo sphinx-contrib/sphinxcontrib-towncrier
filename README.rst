@@ -50,6 +50,20 @@ How to use this?
 Make sure to point to the dir with ``pyproject.toml`` and pre-configure
 towncrier itself in the config.
 
+When ``towncrier_draft_include_empty`` is ``False``, an empty draft is
+recognized by looking for ``No significant changes`` in the towncrier
+output — the phrase the bundled templates emit. A custom towncrier
+template will word this differently, so tell the extension what to look
+for via ``towncrier_draft_empty_markers``:
+
+.. code-block:: python
+
+    towncrier_draft_empty_markers = ['Nothing to see here']
+
+Any string or list of strings is accepted; the draft counts as empty
+when at least one of them occurs in the output. Set it to an empty list
+to never treat a draft as empty.
+
 If everything above is  set up correctly, you should be able to add
 
 .. code-block:: rst
