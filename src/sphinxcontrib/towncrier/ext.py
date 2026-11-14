@@ -1,6 +1,7 @@
 """Sphinx extension for injecting an unreleased changelog into docs."""
 
 
+import os
 import shlex
 import subprocess  # noqa: S404
 import sys
@@ -29,7 +30,9 @@ from docutils.parsers.rst.states import RSTState
 from ._data_transformers import (  # noqa: WPS436
     escape_project_version_rst_substitution,
 )
-from ._fragment_discovery import lookup_towncrier_fragments  # noqa: WPS436
+from ._fragment_discovery import (  # noqa: WPS436
+    has_towncrier_config, lookup_towncrier_fragments,
+)
 from ._version import __version__  # noqa: WPS436
 
 
@@ -324,6 +327,45 @@ class TowncrierDraftEntriesEnvironmentCollector(EnvironmentCollector):
         )
 
 
+def _resolve_working_directory(  # noqa: WPS210
+        app: Sphinx,
+        config: SphinxConfig,
+) -> None:
+    """Make a relative working directory relative to ``conf.py``.
+
+    This is a handler for :event:`config-inited`.
+
+    Relative paths used to be resolved against the current working
+    directory. When only that location has a Towncrier config, it's
+    used with a deprecation warning.
+
+    Ref: https://github.com/sphinx-contrib/sphinxcontrib-towncrier/issues/49
+    """
+    working_dir = config.towncrier_draft_working_directory
+    if working_dir is None or Path(working_dir).is_absolute():
+        return
+
+    resolved_path = Path(app.confdir, working_dir)
+    cwd_based_path = Path.cwd() / working_dir
+    config_path = config.towncrier_draft_config_path
+    is_configured_in_cwd_only = (
+        not has_towncrier_config(resolved_path, config_path)
+        and has_towncrier_config(cwd_based_path, config_path)
+    )
+    if is_configured_in_cwd_only:
+        suggested_path = os.path.relpath(cwd_based_path, app.confdir)
+        logger.warning(
+            'Relative `towncrier_draft_working_directory` paths are '
+            'resolved against the directory containing `conf.py` but '
+            f'`{resolved_path !s}` has no Towncrier config. Falling back '
+            f'to `{cwd_based_path !s}`, which is deprecated. Set it to '
+            f'{suggested_path !r} or to an absolute path instead.',
+        )
+        resolved_path = cwd_based_path
+
+    config.towncrier_draft_working_directory = str(resolved_path)
+
+
 def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
     """Initialize the extension."""
     rebuild_trigger: Literal[  # rebuild full html on settings change
@@ -349,6 +391,7 @@ def setup(app: Sphinx) -> Dict[str, Union[bool, str]]:
         default=None,
         rebuild=rebuild_trigger,
     )
+    app.connect('config-inited', _resolve_working_directory)
     app.add_directive(
         'towncrier-draft-entries',
         TowncrierDraftEntriesDirective,

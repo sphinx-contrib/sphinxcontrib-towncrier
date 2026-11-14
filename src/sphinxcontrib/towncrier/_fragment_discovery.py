@@ -31,6 +31,16 @@ def _find_config_file(base: Path) -> Path:
     return next(extant, candidates[-1])
 
 
+def has_towncrier_config(
+        working_dir: Path, config_path: Optional[str] = None,
+) -> bool:
+    """Check whether the Towncrier config exists in the working dir."""
+    return (
+        _resolve_spec_config(working_dir, config_path)
+        or _find_config_file(working_dir)
+    ).is_file()
+
+
 # pylint: disable=fixme
 # FIXME: refactor `lookup_towncrier_fragments` to drop noqas
 @lru_cache(maxsize=1, typed=True)  # noqa: WPS210

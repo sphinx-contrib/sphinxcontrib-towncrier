@@ -48,7 +48,9 @@ How to use this?
     # towncrier_draft_config_path = 'pyproject.toml'  # relative to cwd
 
 Make sure to point to the dir with ``pyproject.toml`` and pre-configure
-towncrier itself in the config.
+towncrier itself in the config. A relative
+``towncrier_draft_working_directory`` is resolved against the directory
+containing ``conf.py``. When unset, the current working directory is used.
 
 If everything above is  set up correctly, you should be able to add
 
