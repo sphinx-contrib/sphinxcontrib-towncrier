@@ -1,9 +1,9 @@
 """Towncrier config reader tests."""
 
 
+import typing as _t
 from importlib.metadata import version as _get_installed_project_version
 from pathlib import Path
-from typing import Union
 
 import pytest
 
@@ -54,7 +54,7 @@ def test_towncrier_config_section_missing(
     ),
 )
 def test_towncrier_config_file_missing(
-        config_file_name: Union[Path, None],
+        config_file_name: _t.Union[Path, None],
         monkeypatch: pytest.MonkeyPatch,
         tmp_path: Path,
 ) -> None:

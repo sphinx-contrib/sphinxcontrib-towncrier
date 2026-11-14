@@ -3,9 +3,9 @@
 """Configuration for the Sphinx documentation generator."""
 
 import sys
+import typing as _t
 from functools import partial
 from pathlib import Path
-from typing import Mapping
 
 from sphinx.application import Sphinx
 
@@ -182,7 +182,7 @@ nitpick_ignore = [
 ]
 
 
-def setup(app: Sphinx) -> Mapping[str, str]:
+def setup(app: Sphinx) -> _t.Mapping[str, str]:
     """Set up extra Sphinx extension integrations."""
     # NOTE: Sphinx doesn't seem to expose its :event: role at the moment.
     # NOTE: This hack redeclares the event type locally.
